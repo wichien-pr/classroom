@@ -23,7 +23,7 @@ def test_original_scale_bank_covers_curriculum():
     bank=load_bank(course)
     # Answer positions in the authored bank must not form an all-A shortcut.
     assert len({q['answer'] for q in bank}) >= 3
-    assert len(bank)>=24
+    assert len(bank)>=2*len(course['lessons'])
     assert {q['lesson_id'] for q in bank}==set(course['lessons'])
 
 

@@ -15,10 +15,11 @@ def test_lab05_swap_preserves_account_evidence_and_frozen_attempt(setup_course):
     current = json.loads((ROOT/'courses/scale-lab/course.json').read_text())
     manifest = {**base, 'lessons': ['session', 'replica'],
                 'completion_requirements': current['completion_requirements'],
-                'participation': {k: current['participation'][k] for k in ['session', 'replica']}}
+                'participation': {'session': {'session': ['login', 'session'], 'check-your-thinking': ['quiz-answer-a', 'quiz-answer-b']}, 'replica': current['participation']['replica']}}
     (course/'course.json').write_text(json.dumps(manifest))
     bank = json.loads((ROOT/'courses/scale-lab/assessment.json').read_text())
     bank['questions'] = [q for q in bank['questions'] if q['lesson_id'] in manifest['lessons']]
+    bank['questions'].append({'id': 'session-history', 'lesson_id': 'session', 'prompt': 'Historical Session question', 'options': [{'id': 'a', 'text': 'Local'}, {'id': 'b', 'text': 'Shared'}], 'answer': 'b'})
     # A historical authored bank, deliberately different to the new one.
     old = json.loads(json.dumps(bank))
     for q in old['questions']:

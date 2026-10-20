@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 for(const width of [390,1440]) test(`exit course remains reachable at ${width}px`,async({page})=>{
  await page.setViewportSize({width,height:844});
- await page.route('**/api/courses/scale-lab/progress',r=>r.fulfill({json:{completed:[],total:12,csrf_token:'test'}}));
+ await page.route('**/api/courses/scale-lab/progress',r=>r.fulfill({json:{completed:[],total:11,csrf_token:'test'}}));
  await page.goto('/courses/scale-lab/');
  const link=page.getByRole('link',{name:'ออกจากคลาส · กลับหน้าแรก'});
  await expect(link).toBeVisible();

@@ -10,7 +10,7 @@ test('visible manual completion persists without claiming quiz success',async({p
  await complete.click();
  await expect(page.getByRole('button',{name:'✓ เรียนจบแล้ว',exact:true})).toBeDisabled();
  await expect(page.locator('#feedback')).toHaveText('เลือกคำตอบเพื่อดูเหตุผล — ตอบใหม่ได้เสมอ');
- await expect(page.locator('#progress')).toHaveText('1 / 12 บทเรียนจบ');
+ await expect(page.locator('#progress')).toHaveText('1 / 11 บทเรียนจบ');
  await page.locator('[data-lesson="2"]').click();
  await expect(complete).toBeEnabled();
  await page.reload();

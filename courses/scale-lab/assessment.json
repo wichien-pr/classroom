@@ -162,46 +162,6 @@
       "answer": "b"
     },
     {
-      "id": "session-9",
-      "lesson_id": "session",
-      "prompt": "Stateless app หมายถึงอะไร?",
-      "options": [
-        {
-          "id": "a",
-          "text": "ทั้งระบบห้ามมีข้อมูล"
-        },
-        {
-          "id": "b",
-          "text": "ห้ามใช้ database"
-        },
-        {
-          "id": "c",
-          "text": "ไม่ฝาก state สำคัญไว้บน instance เดียว"
-        }
-      ],
-      "answer": "c"
-    },
-    {
-      "id": "session-10",
-      "lesson_id": "session",
-      "prompt": "cache ใน memory ของ stateless app ยอมรับได้เมื่อใด?",
-      "options": [
-        {
-          "id": "a",
-          "text": "เมื่อเป็นสำเนาเดียวของ order"
-        },
-        {
-          "id": "b",
-          "text": "เมื่อทิ้งและสร้างใหม่ได้อย่างถูกต้อง"
-        },
-        {
-          "id": "c",
-          "text": "เมื่อใช้แทน durable storage เสมอ"
-        }
-      ],
-      "answer": "b"
-    },
-    {
       "id": "replica-11",
       "lesson_id": "replica",
       "prompt": "ใน single-primary web server ส่ง INSERT / UPDATE / DELETE ไป primary ถ้าต้องอ่านให้เห็น write ที่เพิ่งสำเร็จและ primary ยังพร้อม ควรอ่านที่ใด?",
@@ -244,15 +204,15 @@
     {
       "id": "cache-13",
       "lesson_id": "cache",
-      "prompt": "ใน cache-aside แหล่งข้อมูลจริงอยู่ที่ใด?",
+      "prompt": "Cache ใน memory สูญหายเมื่อ restart ข้อมูลสำคัญที่ต้องใช้สร้างสำเนาใหม่ควรอยู่ที่ใด?",
       "options": [
         {
           "id": "a",
-          "text": "database"
+          "text": "database หรือ persistent data store ที่เป็นแหล่งข้อมูลหลัก"
         },
         {
           "id": "b",
-          "text": "cache ทุกตัวพร้อมกันเสมอ"
+          "text": "cache เพียงแห่งเดียว เพราะมี TTL แล้วข้อมูลจะไม่หาย"
         },
         {
           "id": "c",
@@ -264,15 +224,15 @@
     {
       "id": "cache-14",
       "lesson_id": "cache",
-      "prompt": "hit rate สูงยังต้องวัดอะไร?",
+      "prompt": "แม้ hit rate สูง การตั้ง TTL ยาวและเขียน DB โดยไม่ประสาน cache มีความเสี่ยงใด?",
       "options": [
         {
           "id": "a",
-          "text": "ไม่ต้องวัดเพิ่ม"
+          "text": "ไม่มีความเสี่ยง เพราะ hit รับประกันว่าตรงกับ DB ล่าสุด"
         },
         {
           "id": "b",
-          "text": "stale data และ correctness"
+          "text": "อาจคืน stale data ต้องตรวจ correctness และออกแบบ expiration / invalidation เพราะไม่ใช่ transaction เดียวกัน"
         },
         {
           "id": "c",

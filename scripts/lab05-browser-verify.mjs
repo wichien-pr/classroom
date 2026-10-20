@@ -34,21 +34,21 @@ try {
   await page.locator('#sync').click();await score(4);const count=posts.length;await page.locator('#sync').click();assert.equal(posts.length,count);
   await expect(page.locator('[data-answer]').first()).toHaveAttribute('data-answer','1');
   await page.locator('[data-answer="0"]').click();await score(5);await expect(page.locator('#feedback')).toContainText('ยังไม่ถูก');
-  await expect(page.locator('#progress')).toContainText('0 / 12');await page.locator('#complete-lesson').click();await expect(page.locator('#progress')).toContainText('1 / 12');
+  await expect(page.locator('#progress')).toContainText('0 / 11');await page.locator('#complete-lesson').click();await expect(page.locator('#progress')).toContainText('1 / 11');
   await page.evaluate(()=>sessionStorage.setItem('qa-random','0.99'));await page.reload();await page.locator('[data-lesson="5"]').click();await score(5);
   await expect(page.locator('[data-answer]').first()).toHaveAttribute('data-answer','0');await page.locator('[data-answer="0"]').click();await expect(page.locator('#participation-status')).toContainText('ปุ่มนี้นับคะแนนแล้ว');await score(5);
   await page.locator('[data-answer="1"]').click();await score(6);await expect(page.locator('#feedback')).toContainText('ถูกต้อง');
-  await page.locator('[data-lesson="6"]').click();await expect(page.locator('h1')).toContainText('session');
-  await page.locator('#login').click();await expect(page.locator('#participation-score')).toHaveText('7');
+  await page.locator('[data-lesson="6"]').click();await expect(page.locator('h1')).toContainText('Cache');
+  await page.locator('#read-cache').click();await expect(page.locator('#participation-score')).toHaveText('7');
   await page.locator('[data-answer="0"]').click();await expect(page.locator('#participation-score')).toHaveText('8');
-  await page.locator('#complete-lesson').click();await expect(page.locator('#progress')).toContainText('2 / 12');
+  await page.locator('#complete-lesson').click();await expect(page.locator('#progress')).toContainText('2 / 11');
   await page.locator('[data-lesson="5"]').click();await score(8);
  }else{
   const prior=JSON.parse(await readFile(new URL('browser.json',evidence)));assert.notEqual(prior.serverPid,info.pid);
   await score(8);
  }
- const result=await snapshot();assert.deepEqual(result.completed,['replica','session']);
- for(const k of ['replica','session'])assert.deepEqual(result.criteria[k],{manual:true,simulation:true,thinking:true});
+ const result=await snapshot();assert.deepEqual(result.completed,['replica','cache']);
+ for(const k of ['replica','cache'])assert.deepEqual(result.criteria[k],{manual:true,simulation:true,thinking:true});
  await page.reload();await page.locator('[data-lesson="5"]').click();await score(8);await expect(page.locator('#complete-lesson')).toHaveText('✓ เรียนจบแล้ว');
  // Real outage routing and a guarded, explicitly lossy promotion.
  await page.locator('#write').click();await score(8);await page.locator('#db-up-1').uncheck();await page.locator('#read-replica').click();await score(8);await expect(page.locator('#outcome')).toContainText('Replica 2');
@@ -71,9 +71,9 @@ try {
  }
  for(const path of ['/courses/scale-lab/assessment.json','/courses/scale-lab/Database-Replication.pdf'])assert.equal((await page.request.get(info.base+path)).status(),404);
  await page.getByRole('link',{name:'ออกจากคลาส · กลับหน้าแรก'}).click();await expect(page).toHaveURL(info.base+'/');
- await page.getByRole('button',{name:'ออกจากระบบ',exact:true}).click();await login();await page.goto(info.base+'/courses/scale-lab/');await page.locator('[data-lesson="5"]').click();await score(8);await expect(page.locator('#progress')).toContainText('2 / 12');
+ await page.getByRole('button',{name:'ออกจากระบบ',exact:true}).click();await login();await page.goto(info.base+'/courses/scale-lab/');await page.locator('[data-lesson="5"]').click();await score(8);await expect(page.locator('#progress')).toContainText('2 / 11');
  await page.locator('#write').click();await expect(page.locator('#participation-status')).toContainText('ปุ่มนี้นับคะแนนแล้ว');await score(8);
- const other=await browser.newContext(),second=await other.newPage();if(!resume)await signup(second,'lab05-other@example.test');await login(second,'lab05-other@example.test');await second.goto(info.base+'/courses/scale-lab/');await expect(second.locator('#participation-score')).toHaveText('0');await expect(second.locator('#progress')).toContainText('0 / 12');await other.close();
+ const other=await browser.newContext(),second=await other.newPage();if(!resume)await signup(second,'lab05-other@example.test');await login(second,'lab05-other@example.test');await second.goto(info.base+'/courses/scale-lab/');await expect(second.locator('#participation-score')).toHaveText('0');await expect(second.locator('#progress')).toContainText('0 / 11');await other.close();
  assert.deepEqual(errors,[]);
  const report={passed:true,resume,serverPid:info.pid,score:8,qualifiedLessons:result.completed,noOpSyncAndPromotionExcluded:true,quizSemanticDedupAcrossOppositeOrder:true,twoAccounts:true,errors,viewports:[320,390,1440],providerTraffic:false};
  await writeFile(new URL(resume?'restart.json':'browser.json',evidence),JSON.stringify(report,null,2));console.log(JSON.stringify(report));

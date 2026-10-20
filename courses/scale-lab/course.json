@@ -2,20 +2,25 @@
   "id": "scale-lab",
   "title": "Scale Lab",
   "subtitle": "SYSTEM DESIGN / TH",
-  "description": "เข้าใจ System Design ผ่านระบบสั่งซื้อใน 12 Labs ตั้งแต่เส้นทางของ Request และฐานข้อมูล ไปจนถึง Load Balancing, Cache และ Queue เรียนรู้การรับมือระบบล่ม การขยายระบบข้ามภูมิภาค และการแบ่งข้อมูลด้วย Sharding",
+  "description": "เข้าใจ System Design ผ่านระบบสั่งซื้อใน 11 Labs ตั้งแต่เส้นทางของ Request และฐานข้อมูล ไปจนถึง Load Balancing, Cache และ Queue เรียนรู้การรับมือระบบล่ม การขยายระบบข้ามภูมิภาค และการแบ่งข้อมูลด้วย Sharding",
   "enabled": true,
   "order": 1,
   "delivery": "static",
   "build_dir": "dist",
   "entry": "index.html",
-  "completion_requirements": ["manual", "simulation", "thinking"],
+  "completion_requirements": [
+    "manual",
+    "simulation",
+    "thinking"
+  ],
   "participation": {
     "flow": {
       "flow": [
         "step"
       ],
       "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
+        "quiz-answer-a",
+        "quiz-answer-b"
       ]
     },
     "workload": {
@@ -23,7 +28,8 @@
         "estimate"
       ],
       "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
+        "quiz-answer-a",
+        "quiz-answer-b"
       ]
     },
     "stock": {
@@ -31,7 +37,8 @@
         "order"
       ],
       "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
+        "quiz-answer-a",
+        "quiz-answer-b"
       ]
     },
     "balance": {
@@ -39,16 +46,8 @@
         "route"
       ],
       "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
-      ]
-    },
-    "session": {
-      "session": [
-        "login",
-        "session"
-      ],
-      "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
+        "quiz-answer-a",
+        "quiz-answer-b"
       ]
     },
     "replica": {
@@ -59,7 +58,8 @@
         "sync"
       ],
       "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
+        "quiz-answer-a",
+        "quiz-answer-b"
       ]
     },
     "cache": {
@@ -69,7 +69,8 @@
         "invalidate"
       ],
       "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
+        "quiz-answer-a",
+        "quiz-answer-b"
       ]
     },
     "cdn": {
@@ -77,7 +78,8 @@
         "decision"
       ],
       "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
+        "quiz-answer-a",
+        "quiz-answer-b"
       ]
     },
     "queue": {
@@ -85,7 +87,8 @@
         "work"
       ],
       "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
+        "quiz-answer-a",
+        "quiz-answer-b"
       ]
     },
     "observe": {
@@ -93,7 +96,8 @@
         "decision"
       ],
       "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
+        "quiz-answer-a",
+        "quiz-answer-b"
       ]
     },
     "region": {
@@ -101,7 +105,8 @@
         "decision"
       ],
       "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
+        "quiz-answer-a",
+        "quiz-answer-b"
       ]
     },
     "shard": {
@@ -109,7 +114,8 @@
         "shard"
       ],
       "check-your-thinking": [
-        "quiz-answer-a", "quiz-answer-b"
+        "quiz-answer-a",
+        "quiz-answer-b"
       ]
     }
   },
@@ -119,7 +125,6 @@
     "stock",
     "balance",
     "replica",
-    "session",
     "cache",
     "cdn",
     "queue",

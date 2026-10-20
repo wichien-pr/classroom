@@ -68,7 +68,7 @@ try{
    }
    const expectedDefinitions=Object.entries(manifest.participation).flatMap(([lesson,definitions])=>Object.entries(definitions).flatMap(([simulation,actions])=>actions.map(action=>`${lesson}/${simulation}/${action}`)));
    assert.deepEqual([...new Set(coverage.map(e=>`${e.lesson}/${e.simulation}/${e.action}`))].sort(),expectedDefinitions.sort());
-   assert.equal(deliberateEvents.length,78);
+   assert.equal(deliberateEvents.length,expectedDefinitions.length+manifest.lessons.length*3);
    assert.equal(new Set(deliberateEvents.map(e=>e.event_id)).size,deliberateEvents.length,'each deliberate click gets a fresh UUID');
    const captured=deliberateEvents.filter(e=>e.action.startsWith('quiz-answer-')).slice(0,4);
    const {csrf_token}=await snapshot(page);

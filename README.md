@@ -1,8 +1,12 @@
 # Classroom — Modular courses
 
-## LAB05 Database replication / LAB06 Session
+## LAB06 Cache — แทน Session (deploy ในเครื่องแล้ว)
 
-Replication ย้ายเป็น LAB05 และ Session เป็น LAB06 โดยคง stable IDs และคะแนน/ประวัติเดิม เพิ่มเนื้อหาและภาพวาดใหม่จาก `Database-Replication.pdf` พร้อมทดลอง lag, read fallback และ guarded promotion แยกข้อจำกัดจากต้นฉบับชัดเจน Standalone ย้ายความคืบหน้าจากลำดับเก่าไป stable IDs อย่างปลอดภัย ดู [source map และผล QA](docs/lab05-verification.md). deploy ในเครื่องแล้วที่ http://127.0.0.1:8080/ พร้อม backup และตรวจ preservation ตาม verification; PDF ไม่อยู่ใน public/dist.
+หลักสูตรปัจจุบันมี **11 Labs**: flow → workload → stock → balance → replica → **cache** → cdn → queue → observe → region → shard. นำ Session ออกจากบทเรียนและ assessment ที่ใช้งาน ไม่สลับหรือเปลี่ยนประวัติ Session ให้เป็น Cache; Cache ใช้ stable ID และปุ่มคะแนนเดิม รวมหลักสูตรมี **38 durable button definitions** (16 simulation + 22 thinking) ไม่ใช่ 39 คะแนนประวัติ Session ยังคงอยู่ จึงไม่ควรถือ 38 เป็นเพดานคะแนนเก่าของบัญชี
+
+LAB06 เพิ่มเนื้อหาไทย ภาพวาดเส้นทาง hit/miss และ failure ทดลอง TTL แบบกดเวลาเอง, stale data, invalidation, cache ล่มและ DB fallback โดยไม่มีการอ้างไฟล์หรือหน้าเอกสารบนบทเรียน อ่าน [source mapping และผลตรวจจริง](docs/lab06-verification.md). Standalone เก็บประวัติ stable ID รวมบทที่เลิกใช้ แต่ไม่นับ Session ในความคืบหน้าปัจจุบัน ระบบบัญชีไม่ migrate/reset DB หรือ exam snapshots เดิม
+
+**Deploy ในเครื่องแล้วที่ http://127.0.0.1:8080/** หลังสำรอง SQLite, uploads และ dist เดิม พร้อมตรวจ preservation และ readiness ดูรายละเอียดและข้อจำกัดของ QA/build แต่ละรอบใน [รายงาน LAB06](docs/lab06-verification.md). เนื้อหาย่อล่าสุดใช้หัวข้อ “ข้อมูลที่ใช้บ่อย งานที่ใช้เวลานาน ไม่ต้องทำซ้ำทุกครั้ง”. ไม่แก้ credentials หรือแตะพอร์ต 8081; ผล LAB05 ใน [รายงานเดิม](docs/lab05-verification.md) เป็นประวัติ ไม่ใช่หลักฐานของ LAB06
 
 ## ยืนยันอีเมลตอนสมัครสมาชิก
 

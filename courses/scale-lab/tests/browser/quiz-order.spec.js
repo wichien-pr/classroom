@@ -4,13 +4,13 @@ test('each lesson draws its own order once before rendering, not on first naviga
  await page.addInitScript(()=>{window.quizDraws=0;Math.random=()=>window.quizDraws++%2?0.75:0.25;});
  await page.goto('/');
  await expect(page.locator('[data-answer]')).toHaveCount(2);
- expect(await page.evaluate(()=>window.quizDraws)).toBe(12);
- for(let id=1;id<=12;id++){
+ expect(await page.evaluate(()=>window.quizDraws)).toBe(11);
+ for(let id=1;id<=11;id++){
   await page.locator(`[data-lesson="${id}"]`).click();
   expect(await page.locator('[data-answer]').evaluateAll(nodes=>nodes.map(n=>n.dataset.answer))).toEqual(id%2?['1','0']:['0','1']);
   await page.locator('#reset').click();
  }
- expect(await page.evaluate(()=>window.quizDraws)).toBe(12);
+ expect(await page.evaluate(()=>window.quizDraws)).toBe(11);
 });
 
 for(const random of [0,0.999999]) test(`thinking presentation uses RNG ${random} without changing choice identity`,async({page})=>{
