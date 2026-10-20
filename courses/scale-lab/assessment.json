@@ -84,19 +84,19 @@
     {
       "id": "stock-5",
       "lesson_id": "stock",
-      "prompt": "การ retry ด้วย idempotency key เดิมควรให้ผลอย่างไร?",
+      "prompt": "Vertical scaling (scale up) หมายถึงอะไรและมีข้อจำกัดใด?",
       "options": [
         {
           "id": "a",
-          "text": "คืน order เดิมเมื่อ payload ตรงกัน"
+          "text": "เพิ่ม CPU / RAM ให้เครื่องเดิม แต่มีเพดาน hardware และไม่เพิ่ม failover โดยตัวมันเอง"
         },
         {
           "id": "b",
-          "text": "สร้าง order ใหม่ทุกครั้ง"
+          "text": "เพิ่มจำนวนเครื่องและสร้าง redundancy อัตโนมัติ"
         },
         {
           "id": "c",
-          "text": "ข้ามการตรวจลูกค้า"
+          "text": "เพิ่มทรัพยากรได้ไม่จำกัด"
         }
       ],
       "answer": "a"
@@ -104,19 +104,19 @@
     {
       "id": "stock-6",
       "lesson_id": "stock",
-      "prompt": "การเพิ่ม throughput แต่ stock ติดลบถือว่าสำเร็จหรือไม่?",
+      "prompt": "Horizontal scaling จะช่วยรับงานเมื่อเครื่องหนึ่งล่มได้เมื่อใด?",
       "options": [
         {
           "id": "a",
-          "text": "ใช่ ถ้ามีหลาย app"
+          "text": "เพิ่มเครื่องอย่างเดียวโดยผู้ใช้ยังต่อเครื่องที่ล่มโดยตรง"
         },
         {
           "id": "b",
-          "text": "ไม่ เพราะละเมิด business invariant"
+          "text": "มีเครื่องที่พร้อมและกำลังสำรอง พร้อม routing / health checks เช่น Load balancer"
         },
         {
           "id": "c",
-          "text": "ใช่ ถ้า latency ต่ำ"
+          "text": "เพิ่ม CPU ให้เครื่องที่ล่มโดยไม่ต้องมีเครื่องสำรอง"
         }
       ],
       "answer": "b"

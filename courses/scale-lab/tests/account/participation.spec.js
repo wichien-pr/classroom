@@ -117,8 +117,8 @@ test('invalid input never earns score',async({page})=>{
    return r.fulfill({json:{score:posts,csrf_token:'test'}});
  });
  await page.goto('/');await page.locator('[data-lesson="3"]').click();
- await page.locator('#key').fill('');await page.locator('#order').click();
- await expect(page.locator('#outcome')).toContainText('INVALID');
+ await page.locator('#scale-power').fill('0');await page.locator('#order').click();
+ await expect(page.locator('#outcome')).toContainText('กรุณากรอก');
  await page.waitForTimeout(100);expect(posts).toBe(0);
  await page.locator('[data-lesson="2"]').click();
  await page.locator('#web-size').fill('0');await page.locator('#estimate').click();
