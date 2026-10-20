@@ -1,0 +1,24 @@
+{% extends 'achievement-base.html' %}{% block title %}แก้ไขโปรไฟล์{% endblock %}{% block content %}
+<h1>แก้ไขโปรไฟล์</h1><p>ชื่อ ชื่อผู้ใช้ และประวัติจะแสดงเฉพาะสมาชิกที่เข้าสู่ระบบ</p>
+<section class="panel profile-editor">
+{% if error %}<p role="alert" tabindex="-1" autofocus>{{ error }}</p>{% endif %}
+<form method="post" action="/account/profile/edit">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<label for="display-name">ชื่อที่แสดง</label><input id="display-name" name="name" value="{{ values.name }}" required maxlength="80" autocomplete="name" aria-describedby="name-help"><small id="name-help">1–80 ตัวอักษร</small>
+<label for="username">ชื่อผู้ใช้</label><div class="username-input"><span aria-hidden="true">@</span><input id="username" name="username" value="{{ values.username }}" required minlength="3" maxlength="32" pattern="[A-Za-z0-9][A-Za-z0-9_\-]{2,31}" autocomplete="username" autocapitalize="none" spellcheck="false" aria-describedby="username-help"></div><small id="username-help">3–32 ตัว: a–z, 0–9, _ หรือ - ไม่ใส่ @ · แปลงเป็นตัวพิมพ์เล็ก · member-เลข สงวนให้เจ้าของบัญชี</small>
+<label for="bio">ประวัติสั้น ๆ</label><textarea id="bio" name="bio" rows="5" maxlength="500" aria-describedby="bio-help">{{ values.bio }}</textarea><small id="bio-help">ไม่เกิน 500 ตัวอักษร · ข้อความธรรมดา ไม่รองรับ HTML</small>
+<div class="editor-actions"><button>บันทึกโปรไฟล์</button><a class="button secondary" href="/account/profile">ยกเลิก</a></div>
+</form></section>
+<section class="panel profile-form"><h2>รูปโปรไฟล์</h2>
+{% if request.args.get('photo_saved') %}<p role="status">บันทึกรูปโปรไฟล์เรียบร้อยแล้ว</p>{% endif %}
+<form action="/account/profile" method="post" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<label for="photo">เลือกรูปโปรไฟล์</label><p id="photo-help">JPEG, PNG หรือ WebP ภาพนิ่ง ไม่เกิน 5 MiB (5,242,880 ไบต์) · ด้านละ 32–4096 พิกเซล รวมไม่เกิน 12 ล้านพิกเซล ระบบย่อไม่เกิน 256 × 256 และลบข้อมูลภาพส่วนตัว</p>
+<input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="photo-help preview-status" required>
+<img id="photo-preview" alt="ตัวอย่างรูปที่เลือก ยังไม่ได้บันทึก" hidden><p id="preview-status" role="status" aria-live="polite"></p><button>บันทึกรูปโปรไฟล์</button></form>
+{% if user.photo_ref %}<form action="/account/profile" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="remove"><button class="secondary">ลบรูปโปรไฟล์</button></form>{% endif %}
+</section><script>
+const input=document.querySelector('#photo'),preview=document.querySelector('#photo-preview'),status=document.querySelector('#preview-status');let url;
+input.addEventListener('change',()=>{if(url)URL.revokeObjectURL(url);preview.hidden=true;status.textContent='';input.setCustomValidity('');const file=input.files[0];if(!file)return;if(file.size>5242880){status.textContent='ไฟล์ใหญ่เกิน 5 MiB กรุณาเลือกใหม่';input.setCustomValidity(status.textContent);return;}if(!['image/jpeg','image/png','image/webp'].includes(file.type)){status.textContent='เลือกรูป JPEG, PNG หรือ WebP ภาพนิ่ง';input.setCustomValidity(status.textContent);return;}url=URL.createObjectURL(file);preview.onload=()=>{preview.hidden=false;status.textContent='ตัวอย่างเท่านั้น — กดบันทึกเพื่ออัปโหลด ระบบจะตรวจสอบภาพอีกครั้ง';};preview.onerror=()=>{status.textContent='ไม่สามารถแสดงตัวอย่างรูปภาพนี้ได้';preview.hidden=true;};preview.src=url;});
+window.addEventListener('pagehide',()=>{if(url)URL.revokeObjectURL(url)});
+</script>
+{% endblock %}

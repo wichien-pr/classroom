@@ -43,7 +43,7 @@ test-results/
 
 # Runtime data, accounts, uploaded media and backups
 instance/
-/backups/
+backups/
 artifacts/
 *.sqlite
 *.sqlite-*

@@ -1,0 +1,13 @@
+{% extends 'achievement-base.html' %}{% block title %}โปรไฟล์บัญชี{% endblock %}{% block content %}
+<h1>{% if own %}โปรไฟล์บัญชี{% else %}โปรไฟล์สมาชิก{% endif %}</h1><p>ข้อมูลโปรไฟล์มองเห็นได้เฉพาะสมาชิกที่เข้าสู่ระบบ</p>
+<div class="profile-layout">{% include 'profile-card.html' %}<div class="profile-side">
+{% include 'activity-calendar.html' %}
+<p class="activity-note">การใช้งานล่าสุดอิงการเปิดหน้าหรือทำรายการที่เข้าสู่ระบบ บันทึกไม่ถี่กว่า 1 นาที ไม่ใช่สถานะออนไลน์สด{% if own %} · การเปิดหน้านี้นับเป็นการใช้งานของคุณ{% endif %}</p>
+{% if own and request.args.get('saved') %}<p role="status">บันทึกโปรไฟล์เรียบร้อยแล้ว</p>{% endif %}</div></div>
+<script>
+// Advance relative labels from server time without polling or marking passive tabs active.
+const started=performance.now(),serverNow={{ server_now|tojson }};
+function refreshDates(){document.querySelectorAll('.last-active').forEach(el=>{const minutes=Math.max(0,Math.floor((serverNow+(performance.now()-started)/1000-Number(el.dataset.timestamp))/60));el.textContent=minutes<1?'ใช้งานอยู่ตอนนี้':minutes<60?`ใช้งาน ${minutes} นาทีที่แล้ว`:minutes<1440?`ใช้งาน ${Math.floor(minutes/60)} ชั่วโมงที่แล้ว`:`ใช้งาน ${Math.floor(minutes/1440)} วันที่แล้ว`;el.setAttribute('aria-label',`${el.textContent} · ${el.dateTime}`)});}
+document.querySelectorAll('.joined-date').forEach(el=>{el.textContent=new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(el.dateTime));});
+refreshDates();setInterval(refreshDates,30000);
+</script>{% endblock %}

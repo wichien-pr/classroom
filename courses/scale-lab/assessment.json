@@ -1,0 +1,485 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "id": "flow-1",
+      "lesson_id": "flow",
+      "prompt": "DNS มีหน้าที่หลักใดในเส้นทาง request?",
+      "options": [
+        {
+          "id": "a",
+          "text": "เก็บ order ถาวร"
+        },
+        {
+          "id": "b",
+          "text": "ค้นหาปลายทางของชื่อโดเมน"
+        },
+        {
+          "id": "c",
+          "text": "ตรวจ stock ก่อนสั่งซื้อ"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "flow-2",
+      "lesson_id": "flow",
+      "prompt": "Single-server setup ในบทนี้นำส่วนใดมาไว้ในเครื่องเดียวกัน?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Web app, Database และ Cache"
+        },
+        {
+          "id": "b",
+          "text": "DNS ภายนอกและโทรศัพท์ของผู้ใช้"
+        },
+        {
+          "id": "c",
+          "text": "เฉพาะ Database โดย Web app ต้องแยกเครื่องเสมอ"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "workload-3",
+      "lesson_id": "workload",
+      "prompt": "ก่อนตัดสินใจเพิ่ม capacity ควรวัดสิ่งใด?",
+      "options": [
+        {
+          "id": "a",
+          "text": "peak workload และ access pattern"
+        },
+        {
+          "id": "b",
+          "text": "จำนวนชื่อโดเมน"
+        },
+        {
+          "id": "c",
+          "text": "จำนวนบัญชีทั้งหมดอย่างเดียว"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "workload-4",
+      "lesson_id": "workload",
+      "prompt": "เพิ่ม app instances โดยคง pool ต่อเครื่องเดิมจะเกิดอะไร?",
+      "options": [
+        {
+          "id": "a",
+          "text": "งบ connection รวมเพิ่มขึ้น"
+        },
+        {
+          "id": "b",
+          "text": "DB ไม่มีข้อจำกัด connection อีก"
+        },
+        {
+          "id": "c",
+          "text": "จำนวน connection รวมลดเสมอ"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "stock-5",
+      "lesson_id": "stock",
+      "prompt": "การ retry ด้วย idempotency key เดิมควรให้ผลอย่างไร?",
+      "options": [
+        {
+          "id": "a",
+          "text": "คืน order เดิมเมื่อ payload ตรงกัน"
+        },
+        {
+          "id": "b",
+          "text": "สร้าง order ใหม่ทุกครั้ง"
+        },
+        {
+          "id": "c",
+          "text": "ข้ามการตรวจลูกค้า"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "stock-6",
+      "lesson_id": "stock",
+      "prompt": "การเพิ่ม throughput แต่ stock ติดลบถือว่าสำเร็จหรือไม่?",
+      "options": [
+        {
+          "id": "a",
+          "text": "ใช่ ถ้ามีหลาย app"
+        },
+        {
+          "id": "b",
+          "text": "ไม่ เพราะละเมิด business invariant"
+        },
+        {
+          "id": "c",
+          "text": "ใช่ ถ้า latency ต่ำ"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "balance-7",
+      "lesson_id": "balance",
+      "prompt": "เมื่อเพิ่ม load balancer ควรตรวจอะไรต่อ?",
+      "options": [
+        {
+          "id": "a",
+          "text": "เลิกตรวจ health ได้"
+        },
+        {
+          "id": "b",
+          "text": "ถือว่า request ที่ค้างอยู่ไม่มีวันล้ม"
+        },
+        {
+          "id": "c",
+          "text": "SPOF ของ LB DB และ dependencies"
+        }
+      ],
+      "answer": "c"
+    },
+    {
+      "id": "balance-8",
+      "lesson_id": "balance",
+      "prompt": "ก่อนหยุด backend ระหว่าง deploy ควรออกแบบอะไร?",
+      "options": [
+        {
+          "id": "a",
+          "text": "เพิ่ม DNS record อย่างเดียว"
+        },
+        {
+          "id": "b",
+          "text": "readiness timeout และ draining"
+        },
+        {
+          "id": "c",
+          "text": "ลบฐานข้อมูล"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "session-9",
+      "lesson_id": "session",
+      "prompt": "Stateless app หมายถึงอะไร?",
+      "options": [
+        {
+          "id": "a",
+          "text": "ทั้งระบบห้ามมีข้อมูล"
+        },
+        {
+          "id": "b",
+          "text": "ห้ามใช้ database"
+        },
+        {
+          "id": "c",
+          "text": "ไม่ฝาก state สำคัญไว้บน instance เดียว"
+        }
+      ],
+      "answer": "c"
+    },
+    {
+      "id": "session-10",
+      "lesson_id": "session",
+      "prompt": "cache ใน memory ของ stateless app ยอมรับได้เมื่อใด?",
+      "options": [
+        {
+          "id": "a",
+          "text": "เมื่อเป็นสำเนาเดียวของ order"
+        },
+        {
+          "id": "b",
+          "text": "เมื่อทิ้งและสร้างใหม่ได้อย่างถูกต้อง"
+        },
+        {
+          "id": "c",
+          "text": "เมื่อใช้แทน durable storage เสมอ"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "replica-11",
+      "lesson_id": "replica",
+      "prompt": "เพิ่งสร้าง order แล้วต้องอ่านให้เห็น write นั้นควรเลือกที่ใดในบทเรียน?",
+      "options": [
+        {
+          "id": "a",
+          "text": "CDN public cache"
+        },
+        {
+          "id": "b",
+          "text": "primary ที่รับ write สำเร็จ"
+        },
+        {
+          "id": "c",
+          "text": "async replica เสมอ"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "replica-12",
+      "lesson_id": "replica",
+      "prompt": "เหตุใด replication ไม่แทน backup?",
+      "options": [
+        {
+          "id": "a",
+          "text": "replica เก็บข้อมูลไม่ได้"
+        },
+        {
+          "id": "b",
+          "text": "การลบผิดอาจถูกส่งต่อไปสำเนา"
+        },
+        {
+          "id": "c",
+          "text": "replication ป้องกันความผิดพลาดมนุษย์ทั้งหมด"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "cache-13",
+      "lesson_id": "cache",
+      "prompt": "ใน cache-aside แหล่งข้อมูลจริงอยู่ที่ใด?",
+      "options": [
+        {
+          "id": "a",
+          "text": "database"
+        },
+        {
+          "id": "b",
+          "text": "cache ทุกตัวพร้อมกันเสมอ"
+        },
+        {
+          "id": "c",
+          "text": "browser localStorage"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "cache-14",
+      "lesson_id": "cache",
+      "prompt": "hit rate สูงยังต้องวัดอะไร?",
+      "options": [
+        {
+          "id": "a",
+          "text": "ไม่ต้องวัดเพิ่ม"
+        },
+        {
+          "id": "b",
+          "text": "stale data และ correctness"
+        },
+        {
+          "id": "c",
+          "text": "สีของ dashboard เท่านั้น"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "cdn-15",
+      "lesson_id": "cdn",
+      "prompt": "หน้า account ที่มีข้อมูลส่วนตัวควรหลีกเลี่ยงอะไร?",
+      "options": [
+        {
+          "id": "a",
+          "text": "public cache โดยไม่ออกแบบ scope"
+        },
+        {
+          "id": "b",
+          "text": "authorization"
+        },
+        {
+          "id": "c",
+          "text": "private/no-store policy"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "cdn-16",
+      "lesson_id": "cdn",
+      "prompt": "เหตุใดจึงใช้ content hash ในชื่อ static asset?",
+      "options": [
+        {
+          "id": "a",
+          "text": "ให้ URL เปลี่ยนตามเนื้อหาเพื่อกำหนด cache policy"
+        },
+        {
+          "id": "b",
+          "text": "ทำให้ไม่ต้องใช้ HTTPS"
+        },
+        {
+          "id": "c",
+          "text": "ทำให้ข้อมูลส่วนตัวเป็น public ได้"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "queue-17",
+      "lesson_id": "queue",
+      "prompt": "Queue รับ message แล้วแปลว่างานสำเร็จหรือไม่?",
+      "options": [
+        {
+          "id": "a",
+          "text": "ใช่ worker ไม่จำเป็น"
+        },
+        {
+          "id": "b",
+          "text": "ใช่ side effect เสร็จแน่นอน"
+        },
+        {
+          "id": "c",
+          "text": "ไม่ ต้องติดตาม processing และ ACK"
+        }
+      ],
+      "answer": "c"
+    },
+    {
+      "id": "queue-18",
+      "lesson_id": "queue",
+      "prompt": "Worker ตายหลัง side effect ก่อน ACK ต้องเตรียมอะไร?",
+      "options": [
+        {
+          "id": "a",
+          "text": "idempotency รองรับ redelivery"
+        },
+        {
+          "id": "b",
+          "text": "เพิ่ม worker แล้วไม่ต้อง dedup"
+        },
+        {
+          "id": "c",
+          "text": "ห้าม retry ทุกกรณี"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "observe-19",
+      "lesson_id": "observe",
+      "prompt": "CPU ปกติแต่ checkout ช้าควรทำอย่างไร?",
+      "options": [
+        {
+          "id": "a",
+          "text": "ตรวจ trace และ pool/lock wait"
+        },
+        {
+          "id": "b",
+          "text": "ลบ logs ทั้งหมด"
+        },
+        {
+          "id": "c",
+          "text": "เพิ่ม CPU โดยไม่ตรวจข้อมูล"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "observe-20",
+      "lesson_id": "observe",
+      "prompt": "Rollback app ทำให้ schema และข้อมูลย้อนเองหรือไม่?",
+      "options": [
+        {
+          "id": "a",
+          "text": "ไม่ ต้องวางแผน migration และ recovery"
+        },
+        {
+          "id": "b",
+          "text": "ใช่ทุก database"
+        },
+        {
+          "id": "c",
+          "text": "ใช่เมื่อมี load balancer"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "region-21",
+      "lesson_id": "region",
+      "prompt": "ก่อน promote writer อีก region ควรทำอะไร?",
+      "options": [
+        {
+          "id": "a",
+          "text": "fence writer เดิมและตรวจ replication"
+        },
+        {
+          "id": "b",
+          "text": "เปิด writer ทั้งสองทันที"
+        },
+        {
+          "id": "c",
+          "text": "เปลี่ยน DNS อย่างเดียวก็เพียงพอเสมอ"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "region-22",
+      "lesson_id": "region",
+      "prompt": "GeoDNS เปลี่ยนแล้ว client สลับทันทีหรือไม่?",
+      "options": [
+        {
+          "id": "a",
+          "text": "ใช่ไม่มีข้อยกเว้น"
+        },
+        {
+          "id": "b",
+          "text": "ไม่ เพราะ cache และ connection เดิม"
+        },
+        {
+          "id": "c",
+          "text": "ใช่ถ้าฐานข้อมูลเป็น relational"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "shard-23",
+      "lesson_id": "shard",
+      "prompt": "Sharding ต่างจาก replication อย่างไร?",
+      "options": [
+        {
+          "id": "a",
+          "text": "sharding แบ่งข้อมูล ส่วน replication ทำสำเนา"
+        },
+        {
+          "id": "b",
+          "text": "sharding คือ backup เท่านั้น"
+        },
+        {
+          "id": "c",
+          "text": "เหมือนกันทุกกรณี"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "shard-24",
+      "lesson_id": "shard",
+      "prompt": "เปลี่ยนจำนวน shard ในสูตร modulo แล้วต้องทำอะไรต่อ?",
+      "options": [
+        {
+          "id": "a",
+          "text": "ข้อมูลย้ายเองทั้งหมด"
+        },
+        {
+          "id": "b",
+          "text": "ลบข้อมูลเก่าทั้งหมดเสมอ"
+        },
+        {
+          "id": "c",
+          "text": "migration และจัดการ routing metadata"
+        }
+      ],
+      "answer": "c"
+    }
+  ]
+}

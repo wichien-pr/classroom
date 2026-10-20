@@ -1,0 +1,29 @@
+<section id="activity-calendar" aria-labelledby="activity-heading">
+<h2 id="activity-heading">Activity <span class="activity-subtitle">กิจกรรมการเรียนรู้</span></h2>
+<div class="activity-card">
+<p class="activity-summary">30 วันล่าสุด · ใช้งาน <strong>{{ activity.active30 }}</strong> วัน · เรียนรู้ <strong>{{ activity.learning30 }}</strong> วัน</p>
+<div class="activity-scroll" tabindex="0" aria-label="ปฏิทินกิจกรรม 53 สัปดาห์ เลื่อนแนวนอนเพื่อดูวันอื่น">
+<div class="activity-chart">
+<div class="activity-months" aria-hidden="true">{% for month in activity.months %}<span style="grid-column:{{ month.column }}">{{ month.label }}</span>{% endfor %}</div>
+<div class="activity-weekdays" aria-hidden="true"><span>จ.</span><span></span><span>พ.</span><span></span><span>ศ.</span><span></span><span>อา.</span></div>
+<div class="activity-days">
+{% for week in activity.weeks %}{% for day in week %}
+{% set description = 'ยังไม่ถึงวันนี้' if day.state == 'future' else 'ยังไม่ได้เริ่มเก็บข้อมูล ไม่ทราบกิจกรรม' if day.state == 'unknown' else ('วันนี้ยังไม่มีกิจกรรม' if day.date == activity.today else 'ไม่มีกิจกรรมที่บันทึก') if day.total == 0 else '%s กิจกรรม · เข้าสู่ระบบ %s · เปิดคอร์ส %s · เรียนจบ %s บท'|format(day.total, day.login, day.course_open, day.lesson_completed) %}
+<button type="button" class="activity-day level-{{ day.level }} {{ day.state }}" data-date="{{ day.date }}" data-description="{{ description }}" aria-label="{{ day.date }} · {{ description }}" aria-controls="activity-detail" aria-pressed="{{ 'true' if day.date == activity.today else 'false' }}" {% if day.state == 'future' %}disabled{% endif %}>{% if day.total %}<span class="activity-dot" aria-hidden="true">·</span>{% endif %}</button>
+{% endfor %}{% endfor %}
+</div></div></div>
+<div class="activity-legend"><span>น้อย</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>มาก</span></div>
+<p id="activity-detail" role="status" aria-live="polite">เลือกวันเพื่อดูรายละเอียดกิจกรรม</p>
+<details class="activity-help"><summary>นับอย่างไร</summary>
+<p>เข้าสู่ระบบสำเร็จ 1 ครั้งต่อวัน · เปิดคอร์ส 1 ครั้งต่อคอร์สต่อวัน · เรียนจบ 1 ครั้งต่อบทที่บันทึกใหม่ (กดซ้ำไม่นับเพิ่ม) วันเรียนรู้คือวันที่เปิดคอร์สหรือเรียนจบ ไม่รวมการเข้าสู่ระบบอย่างเดียว</p>
+<p>สีตามจำนวนกิจกรรมรวม: 0 / 1–2 / 3–4 / 5–7 / 8 ขึ้นไป จุดในช่องหมายถึงมีกิจกรรม เปิดคอร์สไม่ยืนยันว่าอ่านจบ และการทำเครื่องหมายเรียนจบไม่ใช่คะแนนสอบ</p>
+<p>ช่องลายคือยังไม่เริ่มเก็บข้อมูล ไม่ใช่วันที่ไม่ได้เรียน ช่องว่างท้ายปฏิทินคืออนาคต ไม่เก็บจากการเปิดโปรไฟล์ รูปภาพ หรือการโหลด API ไม่เติมประวัติย้อนหลัง</p>
+</details>
+<p class="activity-inception">เริ่มเก็บ {{ activity.started_at }} · Asia/Bangkok (UTC+07)<br>วันแรกเก็บเฉพาะหลังเวลาเริ่มระบบ</p>
+</div></section>
+<style>
+#activity-calendar{min-width:0;margin-bottom:24px}.activity-subtitle{font-size:13px;font-weight:400;color:#68736e;margin-left:8px}.activity-card{background:white;border:1px solid #e1e4e2;border-radius:16px;padding:22px;min-width:0}.activity-summary{font-size:13px;margin:0 0 22px;color:#56665e}.activity-summary strong{color:#234a37}.activity-scroll{max-width:100%;overflow-x:auto;padding:4px 3px 10px;scrollbar-width:thin}.activity-chart{display:grid;grid-template-columns:26px 1fr;grid-template-rows:24px 82px;min-width:668px;gap:6px}.activity-months{grid-column:2;display:grid;grid-template-columns:repeat(53,10px);gap:2px;font-size:11px;color:#737d77}.activity-months span{white-space:nowrap}.activity-weekdays{grid-row:2;display:grid;grid-template-rows:repeat(7,10px);gap:2px;font-size:10px;color:#737d77;line-height:10px}.activity-days{grid-column:2;grid-row:2;display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,10px);grid-template-columns:repeat(53,10px);gap:2px}.activity-day{border-radius:2px;border:1px solid #e5e9e5;width:10px;height:10px;min-height:0;padding:0;position:relative;color:#173e28}.activity-day[aria-pressed=true]{outline:2px solid #385348;outline-offset:1px;z-index:1}.activity-day:focus-visible{outline:3px solid #c58213;outline-offset:2px;z-index:2}.level-0{background:#edf0ed}.level-1{background:#cee5d4}.level-2{background:#9ecbad}.level-3{background:#65a87b}.level-4{background:#327b4c}.activity-day.unknown{background:repeating-linear-gradient(135deg,#fafbfa,#fafbfa 3px,#e8ece8 3px,#e8ece8 4px);border-color:#eef0ee}.activity-day.future{background:transparent;border-color:transparent;cursor:default;opacity:1}.activity-dot{display:block;font:bold 15px/8px system-ui}.activity-legend{display:flex;gap:4px;align-items:center;justify-content:flex-end;font-size:11px;color:#65746b;margin:9px 0 18px}.activity-legend i{width:11px;height:11px;border-radius:2px}.activity-legend span{margin:0 4px}#activity-detail{font-size:13px;min-height:52px;padding:12px;background:#f6f8f6;border-radius:8px;color:#354d3e;margin:0 0 14px}.activity-help{font-size:12px;color:#526159}.activity-help summary{cursor:pointer;min-height:32px}.activity-help p{color:inherit}.activity-inception{font-size:11px;overflow-wrap:anywhere;color:#738077;border-top:1px solid #edf0ed;padding-top:12px;margin:12px 0 0}@media(min-width:1100px){.profile-layout{grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:28px}}@media(max-width:760px){.activity-card{padding:16px}.activity-subtitle{display:block;margin:0}.activity-summary{line-height:1.9}}
+</style>
+<script>
+(()=>{const root=document.querySelector('#activity-calendar'),scroll=root.querySelector('.activity-scroll'),detail=root.querySelector('#activity-detail');function select(button){root.querySelectorAll('.activity-day').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));detail.textContent=button.dataset.date+' · '+button.dataset.description;}root.querySelectorAll('.activity-day').forEach(button=>button.addEventListener('click',()=>select(button)));const today=root.querySelector('[aria-pressed="true"]');select(today);scroll.scrollLeft=scroll.scrollWidth;})();
+</script>

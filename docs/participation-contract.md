@@ -1,0 +1,41 @@
+# Participation Score v2 — first participation per button
+
+Participation points are not grades or levels and do not write learning Activity. For courses explicitly opting into combined completion, persisted v2 awards also provide simulation/thinking evidence to qualify lessons for levels and exam eligibility. Each stable button earns one server-owned point only once per account/course/lesson/interaction. Repeated clicks, new UUIDs, concurrent devices, reset, reload and relogin earn zero. The two original choices are separate stable buttons regardless of their randomized visual A/B positions; correctness does not determine participation. This is self-reported participation, not anti-cheat grading.
+
+## User-approved fresh scoring era
+
+The user explicitly chose to restart Participation scores from zero for everyone while retaining old history and lesson progress. Startup creates empty `participation_awards_v2` and `participation_requests_v2` tables if absent. **No legacy backfill, deletion, regrading, or update occurs.** `participation_events` is retained as historical data and is no longer written or summed by this API. Old quiz rows did not record choices: do not invent A/B attribution. All v2 buttons start eligible, including those used under v1. This is a one-time transition, not a reset on every restart. Existing v2 awards always persist. Progress, accounts, Activity and achievements are untouched.
+
+## Generic opt-in and stable identity
+
+A valid enabled built course declares `lessons` and `participation` in `course.json`:
+```json
+{"lessons":["intro"],"participation":{"intro":{"demo":["run"],"check-your-thinking":["quiz-answer-a","quiz-answer-b"]}}}
+```
+Object keys are lesson → interaction → allowed actions; wire field remains `simulation_id`. IDs are stable lowercase hyphenated identifiers ≤80 characters. Manifest validation rejects unknown lessons, duplicate/empty actions and malformed definitions. Never rename/recycle existing IDs casually: new IDs create new scoring eligibility. Scale Lab has 18 simulation actions plus 24 quiz buttons across 12 lessons (42 awards maximum in the current curriculum). `quiz-answer-a` identifies original `answers[0]`; `quiz-answer-b` identifies original `answers[1]`. These durable identifiers are NOT visual A/B labels. Scale Lab randomizes the two choices once per lesson per page load (both permutations possible), before rendering; navigation and simulation reset preserve that order and selection. Display labels A/B follow position, while `data-answer`, correctness, selection, captured retries and award actions follow original choice identity. Reload may reorder choices but never creates new scoring eligibility. Source answer arrays and manifest IDs must not be reordered/renamed as a presentation change. Old ambiguous `quiz-answer` is no longer accepted by the Scale Lab manifest; refresh old open clients after deployment.
+
+## API and persistence
+
+Authenticated `GET /api/courses/<id>/participation` returns `{course_id,score,csrf_token}`. Score sums only this user's course rows in `participation_awards_v2`.
+
+POST same endpoint with JSON and session-bound `X-CSRF-Token`:
+```json
+{"lesson_id":"flow","simulation_id":"check-your-thinking","action":"quiz-answer-a","event_id":"00000000-0000-4000-8000-000000000001"}
+```
+Exact fields only, canonical lowercase UUID-v4, manifest-validated lesson/simulation/action. No client user ID, points, timestamp or correctness accepted. Same-origin/session/CSRF/Fetch Metadata protections and 16 KiB body limit remain. Unknown action/malformed payload 400; unavailable course 404; guest GET 401; CSRF failures 403.
+
+POST returns GET snapshot plus `awarded` (whether this request added a point) and `reason`: `awarded` or `already_counted`. Duplicate button and exact request retry are successful HTTP 200 with no new point, not errors. Reusing an accepted UUID with a different permitted payload returns 409, including UUIDs from zero-point submissions. Retry the same entire captured payload after transport failure. Idempotency is scoped to v2, user and course; legacy UUIDs are not imported.
+
+`BEGIN IMMEDIATE` serializes request lookup, **persisted semantic award lookup before writing**, rate check, award/receipt insert and score snapshot. `participation_awards_v2` primary key `(user_id,course_id,lesson_id,simulation_id,action)` enforces uniqueness even if API checking is bypassed. It also has unique `(user_id,course_id,event_id)` and points CHECK=1. `participation_requests_v2` stores immutable payload receipts under `(user_id,course_id,event_id)`, including zero-point requests. Rate limit is 60 new awards per member across courses per rolling 60 seconds, persistent across restarts; 429 includes Retry-After 60. Duplicates bypass award quota. Receipt growth/invalid traffic is not separately throttled; no general abuse prevention claim.
+
+## UI and exclusions
+
+Display only server-confirmed score, with explicit load/save/retry errors and successful “ปุ่มนี้นับคะแนนแล้ว · กดซ้ำไม่เพิ่มคะแนน” guidance. The server remains authoritative; no localStorage dedup or optimistic +1. During loading/save/retry, shared guards disable participation and quiz actions; integrated correct quizzes do not mark manual completion. After participation saves, the client refreshes server qualification through a serialized progress read; failures expose explicit retry. Captured UUID/lesson/action survive navigation for in-memory retries. Reload may discard an uncommitted pending operation. No offline queue or live cross-tab score push.
+
+Each actual simulation button may be used repeatedly for learning but awards once. Invalid input, exhausted flow/worker, navigation, reset, manual completion, page opening and help never award. Selection feedback survives navigation/reset in page memory, not reload. Standalone does not call participation APIs or claim account points. Community and existing hidden platform navigation remain unchanged.
+
+## Deployment and verification
+
+Not deployed by this worker. Operator must back up SQLite with its backup API and retain uploads, stop only identified Classroom process, build integrated course output (`python3 scripts/courses.py build` and `validate`), and restart backend against the same database. Backend, manifest and compiled client must deploy together; old clients need reload. Do not touch 8081. No dependency addition. Migration is additive and automatically starts the user-approved fresh v2 score while preserving historical rows. Rollback to old code would expose old scoring semantics and must not be presented as v2.
+
+QA uses `scripts/participation-qa-server.py --port 8116 --info evidence/participation-v2/participation-qa-server.json` and `PARTICIPATION_QA_EVIDENCE=evidence/participation-v2/ node scripts/participation-browser-verify.mjs`, then launcher `--resume` and browser `--restart`. QA builds isolated dist and databases; do not publish evidence/session files. Prior v1 verification documents are historical and superseded by this contract.

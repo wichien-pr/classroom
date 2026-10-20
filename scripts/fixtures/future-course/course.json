@@ -1,0 +1,14 @@
+{
+  "id": "future-course",
+  "title": "Future Course QA",
+  "subtitle": "GENERIC CONTRACT",
+  "enabled": true,
+  "order": 2,
+  "delivery": "static",
+  "build_dir": "dist",
+  "entry": "index.html",
+  "lessons": [
+    "intro",
+    "practice"
+  ]
+}

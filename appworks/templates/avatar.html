@@ -1,0 +1,3 @@
+{% macro avatar(person, large=false) -%}
+<span class="profile-avatar{% if large %} large{% endif %}"><span class="avatar-initials" aria-label="อักษรย่อ {{ person.name }}">{{ person.name.strip()[:2]|upper }}</span>{% if person.photo_ref %}<img src="/account/photos/{{ person.id }}" alt="รูปโปรไฟล์ {{ person.name }}" width="44" height="44" onerror="this.hidden=true">{% endif %}</span>
+{%- endmacro %}
