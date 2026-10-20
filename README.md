@@ -1,0 +1,138 @@
+# Classroom — Modular courses
+
+## ยืนยันอีเมลตอนสมัครสมาชิก
+
+บัญชีใหม่ต้องกรอกรหัสยืนยัน 6 หลักที่ส่งทางอีเมลก่อนสร้างบัญชีและเข้าสู่ระบบ รหัสมีอายุ 10 นาที ผิดได้ไม่เกิน 5 ครั้ง ส่งใหม่ทุก 60 วินาที (รวมไม่เกิน 3 ครั้ง) พร้อมจำกัดอีเมล/IP ถาวรในฐานข้อมูล ใช้ Microsoft Graph/SMTP ที่ตั้งไว้แล้ว หากส่งไม่สำเร็จจะไม่ข้ามการยืนยัน บัญชีเดิมยังใช้ได้และไม่เติมวันที่ยืนยันย้อนหลัง ดู [contract/config/rollout](docs/registration-contract.md) และ [ผลตรวจจริง](docs/registration-verification.md) **ยังไม่ deploy หรือส่งอีเมลผ่าน provider จริง**
+
+## ลืมรหัสผ่านทางอีเมล
+
+หน้าเข้าสู่ระบบมี **ลืมรหัสผ่าน?** → ขออีเมล → ตั้งรหัสผ่านใหม่และเข้าสู่ระบบอีกครั้ง ลิงก์หมดอายุใน 30 นาที ใช้ได้ครั้งเดียว และยกเลิก session เดิมทั้งหมดของบัญชีเมื่อสำเร็จ โดยไม่ลบข้อมูลการเรียนรู้ ระบบส่งข้อความตอบกลับแบบไม่เปิดเผยว่ามีบัญชีหรือไม่
+
+**เพิ่ม Microsoft Graph app-only แล้ว แต่ยังไม่ deploy/ส่ง reset email จริงในงานนี้**: เลือก `APPWORKS_RESET_TRANSPORT=graph`, ใช้ OUTLOOK credentials ที่ provision ไว้ และกำหนด canonical origin ก่อนเปิดส่ง ระบบ `service:create_app` โหลด `appworks/.env` แบบ private โดย process environment มีลำดับสูงกว่า ส่วน `app:create_app` สำหรับ QA ไม่โหลดไฟล์นี้ ดู [contract/config/backup](docs/password-reset-contract.md), [ผล Graph TDD/browser และ deployment handoff](docs/password-reset-graph-verification.md), และ `appworks/.env.password-reset.example`. Graph QA ใช้ 8119 กับ DB/compiled assets/HTTP double แยก ไม่แตะ production 8080/8081 หรือ dist เดิม
+
+## Community ใช้งานจริง
+
+เปิด **Community** ในเมนูหรือ `/community` หลังเข้าสู่ระบบ: เขียน/แก้ไข/ลบโพสต์ของตนเอง เลือกหมวดหมู่ ค้นหา เรียงโพสต์ใหม่หรือบทสนทนาล่าสุด กดถูกใจ/เลิกถูกใจ และเพิ่ม/แก้ไข/ลบความคิดเห็น มีการแบ่งหน้า ชื่อผู้ใช้ รูปโปรไฟล์และระดับจริงจากคลาส พร้อมจำนวนสมาชิกจริงและลิงก์ Leaderboards ไม่สร้างโพสต์/สมาชิก/สถิติตัวอย่างในฐานข้อมูลจริง
+
+รองรับข้อความธรรมดา (หัวข้อ 160 / เนื้อหา 2,000 / ความคิดเห็น 1,000 ตัวอักษร) พร้อม **composer แบบ dialog**: แนบ JPEG/PNG/WebP ภาพนิ่ง, GIF ของคุณเอง, PDF/TXT สูงสุด 4 ไฟล์ ไฟล์ละ 5 MiB รวม 20 MiB; ลิงก์ http/https, ลิงก์วิดีโอ YouTube/Vimeo (เปิดภายนอกเมื่อคลิก ไม่มี embed/การดึง preview), อีโมจิ Unicode และโพล 2–6 ตัวเลือกหนึ่งเสียงต่อสมาชิก เปลี่ยนเสียงได้ แต่แก้โครงสร้างโพลหลังมีโหวตไม่ได้ มี preview/นำไฟล์ออก/ยกเลิกร่าง/validation และฟอร์ม fallback เมื่อปิด JS ไม่ใช้บริการ GIF ภายนอก เอกสารดาวน์โหลดเท่านั้นและไม่ได้สแกนไวรัส
+
+โพสต์ได้ 5 ครั้ง/10 นาที ความคิดเห็นและการโหวต/เปลี่ยนโหวต 15 ครั้ง/10 นาที มี CSRF/Origin/ownership และการยืนยันก่อนลบ การใช้งาน Community **ไม่เพิ่มระดับหรือกิจกรรมการเรียนรู้** ไม่มีอีเมลแจ้งเตือน ผู้ดูแลปักหมุด/ลบได้เฉพาะเมื่อ operator กำหนด `COMMUNITY_MODERATOR_IDS` (default ว่าง)
+
+ไม่มี dependency ใหม่ (ใช้ Pillow 12.3.0 ที่ pin อยู่แล้ว) Migration additive เพิ่มคอลัมน์ link/video/nonce และตาราง attachments/polls/votes ไม่แก้บัญชี/วันสมัคร/progress เดิม ไฟล์เก็บส่วนตัวที่ `<database-directory>/community-uploads` หรือ `APPWORKS_COMMUNITY_UPLOAD_DIR` (**ห้ามเปิดเป็น static directory**) ให้เจ้าของ process **backup SQLite พร้อมโฟลเดอร์ไฟล์ แล้ว restart production 8080** ไม่ต้อง rebuild คอร์ส ดู [contract](docs/community-contract.md) และ [ผล composer QA](docs/community-composer-verification.md)
+
+QA composer: `appworks/.venv/bin/python scripts/composer-qa-server.py` บน **8101** แยก DB/รูป/ไฟล์ แล้ว `node scripts/composer-browser-verify.mjs`; หลังหยุดเฉพาะ QA แล้วเริ่ม `--resume` ใช้ `node scripts/composer-restart-verify.mjs` ตรวจ persistence. Community regressions เดิมใช้ `scripts/community-qa-server.py` บน 8100 และ `scripts/community-browser-verify.mjs`
+
+
+## Activity ปฏิทินการใช้งานจริง
+
+ด้านขวาของการ์ด `/account/profile` และ `/members/<id>` มีปฏิทิน 53 สัปดาห์ (มือถืออยู่ใต้การ์ด) กดวันที่เพื่อดูจำนวน **เข้าสู่ระบบ / เปิดคอร์ส / เรียนจบ** แยกกัน วันเรียนรู้ไม่นับการ login อย่างเดียว สีเขียวตามจำนวนกิจกรรม มีคำอธิบาย “นับอย่างไร” และข้อมูลก่อนเริ่มเก็บเป็นช่องลาย **ไม่เติมประวัติย้อนหลัง**
+
+บันทึก SQLite จากเซิร์ฟเวอร์: login สำเร็จวันละครั้ง, เปิดคอร์สต่อคอร์สวันละครั้ง, เรียนจบเฉพาะ progress ที่เพิ่มใหม่ กดซ้ำ/โหลดใหม่/โหลดรูปหรือ API ไม่เพิ่มจำนวน วันที่อิง Asia/Bangkok (UTC+07) ไม่ใช้วันที่หรือ user ID ที่ browser ส่งมา ไม่เก็บ IP/URL/user agent ใน activity และไม่เผยรหัสคอร์ส/บทหรืออีเมลในปฏิทิน การเปิดคอร์สไม่ใช่หลักฐานว่าอ่านจบ และการเรียนจบไม่ใช่คะแนนสอบ
+
+Migration additive เพิ่ม `activity_tracking` (เวลาเริ่มเก็บถาวร) และ `activity_events` (unique member/day/type/subject) ไม่แก้ `joined_at` หรือข้อมูลเดิม เจ้าของ server ต้อง backup แล้ว restart 8080 เพื่อเริ่มเก็บจริง ส่วน QA ใช้ 8099/DB/รูป/คอร์สแยกทั้งหมด ดู [activity contract](docs/activity-contract.md) และ [ผลตรวจจริง](evidence/activity-verification.md)
+
+
+## การ์ดโปรไฟล์และแก้ไขข้อมูล
+
+เปิด `/account/profile` เพื่อดูรูป วงแหวน Level จริง ชื่อ `@username` ประวัติ วันที่สมัคร และการใช้งานล่าสุด กด **แก้ไขโปรไฟล์** เพื่อแก้ชื่อ (1–80 ตัว), username (3–32 ตัว a–z/0–9/_/- ไม่ใส่ @) และประวัติข้อความธรรมดา (ไม่เกิน 500 ตัว) ชื่อผู้ใช้ไม่ซ้ำและแปลงเป็นตัวพิมพ์เล็ก ลิงก์ชื่อใน Leaderboards เปิด `/members/<id>` ได้เฉพาะสมาชิกที่เข้าสู่ระบบ ไม่เปิดอีเมลหรือปุ่มแก้ไขของคนอื่น ไม่มี followers/following หรือสถิติแต่งขึ้น
+
+วงแหวนคำนวณจำนวน **คอร์สทั้งคอร์ส** ภายในช่วงระดับปัจจุบัน ไม่ใช่คะแนน: L1 เริ่ม 0/1; L8 แสดงรอสอบ ≥95%; L9 เต็มพร้อมข้อความยินดี การใช้งานล่าสุดบันทึกจากคำขอที่ยืนยันตัวตนสำเร็จไม่ถี่กว่า 1 นาที ไม่ใช่สถานะออนไลน์สดและไม่อัปเดตเพราะโหลดรูป เปิดหน้าของตนเองแสดงใช้งานตอนนี้
+
+Migration เพิ่ม `username`, `bio`, `joined_at`, `last_active_at` และ unique index/trigger แบบ additive บัญชีเก่าใช้ `member-<id>` ซึ่งไม่เปิดเผยชื่อหรืออีเมล **วันที่สมัครเดิมที่ไม่เคยเก็บยังเป็น NULL** และแสดง “ไม่ทราบวันที่สมัคร” ไม่ใส่วันที่ migration แทน วันที่สมัครใหม่ใช้เวลา UTC ของเซิร์ฟเวอร์ ไม่มี dependency ใหม่ในงานการ์ดนี้ ต้องสำรอง SQLite/รูปก่อนให้เจ้าของ process restart 8080 เพื่อโหลด backend และ template รุ่นเดียวกัน
+
+QA แยก DB/รูป/คอร์สสังเคราะห์: `appworks/.venv/bin/python scripts/profile-card-qa-server.py` (8097) แล้ว `node scripts/profile-card-browser-verify.mjs` ดู [contract](docs/profiles-contract.md) และ [ผลตรวจการ์ด](docs/profile-card-verification.md)
+
+## รูปโปรไฟล์บัญชี
+
+กดรูป/ชื่อที่ header เพื่อเปิด `/account/profile` แล้วกด **แก้ไขโปรไฟล์** เพื่อเลือกภาพ ดูตัวอย่าง แล้วบันทึกหรือลบภาพใน `/account/profile/edit` (หน้าดูโปรไฟล์ไม่มีปุ่มอัปโหลด/ลบ) รูปแสดงใน Classroom, โปรไฟล์ และ Leaderboards สำหรับสมาชิกที่เข้าสู่ระบบเท่านั้น รองรับ JPEG/PNG/WebP ภาพนิ่งไม่เกิน 5 MiB ด้านละ 32–4096 px รวมไม่เกิน 12 ล้านพิกเซล ระบบย่อเป็น JPEG ไม่เกิน 256 × 256 และลบ metadata; ไม่มีรูปใช้ตัวอักษรย่อ
+
+ติดตั้ง dependency ใหม่ก่อน restart: `cd appworks && .venv/bin/pip install -r requirements.txt` (Pillow 12.3.0) Migration เพิ่ม `users.photo_ref` โดยไม่ reset ข้อมูล รูปเก็บใน `appworks/instance/profile-photos` หรือ `APPWORKS_PROFILE_UPLOAD_DIR`; สำรอง DB และรูปคู่กัน ดู [profile contract](docs/profiles-contract.md) และ [verification](docs/profiles-verification.md). QA ใช้ `scripts/profile-qa-server.py` และ `scripts/profile-browser-verify.mjs` บน 8096 แยก DB และรูปทั้งหมด เจ้าของ process ต้องสำรอง DB แล้ว restart production 8080 เองเพื่อโหลด backend ใหม่
+
+
+โครงสร้าง: `appworks/` ดูแลบัญชี/session/SQLite และ catalog; `courses/<id>/` เป็นแอปคอร์สอิสระ; `scripts/` สำหรับ build/validate; `docs/course-contract.md` คือสัญญาการเชื่อมต่อ
+
+## เริ่มใช้งาน / local deployment
+
+```sh
+cd /Users/prommeesee/Documents/04_Learning/classroom
+cd courses/scale-lab && npm ci && cd ../..
+python3 scripts/courses.py build
+python3 scripts/courses.py validate
+cd appworks
+# เฉพาะติดตั้งครั้งแรก: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+umask 077
+.venv/bin/waitress-serve --listen=127.0.0.1:8080 --call app:create_app
+```
+
+เปิด http://127.0.0.1:8080/ สมัคร/เข้าสู่ระบบแล้วเปิด Scale Lab ที่ `/courses/scale-lab/` ไม่ต้องเริ่ม Vite อีกตัว ทุก asset ต้องผ่าน session ด้วย ฐานข้อมูลเดิม `appworks/instance/classroom.sqlite3` ไม่ย้าย/ไม่ reset ห้ามใช้ static server เสิร์ฟ classroom ทั้งโฟลเดอร์ และอย่าแตะพอร์ต 8081 ของแอปอื่น
+
+## เพิ่ม / ปิด / ลบคอร์ส
+
+1. สร้าง `courses/<id>/` ให้มีซอร์ส, package.json และ npm build ของตนเอง; ห้าม import platform หรือคอร์สอื่น
+2. คัดลอก `course.json` ของ Scale Lab เปลี่ยน id ให้ตรงชื่อโฟลเดอร์ (lowercase, digits, hyphen) พร้อม title/subtitle/order
+3. ติดตั้ง dependencies ในคอร์สนั้น แล้วรัน build/validate ด้านบน ไม่ต้องแก้ Flask หรือ catalog template
+4. ปิดโดยตั้ง `enabled: false` ใน JSON: หายจาก catalog และ direct URLs เป็น 404 สำหรับผู้เข้าสู่ระบบทันที ไม่ต้อง restart
+5. ลบโดยสำรองแล้วนำโฟลเดอร์คอร์สออกจาก `courses/` ไม่ต้องลบ user DB
+
+Manifest ผิดหรือยังไม่มี build จะถูกซ่อน (fail closed); validate command รายงานข้อผิดพลาดและ exit 1 ตรวจด้วยคำสั่งนี้ก่อน deploy เสมอ
+
+## Standalone development
+
+```sh
+cd courses/scale-lab
+npm run dev -- --port 5173
+npm test
+npm run test:e2e
+npm run build
+npm run preview
+```
+
+Standalone ไม่มี auth ของ platform และไม่มีปุ่มกลับ Classroom โดย default การ build standalone จะเขียนทับ dist เป็น base `/` ดังนั้นก่อนเปิดผ่าน Flask ต้องรัน `python3 scripts/courses.py build` อีกครั้ง (ตั้ง base `/courses/scale-lab/` และ optional `VITE_CLASSROOM_URL=/` ให้เอง)
+
+## ทดสอบและหลักฐาน
+
+```sh
+cd appworks && .venv/bin/python -m pytest -q && cd ..
+cd courses/scale-lab && npm test && npm run test:e2e && cd ../..
+python3 scripts/courses.py build
+```
+
+Browser integration ใช้ DB และ courses root แยก ไม่หยุดแอปจริงบน 8080 และไม่แตะ 8081:
+
+```sh
+# จาก classroom root หลัง integrated build:
+appworks/.venv/bin/python scripts/progress-qa-server.py --port 8093
+# อีก terminal จาก classroom root:
+node scripts/browser-verify.mjs
+node scripts/progress-browser-verify.mjs
+# เปลี่ยนปลายทางได้ด้วย CLASSROOM_QA_URL=http://127.0.0.1:<QA-port>
+```
+
+ติดตั้ง browser ถ้าจำเป็น: `cd courses/scale-lab && PLAYWRIGHT_BROWSERS_PATH=.browsers npx playwright install chromium`
+ผลอยู่ `evidence/platform-browser.json` และ `evidence/account-progress-browser.json`, ภาพอยู่โฟลเดอร์เดียวกัน `evidence/progress-qa-server.json` ระบุ DB ทดสอบที่สร้างใหม่ Test สมัครบัญชีใน DB ทดสอบเท่านั้น เมื่อเสร็จหยุดเฉพาะ QA server แล้วให้เจ้าของ process จริง restart แอป 8080 เพื่อโหลด Python ใหม่ (สร้างตาราง progress โดยไม่ reset บัญชีเดิม)
+
+## ความคืบหน้า / ขอบเขต
+
+Classroom บันทึกความคืบหน้าตามบัญชี/คอร์ส/รหัสบทเรียนใน SQLite แล้ว Scale Lab โหลดผลจากบัญชีเมื่อเข้าและบันทึกเมื่อกด “ทำเครื่องหมายว่าเรียนจบ” หลังเรียน พร้อมทดลองหลักและตอบ Check your thinking A หรือ B อย่างน้อยหนึ่งครั้งต่อบท (ไม่ต้องถูก) ครบทั้งสามเงื่อนไขจึงนับบทสำหรับ Level; การตอบถูกไม่ใช่การกดเรียนจบ ปุ่มใต้หัวข้อบทจะแสดง “✓ เรียนจบแล้ว” ตามบทที่เลือก โดยไม่อ้างว่าผ่านแบบทดสอบจากการกดเรียนจบ มีสถานะกำลังโหลด/บันทึกและข้อผิดพลาด ไม่แอบนำ localStorage เดิมเข้าบัญชี คอร์สใหม่เพิ่ม `lessons` (stable IDs) ใน manifest แล้วใช้ generic GET/POST `/api/courses/<id>/progress` ได้ทันที ดู schema, CSRF และตัวอย่าง adapter ใน `docs/course-contract.md`
+
+จำนวนบทเรียนอิง manifest ปัจจุบัน คอร์สที่ไม่ประกาศ `lessons` ยังเปิดได้แต่ไม่ติดตาม ผลเป็นการเรียนรู้ที่ client รายงาน ไม่ใช่ระบบสอบกันโกง Standalone ยังใช้ localStorage เฉพาะเบราว์เซอร์ ไม่มีการ sync ข้ามบัญชี ส่วน platform ไม่ fallback ไป localStorage เมื่อ API ล้มเหลว
+คอร์สเป็น trusted first-party JS บน origin เดียวกัน ไม่ใช่ sandbox สำหรับโค้ดภายนอก ต้อง review ก่อนเพิ่ม ข้อจำกัด auth/deployment ดู `appworks/README.md`.
+
+## Leaderboards / 9 ระดับ / ข้อสอบปลายทาง
+
+เปิด `/leaderboards` หลังเข้าสู่ระบบ แสดงเฉพาะสมาชิกจริง (ชื่อ ไม่แสดงอีเมล) เรียงระดับ → จำนวนคอร์สที่จบ → รหัสสมาชิกก่อนเมื่อเสมอ ไม่แสดงคะแนนหรืออันดับรายสัปดาห์ที่ไม่ได้เก็บจริง
+
+- L1 สมัครสมาชิก; L2/L3/L4/L5/L6/L7/L8 จบอย่างน้อย **1/3/5/7/9/11/13 CLASS** ตามลำดับ
+- **CLASS = คอร์สทั้งคอร์สที่ครบทุกบทใน manifest ปัจจุบัน** ไม่ใช่หนึ่งบท; นับเฉพาะ enabled/valid/built courses ที่ประกาศ lessons
+- L9 ต้องถึง L8 ก่อน แล้วผ่านข้อสอบที่ server ตรวจได้อย่างน้อย 95% (เทียบจำนวนเต็ม ไม่ปัดเพื่อเลื่อนระดับ)
+- เมื่อบันทึก progress จนถึง L8 ระบบพยายามสร้างชุดข้อสอบอัตโนมัติ; ผู้ที่มี progress เดิมเปิด `/exam` เพื่อสร้างได้เช่นกัน ชุดสุ่มจาก `assessment.json` ของ **ทุกคอร์สที่จบ ณ เวลาสร้าง** หนึ่งข้อต่อบท ไม่ใช่ LLM แต่งคำถามใหม่ และไม่ต้องมี API key
+- คลังข้อสอบขาด/ผิดจะแสดงรายชื่อคอร์สให้ผู้ดูแลแก้ ไม่ละเว้นคอร์สและไม่ทำให้ progress สูญหาย คอร์สใหม่ต้องมี private bank ตาม contract
+- ชุด active ถูกเก็บถาวร โหลดใหม่ไม่สุ่มใหม่; คำตอบก่อนส่งยังไม่บันทึก ส่งแล้วแก้ไม่ได้ สอบไม่ผ่านเริ่มชุดใหม่ได้ทันที; ผ่านแล้ว L9 คงอยู่แม้เปลี่ยนหลักสูตร
+- ปัจจุบันมี Scale Lab จริงเพียง 1 คอร์ส จึงยังไม่มีทางถึง L8 จากหลักสูตรจริงจนเพิ่มคอร์สครบ ไม่ใส่คอร์ส/สมาชิก QA ใน production
+
+Migration เป็น additive `exam_attempts`, unique active-attempt index และ `level_achievements` ไม่ reset users/sessions/progress สำรอง SQLite ก่อนให้เจ้าของ process restart 8080 ระบบสอบนี้ตรวจคะแนน server-side แต่ไม่ใช่ proctored exam และการเรียนจบยังเป็น client-reported progress
+
+QA แยกทั้งหมด: `appworks/.venv/bin/python scripts/leaderboards-qa-server.py` (8095), อีก terminal `node scripts/leaderboards-browser-verify.mjs` ดูหลักฐาน `evidence/leaderboards-browser.json`, `leaderboards-*.png`, `exam-*.png` และ `docs/leaderboards-verification.md` อย่าใช้ฐานข้อมูล QA เป็น production
+
+# classroom
+
