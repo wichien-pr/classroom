@@ -124,19 +124,19 @@
     {
       "id": "balance-7",
       "lesson_id": "balance",
-      "prompt": "เมื่อเพิ่ม load balancer ควรตรวจอะไรต่อ?",
+      "prompt": "หลัง DNS คืน public IP ของ Load balancer เส้นทาง HTTP ในสถาปัตยกรรมนี้คืออะไร?",
       "options": [
         {
           "id": "a",
-          "text": "เลิกตรวจ health ได้"
+          "text": "Client ส่ง HTTP ผ่าน DNS ไป server ทุกครั้ง"
         },
         {
           "id": "b",
-          "text": "ถือว่า request ที่ค้างอยู่ไม่มีวันล้ม"
+          "text": "Client ติดต่อ private IP ของ web server ตรงจาก Internet"
         },
         {
           "id": "c",
-          "text": "SPOF ของ LB DB และ dependencies"
+          "text": "Client ติดต่อ LB แล้ว LB ส่งไป server ที่พร้อมผ่าน private IP"
         }
       ],
       "answer": "c"
@@ -144,19 +144,19 @@
     {
       "id": "balance-8",
       "lesson_id": "balance",
-      "prompt": "ก่อนหยุด backend ระหว่าง deploy ควรออกแบบอะไร?",
+      "prompt": "เมื่อ Server 1 ล่มและต้องเพิ่มเครื่องรับโหลด ควรทำอย่างไร?",
       "options": [
         {
           "id": "a",
-          "text": "เพิ่ม DNS record อย่างเดียว"
+          "text": "รอ LB สร้างเครื่องและทำ database replication ให้โดยอัตโนมัติ"
         },
         {
           "id": "b",
-          "text": "readiness timeout และ draining"
+          "text": "ให้ LB ที่พร้อมส่งคำขอใหม่ไป Server 2 ที่มีกำลังพอ และลงทะเบียนเครื่องใหม่ผ่าน health check ก่อนรับงาน"
         },
         {
           "id": "c",
-          "text": "ลบฐานข้อมูล"
+          "text": "ส่ง request ไปเครื่องที่ล่มต่อ เพราะมี private IP แล้วจึงไม่ล่ม"
         }
       ],
       "answer": "b"
