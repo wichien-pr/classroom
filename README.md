@@ -1,5 +1,13 @@
 # Classroom — Modular courses
 
+## LAB07 CDN — deploy ในเครื่องแล้ว
+
+LAB07 สอนการส่งไฟล์ static ผ่าน CDN พร้อมภาพเส้นทาง HIT/MISS, การแยก CDN จาก cache ข้อมูล และตัวทดลอง TTL, รูปเก่า, invalidation, URL รุ่นใหม่ และทางสำรองเมื่อ CDN ล่ม ใช้ภาษาไทยและไม่แสดงชื่อไฟล์หรือหน้าอ้างอิงในบทเรียน
+
+คง **11 Labs / 38 durable action definitions** และ stable ID `cdn` / `decision` เดิม การตั้งสถานการณ์และรีเซ็ตไม่เพิ่มคะแนน ไม่แก้ manifest, backend, ฐานข้อมูลหรือประวัติสอบ บัญชียังคงต้องทำ manual + simulation + thinking; ประวัติ CDN เดิมไม่ถูกล้าง
+
+ตรวจผ่าน Node **55**, backend **398**, browser **37**, account browser **15** และ compiled standalone/บัญชี OTP บน QA 8128 แยกต่างหาก รวมการเริ่ม process ใหม่บน DB เดิม ตรวจ 320/390/1440px และปิด QA แล้ว จากนั้น deploy ตามอนุมัติที่ http://127.0.0.1:8080/ โดยสำรอง DB/uploads/dist และตรวจไฟล์เผยแพร่ตรงกับ QA build ทุกไฟล์ ข้อมูลเดิมคงอยู่และไม่แตะพอร์ต 8081 ดู [source map, commands, hashes และผลตรวจ LAB07](docs/lab07-verification.md). รายงาน LAB06 ด้านล่างเป็นประวัติรุ่นก่อน
+
 ## LAB06 Cache — แทน Session (deploy ในเครื่องแล้ว)
 
 หลักสูตรปัจจุบันมี **11 Labs**: flow → workload → stock → balance → replica → **cache** → cdn → queue → observe → region → shard. นำ Session ออกจากบทเรียนและ assessment ที่ใช้งาน ไม่สลับหรือเปลี่ยนประวัติ Session ให้เป็น Cache; Cache ใช้ stable ID และปุ่มคะแนนเดิม รวมหลักสูตรมี **38 durable button definitions** (16 simulation + 22 thinking) ไม่ใช่ 39 คะแนนประวัติ Session ยังคงอยู่ จึงไม่ควรถือ 38 เป็นเพดานคะแนนเก่าของบัญชี

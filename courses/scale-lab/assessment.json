@@ -244,19 +244,19 @@
     {
       "id": "cdn-15",
       "lesson_id": "cdn",
-      "prompt": "หน้า account ที่มีข้อมูลส่วนตัวควรหลีกเลี่ยงอะไร?",
+      "prompt": "เมื่อ CDN มีรูปที่ TTL ยังไม่หมด แต่ origin เปลี่ยนรูปแล้ว ข้อใดถูกต้อง?",
       "options": [
         {
           "id": "a",
-          "text": "public cache โดยไม่ออกแบบ scope"
+          "text": "CDN อาจตอบรูปเก่าจนหมดอายุหรือมีการลบสำเนา"
         },
         {
           "id": "b",
-          "text": "authorization"
+          "text": "CDN จะโหลดรูปใหม่ทุกครั้งที่ origin เปลี่ยน"
         },
         {
           "id": "c",
-          "text": "private/no-store policy"
+          "text": "TTL รับประกันว่ารูปตรงกับ origin เสมอ"
         }
       ],
       "answer": "a"
@@ -264,19 +264,19 @@
     {
       "id": "cdn-16",
       "lesson_id": "cdn",
-      "prompt": "เหตุใดจึงใช้ content hash ในชื่อ static asset?",
+      "prompt": "เปลี่ยน URL เป็น image.png?v=2 ต้องตรวจอะไรเพื่อให้ query แยกสำเนาจาก URL เดิม?",
       "options": [
         {
           "id": "a",
-          "text": "ให้ URL เปลี่ยนตามเนื้อหาเพื่อกำหนด cache policy"
+          "text": "CDN รวม query string นี้ใน cache key และหน้าเว็บใช้ URL ใหม่"
         },
         {
           "id": "b",
-          "text": "ทำให้ไม่ต้องใช้ HTTPS"
+          "text": "การเปลี่ยน query ลบสำเนาเก่าทั่วโลกทันที"
         },
         {
           "id": "c",
-          "text": "ทำให้ข้อมูลส่วนตัวเป็น public ได้"
+          "text": "URL ใหม่ทำให้ไม่ต้องมี origin อีก"
         }
       ],
       "answer": "a"
