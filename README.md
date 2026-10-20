@@ -1,5 +1,9 @@
 # Classroom — Modular courses
 
+## LAB05 Database replication / LAB06 Session
+
+Replication ย้ายเป็น LAB05 และ Session เป็น LAB06 โดยคง stable IDs และคะแนน/ประวัติเดิม เพิ่มเนื้อหาและภาพวาดใหม่จาก `Database-Replication.pdf` พร้อมทดลอง lag, read fallback และ guarded promotion แยกข้อจำกัดจากต้นฉบับชัดเจน Standalone ย้ายความคืบหน้าจากลำดับเก่าไป stable IDs อย่างปลอดภัย ดู [source map และผล QA](docs/lab05-verification.md). deploy ในเครื่องแล้วที่ http://127.0.0.1:8080/ พร้อม backup และตรวจ preservation ตาม verification; PDF ไม่อยู่ใน public/dist.
+
 ## ยืนยันอีเมลตอนสมัครสมาชิก
 
 บัญชีใหม่ต้องกรอกรหัสยืนยัน 6 หลักที่ส่งทางอีเมลก่อนสร้างบัญชีและเข้าสู่ระบบ รหัสมีอายุ 10 นาที ผิดได้ไม่เกิน 5 ครั้ง ส่งใหม่ทุก 60 วินาที (รวมไม่เกิน 3 ครั้ง) พร้อมจำกัดอีเมล/IP ถาวรในฐานข้อมูล ใช้ Microsoft Graph/SMTP ที่ตั้งไว้แล้ว หากส่งไม่สำเร็จจะไม่ข้ามการยืนยัน บัญชีเดิมยังใช้ได้และไม่เติมวันที่ยืนยันย้อนหลัง ดู [contract/config/rollout](docs/registration-contract.md) และ [ผลตรวจจริง](docs/registration-verification.md) **ยังไม่ deploy หรือส่งอีเมลผ่าน provider จริง**

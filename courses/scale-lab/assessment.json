@@ -204,7 +204,7 @@
     {
       "id": "replica-11",
       "lesson_id": "replica",
-      "prompt": "เพิ่งสร้าง order แล้วต้องอ่านให้เห็น write นั้นควรเลือกที่ใดในบทเรียน?",
+      "prompt": "ใน single-primary web server ส่ง INSERT / UPDATE / DELETE ไป primary ถ้าต้องอ่านให้เห็น write ที่เพิ่งสำเร็จและ primary ยังพร้อม ควรอ่านที่ใด?",
       "options": [
         {
           "id": "a",
@@ -224,7 +224,7 @@
     {
       "id": "replica-12",
       "lesson_id": "replica",
-      "prompt": "เหตุใด replication ไม่แทน backup?",
+      "prompt": "Reliability จาก replication ไม่ใช่การรับประกัน zero data loss และไม่แทน backup เพราะเหตุใด?",
       "options": [
         {
           "id": "a",
@@ -232,7 +232,7 @@
         },
         {
           "id": "b",
-          "text": "การลบผิดอาจถูกส่งต่อไปสำเนา"
+          "text": "การลบผิดอาจถูกส่งต่อไปสำเนา และ async lag อาจทำให้สูญเสีย write เมื่อ primary ล่มก่อนส่งข้อมูล"
         },
         {
           "id": "c",
