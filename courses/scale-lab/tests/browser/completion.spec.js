@@ -15,5 +15,5 @@ test('visible manual completion persists without claiming quiz success',async({p
  await expect(complete).toBeEnabled();
  await page.reload();
  await expect(page.getByRole('button',{name:'✓ เรียนจบแล้ว',exact:true})).toBeVisible();
- expect(await page.evaluate(()=>localStorage.getItem('scale-lab-progress'))).toBe('[1]');
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('scale-lab-progress-v2')))).toEqual({version:2,completed:['flow']});
 });

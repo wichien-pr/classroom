@@ -1,8 +1,12 @@
 import './style.css';
+import {LOCAL_PROGRESS_KEY,readLocalProgress,encodeLocalProgress} from './local-progress.js';
 import './single-server.css';
 import './database.css';
 import './scaling.css';
 import './balance.css';
+import './replication.css';
+import {replicationInitial,replicationAction,dbName} from './replication.js';
+import {replicationControls,replicationDiagram,replicationNotes} from './replication-view.js';
 import {balanceInitial,balanceControls,balanceDiagram,balanceNotes,routeBalance} from './balance.js';
 import {scalingInitial,scalingControls,scalingDiagram,scalingNotes,evaluateScaling} from './scaling.js';
 import {databaseInitial,databaseControls,databaseDiagram,databaseNotes,evaluateDatabase} from './database.js';
@@ -27,9 +31,9 @@ const quizSelections=new Map(); // Per-lesson choices survive simulation reset/n
 // Shuffle presentation once per lesson/page, before first paint. Original indices
 // remain semantic choice IDs for correctness, selection and durable award actions.
 const quizOrder=new Map(lessons.map(l=>[l.kind,Math.random()<0.5?[1,0]:[0,1]]));
-if (!account) { try{progress=m.loadProgress(localStorage.getItem('scale-lab-progress'));}catch{storageOK=false;} }
+if (!account) { try{const ids=readLocalProgress(localStorage.getItem(LOCAL_PROGRESS_KEY),localStorage.getItem('scale-lab-progress'));progress=lessons.filter(l=>ids.includes(l.kind)).map(l=>l.id);localStorage.setItem(LOCAL_PROGRESS_KEY,encodeLocalProgress(ids));}catch{storageOK=false;} }
 let selected=1,state,events=[],feedback='',message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';
-function initial(){return {balance:balanceInitial(),scaling:scalingInitial(),database:databaseInitial(),step:0,client:'browser',up:[true,true],cursor:0,shared:false,logged:false,db:100,cache:null,reads:0,primary:0,replica:0,stock:5,orders:{},pending:true,attempts:0,sent:0,done:false,dead:false,receipt:false,active:selected===1?0:-1};}
+function initial(){return {replication:replicationInitial(),balance:balanceInitial(),scaling:scalingInitial(),database:databaseInitial(),step:0,client:'browser',up:[true,true],cursor:0,shared:false,logged:false,db:100,cache:null,reads:0,primary:0,replica:0,stock:5,orders:{},pending:true,attempts:0,sent:0,done:false,dead:false,receipt:false,active:selected===1?0:-1};}
 const button=(id,text)=>`<button type="button" id="${id}" data-action="${id}">${text}</button>`;
 const number=(id,label,value,min=0,max=1000000)=>`<label>${label}<input id="${id}" type="number" value="${value}" min="${min}" max="${max}" step="1"></label>`;
 function controls(kind){switch(kind){
@@ -38,7 +42,7 @@ case 'workload':return databaseControls();
 case 'stock':return scalingControls();
 case 'balance':return balanceControls();
 case 'session':return '<label class="check"><input id="shared" type="checkbox"> ใช้ shared session store</label>'+button('login','Login ผ่าน A')+button('session','อ่าน session ผ่าน B');
-case 'replica':return button('write','เขียน order ที่ primary')+button('read-replica','อ่าน replica')+button('read-primary','อ่าน primary')+button('sync','เดิน replication 1 รอบ');
+case 'replica':return replicationControls();
 case 'cache':return number('price','ราคาใหม่ใน DB',150,1)+button('read-cache','อ่านสินค้า')+button('update','เขียนราคา DB')+button('invalidate','Invalidate cache');
 case 'queue':return '<label>จุดที่ worker ล้มเหลว<select id="failure"><option value="after">หลัง side effect ก่อน ACK</option><option value="before">ก่อน side effect</option><option value="ok">ทำงานสำเร็จ</option></select></label>'+button('work','เดิน worker / retry 1 ครั้ง');
 case 'shard':return number('customer','Customer ID',7,0)+number('shards','จำนวน shards',3,1,8)+button('shard','Route key');
@@ -50,6 +54,14 @@ function mount(){
 const l=lessons[selected-1];
 feedback=quizSelections.has(l.kind) ? (quizSelections.get(l.kind)===1?'ถูกต้อง — ':'ยังไม่ถูก — ')+l.why : '';
 $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a class="skip" href="#main">ข้ามไปห้องทดลอง</a><div class="layout"><aside class="sidebar"><div class="brand"><span class="brand-mark">S<span>↗</span></span><div>Scale Lab<small>SYSTEM DESIGN / TH</small></div></div><div class="course-label">ORDER SYSTEM · 12 LABS</div><nav aria-label="บทเรียน">${lessons.map(x=>`<button data-lesson="${x.id}" aria-current="${x.id===selected?'page':'false'}"><span class="nav-num">${String(x.id).padStart(2,'0')}</span><span>${x.title}</span><span class="done">${progress.includes(x.id)?'✓':''}</span></button>`).join('')}</nav><div class="sidebar-bottom"><p id="progress-status" role="status"></p><button id="retry-progress" hidden>ลองโหลดอีกครั้ง</button><span id="progress">${progress.length} / 12 บทเรียนจบ</span><progress max="12" value="${progress.length}" aria-label="ความคืบหน้าบทเรียน"></progress></div></aside><div class="workspace"><div class="simulation"><span class="dot"></span><strong>EDUCATIONAL SIMULATION</strong><span>โครงสร้างและค่าทั้งหมดเป็นแบบจำลองเพื่อการเรียนรู้ ไม่ใช่ benchmark จริง</span></div><header class="topbar"><span>ห้องทดลอง / ระบบสั่งซื้อสินค้า</span><span class="source-ref">คู่มือต้นฉบับ §${l.chapter}</span></header><main id="main"><div class="lesson-heading"><div><p class="eyebrow">LAB ${String(l.id).padStart(2,'0')} / ${l.en}</p><h1>${l.title}</h1><p class="objective">${l.objective}</p></div><span class="manual-tag">MANUAL STEP</span></div><section class="participation" aria-label="Participation Score"><strong>Participation Score · <span id="participation-score">—</span></strong><p id="participation-status" role="status"></p><button id="retry-participation" hidden>ลองบันทึกคะแนนอีกครั้ง</button><small>ทดลองหรือกดตอบ quiz แต่ละปุ่มครั้งแรกได้ 1 คะแนนต่อบัญชี ไม่ว่าถูกหรือผิด · นับตามตัวเลือกเดิม ไม่ใช่ตำแหน่ง A/B · สุ่มลำดับเมื่อเปิดหน้าใหม่ · กดซ้ำ โหลดใหม่ หรือเข้าสู่ระบบใหม่ไม่เพิ่มคะแนน · ระหว่างบันทึกปุ่มจะปิดชั่วคราว รอให้พร้อมก่อนกดครั้งถัดไป · คะแนนไม่ใช่ Level · ในบัญชีต้องครบ 3 เงื่อนไขทุกบท: กดเรียนจบ + ทดลองหลัก + ตอบ A หรือ B จึงนับคลาสสำหรับ Level · ไม่รวมเปิดหน้า/เปลี่ยนบท/รีเซ็ต</small></section><section class="lesson-completion" aria-label="สถานะการเรียนบทนี้"><button type="button" id="complete-lesson" aria-describedby="completion-status">ทำเครื่องหมายว่าเรียนจบ</button><p id="completion-status" role="status"></p><button type="button" id="retry-completion-load" hidden>ลองโหลดอีกครั้ง</button></section><div class="learning-grid"><section class="lab" aria-label="ห้องทดลองแบบจำลอง"><div class="panel-title"><h2>ทดลองกับระบบ</h2><button id="reset">เริ่มการทดลองใหม่</button></div><div class="architecture" id="architecture" aria-label="แผนภาพสถาปัตยกรรม"></div><div class="state-grid" id="state-view" aria-label="สถานะแบบจำลอง"></div><div class="control-area"><h3>01 / ตั้งสถานการณ์และลงมือ</h3><div class="controls">${controls(l.kind)}</div></div><div class="observation"><h3>02 / สิ่งที่เกิดขึ้น</h3><p id="outcome" role="status" aria-live="polite"></p></div><div class="event-area"><div class="event-heading"><h3>บันทึกเหตุการณ์</h3><span>เรียงตามขั้น · ไม่ใช่เวลาจริง</span></div><ol id="event-log"></ol></div></section><aside class="teaching" aria-label="คำอธิบายประกอบ"><section><p class="eyebrow">WHY IT WORKS</p><h2>เข้าใจเหตุผล ก่อนเพิ่มเครื่องมือ</h2><p>${l.explain}</p><div class="experiment"><strong>ลองตามนี้</strong><p>${l.try}</p></div></section><section class="quiz"><p class="eyebrow">CHECK YOUR THINKING</p><h2>${l.question}</h2><div class="answers">${quizOrder.get(l.kind).map((choice,i)=>`<button data-answer="${choice}"><span>${i===0?'A':'B'}</span>${l.answers[choice]}</button>`).join('')}</div><p id="feedback" role="status">${feedback||'เลือกคำตอบเพื่อดูเหตุผล — ตอบใหม่ได้เสมอ'}</p></section></aside></div><footer><span>${storageOK?'บันทึกเฉพาะความคืบหน้าใน browser นี้':'บันทึกไม่ได้ — ใช้งานต่อได้ แต่ความคืบหน้าอยู่ในหน่วยความจำ'}</span><button id="next">${selected===12?'กลับบทแรก':'บทถัดไป →'}</button></footer></main></div></div><dialog id="help-dialog"><div class="dialog-header"><h2 id="dialog-title"></h2><button id="close-dialog" autofocus>ปิด</button></div><div id="dialog-content"></div></dialog>`;
+ if(l.kind==='replica'){
+  document.querySelector('.teaching section').insertAdjacentHTML('afterend',replicationNotes());
+  document.querySelector('.source-ref').textContent='Database replication';
+  [0,1,2].forEach(i=>$('#db-up-'+i).onchange=e=>{state.replication.up[i]=e.target.checked;renderState();});
+  $('#fenced').onchange=e=>{state.replication.fenced=e.target.checked;};
+  $('#accept-loss').onchange=e=>{state.replication.acceptLoss=e.target.checked;};
+  $('#promote').onclick=()=>act('promote');
+ }
  if(l.kind==='balance'){document.querySelector('.teaching section').insertAdjacentHTML('afterend',balanceNotes());document.querySelector('.source-ref').textContent='Load-balancer · หน้า 1–2';}
  if(l.kind==='stock'){document.querySelector('.teaching section').insertAdjacentHTML('afterend',scalingNotes());document.querySelector('.source-ref').textContent='Scale up / Scale out';}
  if(l.kind==='workload') {
@@ -73,13 +85,13 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
  $('#complete-lesson').onclick=()=>completeLesson(lessons[selected-1]);
 }
 function navigate(id){selected=id;state=initial();events=[];feedback='';message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';mount();$('#main').setAttribute('tabindex','-1');$('#main').focus({preventScroll:true});}
-function renderState(){const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='balance'?balanceDiagram(state.balance):l.kind==='stock'?scalingDiagram(state.scaling):l.kind==='workload'?databaseDiagram(state.database):l.kind==='flow'?singleServerDiagram(state.step,state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+function renderState(){const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='replica'?replicationDiagram(state.replication):l.kind==='balance'?balanceDiagram(state.balance):l.kind==='stock'?scalingDiagram(state.scaling):l.kind==='workload'?databaseDiagram(state.database):l.kind==='flow'?singleServerDiagram(state.step,state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
 let entries=[];
 switch(l.kind){case 'flow':{const v=flowView(state.step,state.client);entries=[['ขั้นที่เดินแล้ว',`${state.step} / ${m.FLOW_STEPS}`],['Domain',v.domain],['IP ที่ client ได้รับ',v.ip],['HTTP request',v.request],['HTTP response',v.response]];break;}
 case 'workload':{const r=evaluateDatabase(state.database);entries=[['ทรัพยากร Web',`Web tier: ${r.web}`],['ทรัพยากร DB',`Data tier: ${r.data}`],['การขยาย',r.independent?'แยกอิสระ':'ทรัพยากรร่วม'],['Database',r.ready?'พร้อม':'ไม่พร้อม']];break;}
 case 'cache':entries=[['DB / source of truth',state.db],['Cache / สำเนา',state.cache??'ว่าง'],['DB reads',state.reads]];break;
 case 'stock':{const r=evaluateScaling(state.scaling);entries=[['จำนวนเครื่อง',state.scaling.servers],['กำลังต่อเครื่อง',`${state.scaling.power} หน่วย`],['เครื่องที่รับ traffic',r.routed],['กำลังที่เข้าถึงได้',`${r.capacity} หน่วย`]];break;}
-case 'replica':entries=[['Primary version',state.primary],['Replica version',state.replica],['Lag (ขั้นเขียน)',state.primary-state.replica]];break;
+case 'replica':entries=[['Writer ปัจจุบัน',dbName(state.replication.writer)],...state.replication.versions.map((v,i)=>[dbName(i),`version ${v}`]),['ขั้นเขียนที่สูญเสียตอน promote',state.replication.lost]];$('#db-up-0').disabled=state.replication.writer!==0;break;
 case 'queue':entries=[['Attempts',state.attempts],['Side effects',state.sent],['Job',state.dead?'DEAD LETTER':state.pending?'PENDING':'ACKED']];break;
 case 'balance':entries=state.balance.counts.map((n,i)=>['App '+ 'ABC'[i],`รับแล้ว ${n} request`]);break;
 case 'session':entries=[['Login A',state.logged?'มี session':'ยังไม่ login'],['Storage',state.shared?'Shared':'Local A']];break;
@@ -102,9 +114,7 @@ case 'order':{const config={power:val('scale-power'),servers:val('scale-servers'
 case 'route':{const n=routeBalance(state.balance,[$('#up-a').checked,$('#up-b').checked,$('#up-c').checked]);message=n===null?'503 · ไม่มี backend พร้อมรับงาน — ห้าม route ไปเครื่องที่ล้ม':`200 · ส่ง request ไป App ${'ABC'[n]} ตาม round-robin เฉพาะเครื่องพร้อม`;break;}
 case 'login':state.logged=true;state.shared=$('#shared').checked;state.active=1;message='Login สำเร็จที่ App A — ทดลองเรียกผ่าน B';break;
 case 'session':state.shared=$('#shared').checked;state.active=2;message=state.logged&&m.sessionRead(state.shared,0,1)?'200 · App B อ่าน session ได้จาก shared store':'401 · App B ไม่พบ session — login ก่อน หรือย้าย state ออกจาก A';break;
-case 'write':state.primary++;state.active=1;message=`COMMIT order version ${state.primary} ที่ primary; replica ยังไม่ตามมา`;break;
-case 'read-primary':case 'read-replica':{const primary=action==='read-primary';state.active=primary?1:3;message=`${primary?'Primary':'Replica'} อ่าน version ${m.replicaRead(state,primary)}${!primary&&state.replica<state.primary?' · STALE: ยังไม่เห็น order ล่าสุด':' · ข้อมูลตรงกับ primary'}`;break;}
-case 'sync':m.replicate(state);state.active=2;message='Replication ส่งข้อมูลครบในหนึ่งรอบจำลอง — ไม่ใช่เวลาหรือ guarantee ของ DB จริง';break;
+case 'write':case 'read-primary':case 'read-replica':case 'sync':case 'promote':{const result=replicationAction(state.replication,action);message=result.message;meaningful=result.meaningful;break;}
 case 'read-cache':{const result=m.cacheRead(state);state.active=2;message=`${result} · ราคาที่คืน ${state.cache} / DB ${state.db}${state.cache!==state.db?' · STALE: สำเนาเก่า':' · ค่าปัจจุบัน'}${result==='MISS'?' — app โหลด DB แล้วเติม cache':' — ไม่อ่าน DB เพิ่ม'}`;break;}
 case 'update':state.db=val('price');state.active=3;message=`DB ราคาใหม่ ${state.db} — cache ไม่เปลี่ยนอัตโนมัติ`;break;
 case 'invalidate':m.invalidate(state);state.active=2;message='INVALIDATE · ลบสำเนา cache แล้ว การอ่านถัดไปจะ miss';break;
@@ -195,7 +205,7 @@ async function completeLesson(l){
       finally { pendingLesson=null; }
     }else{
       progress.push(l.id);
-      try{localStorage.setItem('scale-lab-progress',JSON.stringify(progress));}catch{storageOK=false;}
+      try{localStorage.setItem(LOCAL_PROGRESS_KEY,encodeLocalProgress(lessons.filter(l=>progress.includes(l.id)).map(l=>l.kind)));}catch{storageOK=false;}
     }
   }
   renderProgress();
