@@ -7,4 +7,6 @@ export function readLocalProgress(current,old){
   const p=JSON.parse(old);return Array.isArray(p)?[...new Set(p.filter(x=>Number.isInteger(x)&&x>=1&&x<=legacy.length).map(x=>legacy[x-1]))]:[];
  }catch{return [];}
 }
+// Retired IDs remain historical; callers intersect with current lessons for display.
+export const mergeLocalProgress=(previous,current)=>[...new Set([...previous,...current].filter(id=>legacy.includes(id)))];
 export const encodeLocalProgress=completed=>JSON.stringify({version:2,completed});

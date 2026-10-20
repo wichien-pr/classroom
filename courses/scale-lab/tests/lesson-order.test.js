@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {lessons} from '../src/lessons.js';
 import * as local from '../src/local-progress.js';
-test('LAB05 is stable replica and LAB06 is stable session',()=>{assert.equal(lessons[4].kind,'replica');assert.equal(lessons[5].kind,'session');});
+test('LAB05 is stable replica and LAB06 is stable cache',()=>{assert.equal(lessons[4].kind,'replica');assert.equal(lessons[5].kind,'cache');});
 test('legacy positions map through the old curriculum, never the new order',()=>{
  assert.deepEqual(local.readLocalProgress(null,'[5,6,1,5,0,13,"5"]'),['session','replica','flow']);
  assert.deepEqual(local.readLocalProgress(null,'[5]'),['session']);

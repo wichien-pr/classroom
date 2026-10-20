@@ -24,7 +24,7 @@ test('technical terms open Thai hints with example and warning; keyboard and out
 test('hints cover lessons without nesting in action controls; mobile stays within viewport', async ({page}) => {
   await page.setViewportSize({width:375,height:812});
   await page.goto('/');
-  for(let id=1;id<=12;id++) {
+  for(let id=1;id<=11;id++) {
     await page.locator(`[data-lesson="${id}"]`).click();
     const terms=page.locator('.term-trigger');
     expect(await terms.count()).toBeGreaterThan(0);

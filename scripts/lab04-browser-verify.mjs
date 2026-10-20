@@ -24,8 +24,8 @@ try {
  if(!resume){
   await page.locator('#route').click();await expect(page.locator('#participation-score')).toHaveText('1');
   await page.locator('#route').click();await expect(page.locator('#participation-status')).toContainText('ปุ่มนี้นับคะแนนแล้ว');await expect(page.locator('#participation-score')).toHaveText('1');
-  await page.locator('[data-answer="0"]').click();await expect(page.locator('#participation-score')).toHaveText('2');await expect(page.locator('#feedback')).toContainText('ยังไม่ถูก');await expect(page.locator('#progress')).toContainText('0 / 12');
-  await page.locator('#complete-lesson').click();await expect(page.locator('#progress')).toContainText('1 / 12');
+  await page.locator('[data-answer="0"]').click();await expect(page.locator('#participation-score')).toHaveText('2');await expect(page.locator('#feedback')).toContainText('ยังไม่ถูก');await expect(page.locator('#progress')).toContainText('0 / 11');
+  await page.locator('#complete-lesson').click();await expect(page.locator('#progress')).toContainText('1 / 11');
  }
  const result=await (await page.request.get(info.base+'/api/courses/scale-lab/progress')).json();
  assert.deepEqual(result.completed,['balance']);assert.deepEqual(result.criteria.balance,{manual:true,simulation:true,thinking:true});

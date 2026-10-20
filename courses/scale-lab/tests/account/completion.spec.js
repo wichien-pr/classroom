@@ -8,7 +8,7 @@ test('manual save pending, failure and retry stay with captured lesson',async({p
    if(fail)return route.fulfill({status:503,json:{error:'unavailable'}});
    completed.push(posts.at(-1));
   }
-  await route.fulfill({json:{completed,total:12,csrf_token:'token'}});
+  await route.fulfill({json:{completed,total:11,csrf_token:'token'}});
  });
  await page.goto('/');
  const button=page.locator('#complete-lesson');
@@ -19,7 +19,7 @@ test('manual save pending, failure and retry stay with captured lesson',async({p
  await page.locator('[data-lesson="2"]').click();
  await expect(button).toBeDisabled();
  release();
- await expect(page.locator('#progress')).toContainText('0 / 12');
+ await expect(page.locator('#progress')).toContainText('0 / 11');
  await expect(button).toHaveText('ทำเครื่องหมายว่าเรียนจบ');
  await page.locator('[data-lesson="1"]').click();
  await expect(page.locator('#completion-status')).toContainText('บันทึกไม่ได้');
@@ -37,7 +37,7 @@ test('manual save pending, failure and retry stay with captured lesson',async({p
 
 test('load error has retry next to completion, and blocks manual writes',async({page})=>{
  let fail=true;
- await page.route('**/api/courses/scale-lab/progress',route=>route.fulfill(fail?{status:503,json:{}}:{json:{completed:[],total:12,csrf_token:'token'}}));
+ await page.route('**/api/courses/scale-lab/progress',route=>route.fulfill(fail?{status:503,json:{}}:{json:{completed:[],total:11,csrf_token:'token'}}));
  await page.goto('/');
  await expect(page.locator('#complete-lesson')).toBeDisabled();
  await expect(page.locator('#completion-status')).toContainText('โหลดความคืบหน้าไม่ได้');

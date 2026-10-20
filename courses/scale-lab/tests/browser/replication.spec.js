@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-test('LAB05 source topology, manual lag/failure/recovery and LAB06 session',async({page})=>{
+test('LAB05 source topology, manual lag/failure/recovery and LAB06 Cache',async({page})=>{
  await page.goto('/');await page.locator('[data-lesson="5"]').click();
  await expect(page.locator('.source-ref')).toHaveText('Database replication');
  await expect(page.locator('#architecture .replication-diagram')).toContainText('DNS คืน IP');
@@ -18,13 +18,13 @@ test('LAB05 source topology, manual lag/failure/recovery and LAB06 session',asyn
  await page.locator('#write').click();await expect(page.locator('#outcome')).toContainText('Replica 1');
  await page.locator('#reset').click();await expect(page.locator('[data-db="0"]')).toContainText('version 0');
  for(const width of [320,390,1440]){await page.setViewportSize({width,height:1000});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect(await page.locator('#architecture .replication-diagram').evaluate(el=>[...el.querySelectorAll('span,strong')].every(x=>parseFloat(getComputedStyle(x).fontSize)>=14))).toBe(true);}
- await page.locator('[data-lesson="6"]').click();await expect(page.locator('h1')).toContainText('session');await page.locator('#login').click();await page.locator('#session').click();await expect(page.locator('#outcome')).toContainText('401');
+ await page.locator('[data-lesson="6"]').click();await expect(page.locator('h1')).toContainText('Cache');await page.locator('#read-cache').click();await expect(page.locator('#outcome')).toContainText('MISS');
 });
 test('legacy standalone completion follows identity through swap and reload',async({page})=>{
  await page.addInitScript(()=>{if(!localStorage.getItem('seeded')){localStorage.setItem('scale-lab-progress','[5]');localStorage.setItem('seeded','1');}});
- await page.goto('/');await expect(page.locator('[data-lesson="6"] .done')).toHaveText('✓');await expect(page.locator('[data-lesson="5"] .done')).toBeEmpty();
+ await page.goto('/');await expect(page.locator('[data-lesson="6"] .done')).toBeEmpty();await expect(page.locator('[data-lesson="5"] .done')).toBeEmpty();
  await page.locator('[data-lesson="5"]').click();await page.locator('#complete-lesson').click();await page.reload();
- await expect(page.locator('[data-lesson="5"] .done')).toHaveText('✓');await expect(page.locator('[data-lesson="6"] .done')).toHaveText('✓');
- expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('scale-lab-progress-v2')))).toEqual({version:2,completed:['replica','session']});
+ await expect(page.locator('[data-lesson="5"] .done')).toHaveText('✓');await expect(page.locator('[data-lesson="6"] .done')).toBeEmpty();
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('scale-lab-progress-v2')))).toEqual({version:2,completed:['session','replica']});
  expect(await page.evaluate(()=>localStorage.getItem('scale-lab-progress'))).toBe('[5]');
 });

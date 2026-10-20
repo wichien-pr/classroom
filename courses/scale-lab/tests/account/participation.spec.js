@@ -4,7 +4,7 @@ test('wrong quiz answer earns one separately identified point without completing
  const events=[],completions=[];
  await page.route('**/api/courses/scale-lab/progress',r=>{
   if(r.request().method()==='POST') completions.push(r.request().postDataJSON());
-  return r.fulfill({json:{completed:[],total:12,csrf_token:'test'}});
+  return r.fulfill({json:{completed:[],total:11,csrf_token:'test'}});
  });
  await page.route('**/api/courses/scale-lab/participation',r=>{
   if(r.request().method()==='POST') events.push(r.request().postDataJSON());
@@ -24,7 +24,7 @@ test('all lessons award each distinct button once including reset and navigation
  const events=[],completed=[];
  await page.route('**/api/courses/scale-lab/progress',r=>{
   if(r.request().method()==='POST') completed.push(r.request().postDataJSON().lesson_id);
-  return r.fulfill({json:{completed,total:12,csrf_token:'test'}});
+  return r.fulfill({json:{completed,total:11,csrf_token:'test'}});
  });
  await page.route('**/api/courses/scale-lab/participation',r=>{
   if(r.request().method()==='POST') events.push(r.request().postDataJSON());
@@ -54,7 +54,7 @@ test('quiz load and lost-response retry lock choices across progress renders and
  let loadFail=true,drop=true,release;const events=[],completed=[],seen=new Set();
  await page.route('**/api/courses/scale-lab/progress',r=>{
   if(r.request().method()==='POST') completed.push(r.request().postDataJSON().lesson_id);
-  return r.fulfill({json:{completed,total:12,csrf_token:'test'}});
+  return r.fulfill({json:{completed,total:11,csrf_token:'test'}});
  });
  await page.route('**/api/courses/scale-lab/participation',async r=>{
   if(loadFail){loadFail=false;return r.fulfill({status:503});}
@@ -94,7 +94,7 @@ test('quiz load and lost-response retry lock choices across progress renders and
 
 test('completed flow and empty worker are not new actions',async({page})=>{
  let score=0; const seen=new Set();
- await page.route('**/api/courses/scale-lab/progress',r=>r.fulfill({json:{completed:[],total:12,csrf_token:'test'}}));
+ await page.route('**/api/courses/scale-lab/progress',r=>r.fulfill({json:{completed:[],total:11,csrf_token:'test'}}));
  await page.route('**/api/courses/scale-lab/participation',r=>{
    if(r.request().method()==='POST'){const e=r.request().postDataJSON();seen.add([e.lesson_id,e.simulation_id,e.action].join('/'));score=seen.size;}
    return r.fulfill({json:{score,csrf_token:'test'}});
@@ -103,7 +103,7 @@ test('completed flow and empty worker are not new actions',async({page})=>{
  for(let i=1;i<=6;i++){await page.locator('#step').click();await expect(page.locator('#participation-score')).toHaveText('1');}
  await page.locator('#step').click();
  await page.waitForTimeout(100); expect(score).toBe(1);
- await page.locator('[data-lesson="9"]').click();
+ await page.locator('[data-lesson="8"]').click();
  await page.locator('#failure').selectOption('ok');await page.locator('#work').click();
  await expect(page.locator('#participation-score')).toHaveText('2');
  await page.locator('#work').click(); await page.waitForTimeout(100);expect(score).toBe(2);
@@ -111,7 +111,7 @@ test('completed flow and empty worker are not new actions',async({page})=>{
 
 test('invalid input never earns score',async({page})=>{
  let posts=0;
- await page.route('**/api/courses/scale-lab/progress',r=>r.fulfill({json:{completed:[],total:12,csrf_token:'test'}}));
+ await page.route('**/api/courses/scale-lab/progress',r=>r.fulfill({json:{completed:[],total:11,csrf_token:'test'}}));
  await page.route('**/api/courses/scale-lab/participation',r=>{
    if(r.request().method()==='POST') posts++;
    return r.fulfill({json:{score:posts,csrf_token:'test'}});
@@ -127,7 +127,7 @@ test('invalid input never earns score',async({page})=>{
 
 test('load retry and delayed save show honest status and block duplicate actions',async({page})=>{
  let fail=true,release,posts=0;
- await page.route('**/api/courses/scale-lab/progress',r=>r.fulfill({json:{completed:[],total:12,csrf_token:'test'}}));
+ await page.route('**/api/courses/scale-lab/progress',r=>r.fulfill({json:{completed:[],total:11,csrf_token:'test'}}));
  await page.route('**/api/courses/scale-lab/participation',async r=>{
    if(fail){fail=false;return r.fulfill({status:503,body:'unavailable'});}
    if(r.request().method()==='POST'){posts++;await new Promise(resolve=>{release=resolve;});return r.fulfill({json:{score:1,csrf_token:'test'}});}
@@ -144,7 +144,7 @@ test('load retry and delayed save show honest status and block duplicate actions
 
 test('simulation click saves only confirmed score; lost response retry keeps ID through navigation',async({page})=>{
  let score=0, fail=true; const events=[];
- await page.route('**/api/courses/scale-lab/progress',r=>r.fulfill({json:{completed:[],total:12,csrf_token:'test'}}));
+ await page.route('**/api/courses/scale-lab/progress',r=>r.fulfill({json:{completed:[],total:11,csrf_token:'test'}}));
  await page.route('**/api/courses/scale-lab/participation',async r=>{
    if(r.request().method()==='POST'){
      events.push(r.request().postDataJSON());

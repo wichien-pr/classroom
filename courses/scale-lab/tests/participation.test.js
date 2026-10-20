@@ -19,12 +19,12 @@ test('already counted is a successful server result, not an error or optimistic 
  assert.equal(client.score,1);assert.equal(client.status,'saved');assert.equal(client.reason,'already_counted');
 });
 
-test('all twelve lesson simulation definitions match reviewed actions',async()=>{
+test('all eleven lesson simulation definitions match reviewed actions',async()=>{
  const {readFile}=await import('node:fs/promises');
  const manifest=JSON.parse(await readFile(new URL('../course.json',import.meta.url)));
  assert.deepEqual(Object.fromEntries(Object.entries(manifest.participation).map(([lesson, definitions])=>[lesson,{[lesson]:definitions[lesson]}])),{
  flow:{flow:['step']},workload:{workload:['estimate']},stock:{stock:['order']},balance:{balance:['route']},
- session:{session:['login','session']},replica:{replica:['write','read-replica','read-primary','sync']},
+ replica:{replica:['write','read-replica','read-primary','sync']},
  cache:{cache:['read-cache','update','invalidate']},cdn:{cdn:['decision']},queue:{queue:['work']},
  observe:{observe:['decision']},region:{region:['decision']},shard:{shard:['shard']}
  });
