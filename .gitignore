@@ -54,6 +54,9 @@ artifacts/
 profile-photos/
 community-uploads/
 
+# Local reference documents (not published in Git)
+*.[pP][dD][fF]
+
 # Logs and temporary files
 *.log
 *.pid
