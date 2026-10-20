@@ -1,0 +1,61 @@
+# macOS / editor-local files
+.DS_Store
+.AppleDouble
+._*
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Secrets and local environment configuration
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python environments, caches and coverage
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# JavaScript dependencies and generated builds
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Browser binaries, test output and private QA sessions
+.browsers/
+.playwright/
+playwright-report/
+test-results/
+/evidence/
+/courses/*/evidence/
+
+# Runtime data, accounts, uploaded media and backups
+instance/
+/backups/
+artifacts/
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+profile-photos/
+community-uploads/
+
+# Logs and temporary files
+*.log
+*.pid
+*.tmp
+*.bak
