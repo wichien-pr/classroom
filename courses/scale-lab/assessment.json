@@ -44,19 +44,19 @@
     {
       "id": "workload-3",
       "lesson_id": "workload",
-      "prompt": "ก่อนตัดสินใจเพิ่ม capacity ควรวัดสิ่งใด?",
+      "prompt": "การแยก Web tier ออกจาก Data tier ช่วยเรื่องใด?",
       "options": [
         {
           "id": "a",
-          "text": "peak workload และ access pattern"
+          "text": "ปรับทรัพยากรของแต่ละชั้นได้อิสระ"
         },
         {
           "id": "b",
-          "text": "จำนวนชื่อโดเมน"
+          "text": "ทำให้ database ไม่ล่มโดยอัตโนมัติ"
         },
         {
           "id": "c",
-          "text": "จำนวนบัญชีทั้งหมดอย่างเดียว"
+          "text": "ทำให้ client เชื่อม database โดยตรง"
         }
       ],
       "answer": "a"
@@ -64,19 +64,19 @@
     {
       "id": "workload-4",
       "lesson_id": "workload",
-      "prompt": "เพิ่ม app instances โดยคง pool ต่อเครื่องเดิมจะเกิดอะไร?",
+      "prompt": "ข้อใดถูกต้องในการพิจารณา SQL และ NoSQL?",
       "options": [
         {
           "id": "a",
-          "text": "งบ connection รวมเพิ่มขึ้น"
+          "text": "SQL เชื่อมตารางด้วย JOIN ได้ ส่วน NoSQL ควรเลือกตามข้อมูลและ access pattern"
         },
         {
           "id": "b",
-          "text": "DB ไม่มีข้อจำกัด connection อีก"
+          "text": "NoSQL เร็วกว่า SQL เสมอและไม่ต้องออกแบบข้อมูล"
         },
         {
           "id": "c",
-          "text": "จำนวน connection รวมลดเสมอ"
+          "text": "การใช้ JSON บังคับให้ใช้ NoSQL เท่านั้น"
         }
       ],
       "answer": "a"

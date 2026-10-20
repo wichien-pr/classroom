@@ -121,7 +121,7 @@ test('invalid input never earns score',async({page})=>{
  await expect(page.locator('#outcome')).toContainText('INVALID');
  await page.waitForTimeout(100);expect(posts).toBe(0);
  await page.locator('[data-lesson="2"]').click();
- await page.locator('#seconds').fill('0');await page.locator('#estimate').click();
+ await page.locator('#web-size').fill('0');await page.locator('#estimate').click();
  await page.waitForTimeout(100);expect(posts).toBe(0);
 });
 
