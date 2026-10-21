@@ -1,5 +1,13 @@
 # Classroom — Modular courses
 
+## LAB11 Logging, metrics & automation — deployed locally
+
+Deployed at http://127.0.0.1:8080/ with manifest, private bank and compiled assets coordinated. All four build files match the isolated browser-tested build. Database integrity, preexisting data/sessions and uploads were preserved; only anonymous health-check sessions were added. Port 8081 remains untouched. Reload existing tabs. Backup: `backups/lab11-20261021T085417Z`; verification: `evidence/lab11/deployment.json`. Authenticated production interaction was not rerun. No commit or push performed.
+
+### Pre-deployment implementation verification
+
+Isolated `classroom-lab11` replaces Sharding with a fresh `logging-operations` identity grounded in the supplied PDF. Compare local/central logs, inspect three metric levels and step through a gated CI pipeline. Retired Shard/Observe history is retained without qualifying the new lesson. **11 lessons / 41 active actions**; Node **70**, backend **403**, compiled browser **87**, account UI **15** passed, plus two-account OTP and same-DB restart QA. No deployment, staging, commit or push. See [LAB11 verification](docs/lab11-verification.md). Earlier sections describe historical releases.
+
 ## LAB10 Message queue — deployed locally
 
 LAB10 is deployed at http://127.0.0.1:8080/. Manifest, private assessment bank and compiled assets were released together; all four build-file hashes match the isolated tested build. SQLite integrity and preservation of existing data/uploads were verified. Port 8081 was left untouched. Reload existing course tabs. Deployment evidence: `evidence/lab10/deployment.json`; backup: `backups/lab10-20261021T081014Z`. No commit or push was performed. The LAB09 forward-reference remains unchanged. The implementation report below records the pre-deployment verification stage.

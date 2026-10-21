@@ -2,7 +2,7 @@
   "id": "scale-lab",
   "title": "Scale Lab",
   "subtitle": "SYSTEM DESIGN / TH",
-  "description": "เข้าใจ System Design ผ่านระบบสั่งซื้อใน 11 Labs ตั้งแต่เส้นทางของ Request และฐานข้อมูล ไปจนถึง Load Balancing, Cache และ Stateless web tier เรียนรู้การรับมือระบบล่ม การขยายระบบข้ามภูมิภาค และการแบ่งข้อมูลด้วย Sharding",
+  "description": "เรียนรู้ System Design ผ่าน 11 Labs ตั้งแต่ Request และฐานข้อมูล ไปจนถึง Load balancing, Cache, Stateless web tier, Data centers และ Message queue พร้อมใช้ Logging, metrics และ automation เพื่อดูแลระบบ",
   "enabled": true,
   "order": 1,
   "delivery": "static",
@@ -100,19 +100,21 @@
         "quiz-answer-b"
       ]
     },
-    "shard": {
-      "shard": [
-        "shard"
+    "message-queue": {
+      "message-queue": [
+        "enqueue-jobs",
+        "process-jobs"
       ],
       "check-your-thinking": [
         "quiz-answer-a",
         "quiz-answer-b"
       ]
     },
-    "message-queue": {
-      "message-queue": [
-        "enqueue-jobs",
-        "process-jobs"
+    "logging-operations": {
+      "logging-operations": [
+        "inspect-logs",
+        "inspect-metrics",
+        "run-pipeline"
       ],
       "check-your-thinking": [
         "quiz-answer-a",
@@ -131,6 +133,6 @@
     "stateless-web",
     "data-centers",
     "message-queue",
-    "shard"
+    "logging-operations"
   ]
 }

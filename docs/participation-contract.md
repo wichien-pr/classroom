@@ -47,3 +47,7 @@ The active count remains programmatically verified at 38 = 16 simulation actions
 ## LAB10 current active definitions
 
 Supersedes earlier active totals: **39 definitions = 17 simulation + 22 thinking** across 11 lessons. Retire `region / region / decision` and its thinking choices without deleting historical awards. Add `message-queue / message-queue / enqueue-jobs` and `process-jobs`, plus lesson-scoped original A/B choices. Queue enqueue scores only when accepted; worker processing scores only when at least one job completes. Full/empty/unavailable no-ops, setup, worker scaling and reset do not submit participation. Historical `queue` awards do not qualify this new namespace. See [LAB10 verification](lab10-verification.md).
+
+## LAB11 active definitions
+
+Current total: **41 definitions = 19 simulation + 22 thinking** over 11 lessons. Retire `shard / shard / shard` and its lesson-scoped thinking allowlist without deleting historical receipts/awards. Add `logging-operations / logging-operations / inspect-logs`, `inspect-metrics`, and `run-pipeline`, plus its original thinking A/B identities. Inspection is meaningful even with zero matching errors. Pipeline steps score only when advancing; failed-test/completed terminal repeats submit nothing. Setup/reset are unscored. `observe` evidence is not transferred. See [LAB11 verification](lab11-verification.md).

@@ -152,3 +152,7 @@ Queue is no longer an active lesson. `stateless-web` is a genuinely new lesson/s
 ## LAB10 Message queue replacement
 
 LAB10 now uses new stable `message-queue`, replacing active `region` without reusing the retired `queue` namespace. Frozen numeric 11 remains Region and 9 remains Queue. Both stay historical; no saved rows or frozen exam snapshots are converted. All non-region lessons/definitions/private questions remain unchanged. New completion requires its own manual marker, either `enqueue-jobs` or `process-jobs`, and either semantic thinking choice. Active totals are 11 lessons / 39 definitions, superseding historical counts above. See [LAB10 verification](lab10-verification.md) for isolated QA and release caveats.
+
+## LAB11 Logging replacement
+
+The new `logging-operations` lesson/simulation replaces active `shard`, not its history. Retired `observe` is not reused either. Numeric migration remains frozen (12 → shard, 10 → observe); stable history retains both. The current 11 lessons have 41 action definitions. New qualification requires its own manual mark, any of `inspect-logs`, `inspect-metrics`, `run-pipeline`, and either semantic thinking choice. Non-Shard definitions/questions and immutable old snapshots remain unchanged. See [verification and release boundary](lab11-verification.md).

@@ -26,7 +26,7 @@ test('all eleven lesson simulation definitions match reviewed actions',async()=>
  flow:{flow:['step']},workload:{workload:['estimate']},stock:{stock:['order']},balance:{balance:['route']},
  replica:{replica:['write','read-replica','read-primary','sync']},
  cache:{cache:['read-cache','update','invalidate']},cdn:{cdn:['decision']},'stateless-web':{'stateless-web':['web-request']},
- 'data-centers':{'data-centers':['dc-request']},'message-queue':{'message-queue':['enqueue-jobs','process-jobs']},shard:{shard:['shard']}
+ 'data-centers':{'data-centers':['dc-request']},'message-queue':{'message-queue':['enqueue-jobs','process-jobs']},'logging-operations':{'logging-operations':['inspect-logs','inspect-metrics','run-pipeline']}
  });
 });
 

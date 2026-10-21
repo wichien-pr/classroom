@@ -322,46 +322,6 @@
       "answer": "b"
     },
     {
-      "id": "shard-23",
-      "lesson_id": "shard",
-      "prompt": "Sharding ต่างจาก replication อย่างไร?",
-      "options": [
-        {
-          "id": "a",
-          "text": "sharding แบ่งข้อมูล ส่วน replication ทำสำเนา"
-        },
-        {
-          "id": "b",
-          "text": "sharding คือ backup เท่านั้น"
-        },
-        {
-          "id": "c",
-          "text": "เหมือนกันทุกกรณี"
-        }
-      ],
-      "answer": "a"
-    },
-    {
-      "id": "shard-24",
-      "lesson_id": "shard",
-      "prompt": "เปลี่ยนจำนวน shard ในสูตร modulo แล้วต้องทำอะไรต่อ?",
-      "options": [
-        {
-          "id": "a",
-          "text": "ข้อมูลย้ายเองทั้งหมด"
-        },
-        {
-          "id": "b",
-          "text": "ลบข้อมูลเก่าทั้งหมดเสมอ"
-        },
-        {
-          "id": "c",
-          "text": "migration และจัดการ routing metadata"
-        }
-      ],
-      "answer": "c"
-    },
-    {
       "id": "stateless-web-routing",
       "lesson_id": "stateless-web",
       "prompt": "ต้องการให้คำขอของผู้ใช้เดิมไปยัง web เครื่องอื่นได้ โดยทุกเครื่องยังตรวจ session เดียวกัน ควรจัดสถานะอย่างไร?",
@@ -432,6 +392,38 @@
         }
       ],
       "answer": "workers"
+    },
+    {
+      "id": "logging-operations-evidence",
+      "lesson_id": "logging-operations",
+      "prompt": "CPU ของ Web ปกติ แต่ผู้ใช้พบข้อผิดพลาด ควรตรวจสอบอย่างไร?",
+      "options": [
+        {
+          "id": "cpu",
+          "text": "สรุปว่าระบบปกติโดยไม่ตรวจส่วนอื่น"
+        },
+        {
+          "id": "evidence",
+          "text": "ตรวจ error logs และ metrics ของชั้นบริการกับธุรกิจร่วมกัน"
+        }
+      ],
+      "answer": "evidence"
+    },
+    {
+      "id": "logging-operations-ci",
+      "lesson_id": "logging-operations",
+      "prompt": "ใน pipeline ที่กำหนดให้ tests เป็นเงื่อนไขก่อน deploy หาก tests ไม่ผ่านควรทำอย่างไร?",
+      "options": [
+        {
+          "id": "stop",
+          "text": "หยุดก่อน deploy แก้ไข แล้วตรวจสอบรุ่นใหม่อีกครั้ง"
+        },
+        {
+          "id": "skip",
+          "text": "ข้าม tests เพื่อให้ automation ทำงานครบทุกขั้น"
+        }
+      ],
+      "answer": "stop"
     }
   ]
 }

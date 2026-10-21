@@ -1,7 +1,9 @@
 // Static teaching copy; stable simulation/action identities remain in existing modules.
+import {loggingLayout} from './logging-view.js';
 import {queueLayout} from './message-queue-view.js';
 import {dataCentersLayout} from './data-centers-view.js';
 export const lessonLayouts={
+ 'logging-operations':loggingLayout,
  'message-queue':queueLayout,
  'data-centers':dataCentersLayout,
  workload:{title:'แยกหน้าที่ แล้วเลือกฐานข้อมูล',intro:'Web tier รับคำขอและประมวลผล ส่วน Data tier เก็บข้อมูล แยกชั้นแล้วปรับทรัพยากรได้อิสระ แต่ database ยังเป็นคอขวดหรือล่มได้ เลือก SQL / NoSQL จากรูปแบบข้อมูลและการใช้งาน ไม่ใช่ชื่อเทคโนโลยี',cards:[['เครื่องเดียว','Web และ Database ใช้ทรัพยากรร่วมกัน เริ่มง่าย แต่เพิ่มกำลังแยกแต่ละชั้นไม่ได้'],['แยกชั้น','Web tier ↔ Data tier ปรับทรัพยากรแยกกัน แต่ยังต้องออกแบบ backup และ recovery']],steps:['เลือกแยก Web tier / Data tier เพิ่มทรัพยากร Web เป็น 3 แล้วกดทดลอง สังเกต Data tier ยังเป็น 1','เลือกเครื่องเดียว แล้วกดทดลอง ดูว่าทั้งสองส่วนใช้ทรัพยากรร่วมกัน','ปิด Database พร้อมใช้งาน แล้วกดทดลอง สังเกตว่าเพิ่ม Web ก็ยังอ่านข้อมูลไม่ได้','เปิด Database กลับ เลือกโจทย์ร้านค้าและฐานข้อมูลที่จะลอง แล้วกดทดลอง อ่านเหตุผลและข้อจำกัดของ SQL / NoSQL'],groups:[['โครงสร้างและทรัพยากร',['db-layout','web-size','data-size','db-available']],['โจทย์และชนิดข้อมูล',['db-scenario','db-engine']]],note:'กดทดลองจึงอัปเดตผล หน่วยทรัพยากรเป็นค่าจำลอง ไม่ใช่จำนวนเครื่องหรือผลวัดความเร็ว'},
