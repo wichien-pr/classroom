@@ -1,5 +1,8 @@
 // One dictionary for contextual hints. Aliases share the same explanation.
 const entries = [
+ ['Data center|Data centers','ศูนย์ข้อมูลที่รวมระบบประมวลผล เครือข่าย และที่เก็บข้อมูล','US-East และ US-West มี Web, Database และ Cache แยกกันในภาพจำลอง','ชื่อ region ไม่ได้บอกจำนวนอาคารจริง ต้องตรวจ failure domains ของบริการที่ใช้'],
+ ['Automated deployment','การนำโค้ดและ configuration ไปใช้งานด้วยกระบวนการอัตโนมัติที่ทำซ้ำได้','ปล่อยรุ่นที่ทดสอบแล้วไปแต่ละศูนย์ตามขั้น rollout','อัตโนมัติไม่ได้แปลว่าปลอดภัยเสมอ ต้องตรวจ compatibility และเตรียม rollback'],
+ ['Asynchronous','ทำงานต่างจังหวะ โดยต้นทางไม่รอปลายทางทำเสร็จทั้งหมดก่อนดำเนินต่อ','ฐานข้อมูลหลักรับ write แล้วส่งข้อมูลให้ศูนย์สำรองภายหลัง','สำเนาอาจล้าหลังและข้อมูลล่าสุดอาจยังไม่ถึงเมื่อเกิด outage'],
  ['Stateful','เก็บสถานะที่คำขอถัดไปต้องใช้ไว้กับ server เดิม','session ของ A อยู่ที่ Web 1 จึงหาไม่พบเมื่อไป Web 2','Sticky routing ช่วยเลือกเครื่องเดิม แต่ไม่ได้ทำสำเนาสถานะหรือรับประกันว่าเครื่องจะไม่ล่ม'],
  ['Sticky session|Sticky routing|Sticky','นโยบายพยายามส่งคำขอของผู้ใช้เดิมกลับไปยัง server เดิม','คำขอของ A กลับไป Web 1 ที่มี session ของ A','ไม่ใช่การย้ายหรือสำรอง session; เมื่อเครื่องเดิมล่ม เครื่องอื่นอาจไม่มีสถานะนั้น'],
  ['Cookie|Cookies','ข้อมูลขนาดเล็กที่ browser เก็บและส่งไปยังเว็บไซต์ตามเงื่อนไขของ cookie','cookie อาจเก็บ session ID ให้ server ใช้ค้นบริบทผู้ใช้','ไม่ใช่ cookie ทุกตัวมีไว้ยืนยันตัวตน; session cookie ต้องมีการป้องกันและอายุที่เหมาะสม'],
@@ -130,7 +133,7 @@ export function installTermHints(root) {
     observer.disconnect();
     if(trigger&&!trigger.isConnected){hint.hidePopover();trigger=null;}
     // Only explanatory prose, never navigation, input labels, quizzes or action buttons.
-    for(const target of root.querySelectorAll('.objective, .teaching > section > p:not(.eyebrow), .experiment p, .lesson-steps li, .lesson-intro > p:not(.eyebrow), .lesson-card-pair > div, .lesson-notes p, .lesson-notes li, .flow-steps li, .flow-intro > p:not(.eyebrow), #flow-details p, .flow-comparison figcaption, .flow-client-pair > div, .flow-comparison > p, .web-steps li, .web-intro > p:not(.eyebrow), #web-details p, .web-figure .web-box, .web-figure .web-path, #feedback, #outcome')){
+    for(const target of root.querySelectorAll('.dc-diagram p, .dc-dns strong, .dc-tier, .dc-data > div, .objective, .teaching > section > p:not(.eyebrow), .experiment p, .lesson-steps li, .lesson-intro > p:not(.eyebrow), .lesson-card-pair > div, .lesson-notes p, .lesson-notes li, .flow-steps li, .flow-intro > p:not(.eyebrow), #flow-details p, .flow-comparison figcaption, .flow-client-pair > div, .flow-comparison > p, .web-steps li, .web-intro > p:not(.eyebrow), #web-details p, .web-figure .web-box, .web-figure .web-path, #feedback, #outcome')){
       const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT);
       const nodes=[];while(walker.nextNode())if(!walker.currentNode.parentElement.closest('button,a,code,pre,input,select,textarea,label'))nodes.push(walker.currentNode);
       const seen=new Set([...target.querySelectorAll('[data-term]')].map(x=>dictionary.get(x.dataset.term)?.title));

@@ -1,0 +1,11 @@
+.data-centers-lesson .architecture{display:block;padding:20px}
+.dc-diagram{margin:0;font-size:14px;line-height:1.75;color:#243a32}
+.dc-dns,.dc-copy{padding:14px;border:1px solid #acc7b8;border-radius:10px;background:#edf5ef;text-align:center}
+.dc-dns p{margin:4px 0 0}.dc-path{display:block;text-align:center;font-size:14px;margin:10px 0;color:#35554a}
+.dc-sites{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.dc-site{min-width:0;padding:18px;border:2px solid #739a86;border-radius:14px;background:#f7faf7;text-align:center;overflow-wrap:anywhere}
+.dc-site h3{font-size:18px;margin:0 0 8px}.dc-site p{font-size:14px;margin:8px 0}.dc-share{font-size:23px;color:#155c49}
+.dc-tier,.dc-data>div{padding:12px;border:1px solid #bdcec4;border-radius:8px;background:#fff;font-size:14px}
+.dc-data{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dc-offline{border-color:#a7665b;border-style:dashed;background:#fcf0ed}.dc-offline .dc-share{color:#8d3526}
+.dc-diagram figcaption{font-size:13px;color:#4d6158;margin-top:12px}.dc-notes h3{margin-top:24px}
+@media(max-width:650px){.dc-sites{grid-template-columns:1fr}.data-centers-lesson .architecture{padding:12px}.dc-site{padding:14px}}
