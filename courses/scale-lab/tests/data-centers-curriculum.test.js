@@ -15,5 +15,5 @@ test('LAB09 is a new Data centers identity; old history never qualifies it',()=>
  const old=readLocalProgress(null,'[10]');assert.deepEqual(old,['observe']);
  assert.equal(lessons.some(l=>old.includes(l.kind)),false);
  assert.deepEqual(readLocalProgress(encodeLocalProgress(mergeLocalProgress(old,['data-centers'])),null),['observe','data-centers']);
- assert.equal(Object.values(manifest.participation).flatMap(x=>Object.values(x).flat()).length,41);
+ assert.equal(Object.values(manifest.participation).flatMap(x=>Object.values(x).flat()).length,44);
 });

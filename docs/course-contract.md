@@ -1,5 +1,9 @@
 # Static course contract v1
 
+## LAB12 addition (isolated, not deployed)
+
+Adds `database-scaling` with `evaluate-data-tier`, preserving retired Shard history. Current proposed curriculum: **12 lessons / 44 active definitions**. Earlier totals below describe previous revisions. See [LAB12 verification](lab12-verification.md) for source mapping, limits and actual test results.
+
 Optional account-backed **Participation Score** is specified in [participation-contract.md](participation-contract.md): generic per-course GET/POST, manifest-allowlisted simulation operations, server-owned one-point events and idempotent event UUIDs. Its numeric score is separate from grades and Activity; opted-in completion requirements use persisted v2 participation evidence for qualification and exam eligibility. Scale Lab integrates all 11 simulations / 16 action definitions; standalone remains independent.
 
 Account photos are platform-owned, not course assets. See [profile contract](profiles-contract.md) for authenticated delivery, per-route request limits, image validation and private storage. The leaderboard API adds boolean `photo_ref` indicating whether a thumbnail exists; it does not return private storage basenames. Existing course/progress/exam semantics are unchanged.

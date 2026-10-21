@@ -5,7 +5,7 @@ import {readFileSync} from 'node:fs';
 
 test('two-choice presentation contract preserves unique lesson keys and durable original choice actions',()=>{
  const manifest=JSON.parse(readFileSync(new URL('../course.json',import.meta.url)));
- assert.equal(lessons.length,11);
+ assert.equal(lessons.length,12);
  assert.equal(new Set(lessons.map(l=>l.kind)).size,lessons.length);
  for(const lesson of lessons){
   assert.equal(lesson.answers.length,2);

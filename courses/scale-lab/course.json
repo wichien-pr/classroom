@@ -2,7 +2,7 @@
   "id": "scale-lab",
   "title": "Scale Lab",
   "subtitle": "SYSTEM DESIGN / TH",
-  "description": "เรียนรู้ System Design ผ่าน 11 Labs ตั้งแต่ Request และฐานข้อมูล ไปจนถึง Load balancing, Cache, Stateless web tier, Data centers และ Message queue พร้อมใช้ Logging, metrics และ automation เพื่อดูแลระบบ",
+  "description": "เรียนรู้ System Design ผ่าน 12 Labs ตั้งแต่ Request และฐานข้อมูล ไปจนถึง Load balancing, Cache, Stateless web tier, Data centers และ Message queue พร้อมใช้ Logging, metrics และ automation เพื่อดูแลระบบ และ Database scaling เพื่อขยายชั้นข้อมูล",
   "enabled": true,
   "order": 1,
   "delivery": "static",
@@ -120,6 +120,15 @@
         "quiz-answer-a",
         "quiz-answer-b"
       ]
+    },
+    "database-scaling": {
+      "database-scaling": [
+        "evaluate-data-tier"
+      ],
+      "check-your-thinking": [
+        "quiz-answer-a",
+        "quiz-answer-b"
+      ]
     }
   },
   "lessons": [
@@ -133,6 +142,7 @@
     "stateless-web",
     "data-centers",
     "message-queue",
-    "logging-operations"
+    "logging-operations",
+    "database-scaling"
   ]
 }

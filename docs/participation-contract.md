@@ -1,5 +1,9 @@
 # Participation Score v2 — first participation per button
 
+## LAB12 addition (isolated, not deployed)
+
+Adds `database-scaling` with `evaluate-data-tier`, preserving retired Shard history. Current proposed curriculum: **12 lessons / 44 active definitions**. Earlier totals below describe previous revisions. See [LAB12 verification](lab12-verification.md) for source mapping, limits and actual test results.
+
 Participation points are not grades or levels and do not write learning Activity. For courses explicitly opting into combined completion, persisted v2 awards also provide simulation/thinking evidence to qualify lessons for levels and exam eligibility. Each stable button earns one server-owned point only once per account/course/lesson/interaction. Repeated clicks, new UUIDs, concurrent devices, reset, reload and relogin earn zero. The two original choices are separate stable buttons regardless of their randomized visual A/B positions; correctness does not determine participation. This is self-reported participation, not anti-cheat grading.
 
 ## User-approved fresh scoring era

@@ -1,5 +1,9 @@
 # Classroom — Modular courses
 
+## LAB12 addition (isolated, not deployed)
+
+Adds `database-scaling` with `evaluate-data-tier`, preserving retired Shard history. Current proposed curriculum: **12 lessons / 44 active definitions**. Earlier totals below describe previous revisions. See [LAB12 verification](docs/lab12-verification.md) for source mapping, limits and actual test results.
+
 ## LAB11 Logging, metrics & automation — deployed locally
 
 Deployed at http://127.0.0.1:8080/ with manifest, private bank and compiled assets coordinated. All four build files match the isolated browser-tested build. Database integrity, preexisting data/sessions and uploads were preserved; only anonymous health-check sessions were added. Port 8081 remains untouched. Reload existing tabs. Backup: `backups/lab11-20261021T085417Z`; verification: `evidence/lab11/deployment.json`. Authenticated production interaction was not rerun. No commit or push performed.

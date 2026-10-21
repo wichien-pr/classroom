@@ -4,5 +4,5 @@ test('LAB07 teaches static CDN workflow with preserved curriculum and private ba
  const bank=JSON.parse(readFileSync(new URL('../assessment.json',import.meta.url))).questions.filter(q=>q.lesson_id==='cdn');
  assert.deepEqual(bank.map(q=>[q.id,q.answer,q.options.map(o=>o.id)]),[['cdn-15','a',['a','b','c']],['cdn-16','a',['a','b','c']]]);
  assert.match(bank[0].prompt,/TTL/);assert.match(bank[1].prompt,/query/);
- const manifest=JSON.parse(readFileSync(new URL('../course.json',import.meta.url)));assert.equal(manifest.lessons.length,11);assert.deepEqual(manifest.participation.cdn,{cdn:['decision'],'check-your-thinking':['quiz-answer-a','quiz-answer-b']});
+ const manifest=JSON.parse(readFileSync(new URL('../course.json',import.meta.url)));assert.equal(manifest.lessons.length,12);assert.deepEqual(manifest.participation.cdn,{cdn:['decision'],'check-your-thinking':['quiz-answer-a','quiz-answer-b']});
 });

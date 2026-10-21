@@ -15,5 +15,5 @@ test('LAB11 replaces Sharding with a fresh logging-operations identity and retai
  const old=readLocalProgress(null,'[10,12]');assert.deepEqual(old,['observe','shard']);
  assert.equal(old.includes('logging-operations'),false);
  assert.deepEqual(readLocalProgress(encodeLocalProgress(mergeLocalProgress(old,['logging-operations'])),null),['observe','shard','logging-operations']);
- assert.equal(Object.values(m.participation).flatMap(s=>Object.values(s).flat()).length,41);
+ assert.equal(Object.values(m.participation).flatMap(s=>Object.values(s).flat()).length,44);
 });

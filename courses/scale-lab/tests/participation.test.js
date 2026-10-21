@@ -19,14 +19,14 @@ test('already counted is a successful server result, not an error or optimistic 
  assert.equal(client.score,1);assert.equal(client.status,'saved');assert.equal(client.reason,'already_counted');
 });
 
-test('all eleven lesson simulation definitions match reviewed actions',async()=>{
+test('all twelve lesson simulation definitions match reviewed actions',async()=>{
  const {readFile}=await import('node:fs/promises');
  const manifest=JSON.parse(await readFile(new URL('../course.json',import.meta.url)));
  assert.deepEqual(Object.fromEntries(Object.entries(manifest.participation).map(([lesson, definitions])=>[lesson,{[lesson]:definitions[lesson]}])),{
  flow:{flow:['step']},workload:{workload:['estimate']},stock:{stock:['order']},balance:{balance:['route']},
  replica:{replica:['write','read-replica','read-primary','sync']},
  cache:{cache:['read-cache','update','invalidate']},cdn:{cdn:['decision']},'stateless-web':{'stateless-web':['web-request']},
- 'data-centers':{'data-centers':['dc-request']},'message-queue':{'message-queue':['enqueue-jobs','process-jobs']},'logging-operations':{'logging-operations':['inspect-logs','inspect-metrics','run-pipeline']}
+ 'data-centers':{'data-centers':['dc-request']},'message-queue':{'message-queue':['enqueue-jobs','process-jobs']},'logging-operations':{'logging-operations':['inspect-logs','inspect-metrics','run-pipeline']},'database-scaling':{'database-scaling':['evaluate-data-tier']}
  });
 });
 
