@@ -13,7 +13,7 @@ test('CDN request journey: miss hit stale expiry invalidation version and explic
 });
 for(const width of [320,390,1440])test(`CDN accessible figures and no attribution at ${width}`,async({page})=>{
  await page.setViewportSize({width,height:1000});await page.goto('/');await page.locator('[data-lesson="7"]').click();
- await expect(page.locator('#cdn-diagram')).toBeVisible();await expect(page.locator('#cdn-distance')).toBeVisible();await expect(page.locator('#cdn-system')).toBeVisible();
+ await expect(page.locator('#cdn-diagram')).toBeVisible();await page.locator('#lesson-details summary').click();await expect(page.locator('#cdn-distance')).toBeVisible();await expect(page.locator('#cdn-system')).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  expect(await page.locator('body').innerText()).not.toMatch(/cdn\.pdf|PDF|คู่มือต้นฉบับ|หน้า\s*\d/i);
  await page.locator('#decision').focus();await page.keyboard.press('Enter');await expect(page.locator('#outcome')).toContainText('MISS');

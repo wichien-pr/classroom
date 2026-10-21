@@ -130,7 +130,7 @@ export function installTermHints(root) {
     observer.disconnect();
     if(trigger&&!trigger.isConnected){hint.hidePopover();trigger=null;}
     // Only explanatory prose, never navigation, input labels, quizzes or action buttons.
-    for(const target of root.querySelectorAll('.objective, .teaching > section > p:not(.eyebrow), .experiment p, .web-steps li, .web-intro > p:not(.eyebrow), #web-details p, .web-figure .web-box, .web-figure .web-path, #feedback, #outcome')){
+    for(const target of root.querySelectorAll('.objective, .teaching > section > p:not(.eyebrow), .experiment p, .lesson-steps li, .lesson-intro > p:not(.eyebrow), .lesson-card-pair > div, .lesson-notes p, .lesson-notes li, .flow-steps li, .flow-intro > p:not(.eyebrow), #flow-details p, .flow-comparison figcaption, .flow-client-pair > div, .flow-comparison > p, .web-steps li, .web-intro > p:not(.eyebrow), #web-details p, .web-figure .web-box, .web-figure .web-path, #feedback, #outcome')){
       const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT);
       const nodes=[];while(walker.nextNode())if(!walker.currentNode.parentElement.closest('button,a,code,pre,input,select,textarea,label'))nodes.push(walker.currentNode);
       const seen=new Set([...target.querySelectorAll('[data-term]')].map(x=>dictionary.get(x.dataset.term)?.title));

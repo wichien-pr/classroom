@@ -29,6 +29,10 @@ import {installTermHints} from './terms.js';
 installTermHints(document.querySelector('#app'));
 import * as m from './models.js';
 import {flowView,singleServerDiagram} from './single-server.js';
+import {mountSingleServerLayout} from './single-server-layout.js';
+import './single-server-layout.css';
+import {mountLessonLayout} from './lesson-layout.js';
+import './lesson-layout.css';
 import {lessons} from './lessons.js';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -62,6 +66,10 @@ function mount(){
 const l=lessons[selected-1];
 feedback=quizSelections.has(l.kind) ? (quizSelections.get(l.kind)===1?'ถูกต้อง — ':'ยังไม่ถูก — ')+l.why : '';
 $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a class="skip" href="#main">ข้ามไปห้องทดลอง</a><div class="layout"><aside class="sidebar"><div class="brand"><span class="brand-mark">S<span>↗</span></span><div>Scale Lab<small>SYSTEM DESIGN / TH</small></div></div><div class="course-label">ORDER SYSTEM · ${lessons.length} LABS</div><nav aria-label="บทเรียน">${lessons.map(x=>`<button data-lesson-kind="${x.kind}" data-lesson="${x.id}" aria-current="${x.id===selected?'page':'false'}"><span class="nav-num">${String(x.id).padStart(2,'0')}</span><span>${x.title}</span><span class="done">${progress.includes(x.id)?'✓':''}</span></button>`).join('')}</nav><div class="sidebar-bottom"><p id="progress-status" role="status"></p><button id="retry-progress" hidden>ลองโหลดอีกครั้ง</button><span id="progress">${progress.length} / ${lessons.length} บทเรียนจบ</span><progress max="${lessons.length}" value="${progress.length}" aria-label="ความคืบหน้าบทเรียน"></progress></div></aside><div class="workspace"><div class="simulation"><span class="dot"></span><strong>EDUCATIONAL SIMULATION</strong><span>โครงสร้างและค่าทั้งหมดเป็นแบบจำลองเพื่อการเรียนรู้ ไม่ใช่ benchmark จริง</span></div><header class="topbar"><span>ห้องทดลอง / ระบบสั่งซื้อสินค้า</span><span class="source-ref">คู่มือต้นฉบับ §${l.chapter}</span></header><main id="main"><div class="lesson-heading"><div><p class="eyebrow">LAB ${String(l.id).padStart(2,'0')} / ${l.en}</p><h1>${l.title}</h1><p class="objective">${l.objective}</p></div><span class="manual-tag">MANUAL STEP</span></div><section class="participation" aria-label="Participation Score"><strong>Participation Score · <span id="participation-score">—</span></strong><p id="participation-status" role="status"></p><button id="retry-participation" hidden>ลองบันทึกคะแนนอีกครั้ง</button><small>ทดลองหรือกดตอบ quiz แต่ละปุ่มครั้งแรกได้ 1 คะแนนต่อบัญชี ไม่ว่าถูกหรือผิด · นับตามตัวเลือกเดิม ไม่ใช่ตำแหน่ง A/B · สุ่มลำดับเมื่อเปิดหน้าใหม่ · กดซ้ำ โหลดใหม่ หรือเข้าสู่ระบบใหม่ไม่เพิ่มคะแนน · ระหว่างบันทึกปุ่มจะปิดชั่วคราว รอให้พร้อมก่อนกดครั้งถัดไป · คะแนนไม่ใช่ Level · ในบัญชีต้องครบ 3 เงื่อนไขทุกบท: กดเรียนจบ + ทดลองหลัก + ตอบ A หรือ B จึงนับคลาสสำหรับ Level · ไม่รวมเปิดหน้า/เปลี่ยนบท/รีเซ็ต</small></section><section class="lesson-completion" aria-label="สถานะการเรียนบทนี้"><button type="button" id="complete-lesson" aria-describedby="completion-status">ทำเครื่องหมายว่าเรียนจบ</button><p id="completion-status" role="status"></p><button type="button" id="retry-completion-load" hidden>ลองโหลดอีกครั้ง</button></section><div class="learning-grid"><section class="lab" aria-label="ห้องทดลองแบบจำลอง"><div class="panel-title"><h2>ทดลองกับระบบ</h2><button id="reset">เริ่มการทดลองใหม่</button></div><div class="architecture" id="architecture" aria-label="แผนภาพสถาปัตยกรรม"></div><div class="state-grid" id="state-view" aria-label="สถานะแบบจำลอง"></div><div class="control-area"><h3>01 / ตั้งสถานการณ์และลงมือ</h3><div class="controls">${controls(l.kind)}</div></div><div class="observation"><h3>02 / สิ่งที่เกิดขึ้น</h3><p id="outcome" role="status" aria-live="polite"></p></div><div class="event-area"><div class="event-heading"><h3>บันทึกเหตุการณ์</h3><span>เรียงตามขั้น · ไม่ใช่เวลาจริง</span></div><ol id="event-log"></ol></div></section><aside class="teaching" aria-label="คำอธิบายประกอบ"><section><p class="eyebrow">WHY IT WORKS</p><h2>เข้าใจเหตุผล ก่อนเพิ่มเครื่องมือ</h2><p>${l.explain}</p><div class="experiment"><strong>ลองตามนี้</strong><p>${l.try}</p></div></section><section class="quiz"><p class="eyebrow">CHECK YOUR THINKING</p><h2>${l.question}</h2><div class="answers">${quizOrder.get(l.kind).map((choice,i)=>`<button data-answer="${choice}"><span>${i===0?'A':'B'}</span>${l.answers[choice]}</button>`).join('')}</div><p id="feedback" role="status">${feedback||'เลือกคำตอบเพื่อดูเหตุผล — ตอบใหม่ได้เสมอ'}</p></section></aside></div><footer><span>${storageOK?'บันทึกเฉพาะความคืบหน้าใน browser นี้':'บันทึกไม่ได้ — ใช้งานต่อได้ แต่ความคืบหน้าอยู่ในหน่วยความจำ'}</span><button id="next">${selected===12?'กลับบทแรก':'บทถัดไป →'}</button></footer></main></div></div><dialog id="help-dialog"><div class="dialog-header"><h2 id="dialog-title"></h2><button id="close-dialog" autofocus>ปิด</button></div><div id="dialog-content"></div></dialog>`;
+ if(l.kind==='flow'){
+  mountSingleServerLayout($('#main'));
+  document.querySelector('.source-ref').textContent='Single-server setup';
+ }
  if(l.kind==='stateless-web'){
   document.querySelector('.teaching section').insertAdjacentHTML('afterend',webNotes());
   $('#main').classList.add('web-lesson');
@@ -99,13 +107,14 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
   $('#accept-loss').onchange=e=>{state.replication.acceptLoss=e.target.checked;};
   $('#promote').onclick=()=>act('promote');
  }
- if(l.kind==='balance'){document.querySelector('.teaching section').insertAdjacentHTML('afterend',balanceNotes());document.querySelector('.source-ref').textContent='Load-balancer · หน้า 1–2';}
+ if(l.kind==='balance'){document.querySelector('.teaching section').insertAdjacentHTML('afterend',balanceNotes());document.querySelector('.source-ref').textContent='Load balancer · กระจายคำขอ';}
  if(l.kind==='stock'){document.querySelector('.teaching section').insertAdjacentHTML('afterend',scalingNotes());document.querySelector('.source-ref').textContent='Scale up / Scale out';}
  if(l.kind==='workload') {
   document.querySelector('.teaching section').insertAdjacentHTML('afterend',databaseNotes());
   document.querySelector('.source-ref').textContent='แยกชั้น · เลือกฐานข้อมูล';
   $('#db-layout').onchange=()=>{$('#data-size').disabled=$('#db-layout').value==='single';};
  }
+ mountLessonLayout($('#main'),l.kind);
  document.querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>navigate(Number(b.dataset.lesson)));
  document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>act(b.dataset.action));
  document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>answer(Number(b.dataset.answer)));
