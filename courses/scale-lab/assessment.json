@@ -322,46 +322,6 @@
       "answer": "b"
     },
     {
-      "id": "region-21",
-      "lesson_id": "region",
-      "prompt": "ก่อน promote writer อีก region ควรทำอะไร?",
-      "options": [
-        {
-          "id": "a",
-          "text": "fence writer เดิมและตรวจ replication"
-        },
-        {
-          "id": "b",
-          "text": "เปิด writer ทั้งสองทันที"
-        },
-        {
-          "id": "c",
-          "text": "เปลี่ยน DNS อย่างเดียวก็เพียงพอเสมอ"
-        }
-      ],
-      "answer": "a"
-    },
-    {
-      "id": "region-22",
-      "lesson_id": "region",
-      "prompt": "GeoDNS เปลี่ยนแล้ว client สลับทันทีหรือไม่?",
-      "options": [
-        {
-          "id": "a",
-          "text": "ใช่ไม่มีข้อยกเว้น"
-        },
-        {
-          "id": "b",
-          "text": "ไม่ เพราะ cache และ connection เดิม"
-        },
-        {
-          "id": "c",
-          "text": "ใช่ถ้าฐานข้อมูลเป็น relational"
-        }
-      ],
-      "answer": "b"
-    },
-    {
       "id": "shard-23",
       "lesson_id": "shard",
       "prompt": "Sharding ต่างจาก replication อย่างไร?",
@@ -440,6 +400,38 @@
         }
       ],
       "answer": "dependency"
+    },
+    {
+      "id": "message-queue-decoupling",
+      "lesson_id": "message-queue",
+      "prompt": "Workers หยุดชั่วคราว แต่คิวยังพร้อมและมีที่ว่าง Producer ทำอะไรได้?",
+      "options": [
+        {
+          "id": "publish",
+          "text": "ส่งงานเข้าคิวให้รอประมวลผลภายหลัง"
+        },
+        {
+          "id": "complete",
+          "text": "รับประกันว่างานภาพเสร็จทันที"
+        }
+      ],
+      "answer": "publish"
+    },
+    {
+      "id": "message-queue-scaling",
+      "lesson_id": "message-queue",
+      "prompt": "คิวงานภาพโตต่อเนื่องเพราะทำงานไม่ทัน ควรพิจารณาอะไร?",
+      "options": [
+        {
+          "id": "web",
+          "text": "เพิ่ม web servers เท่านั้น งานจะเสร็จเร็วเอง"
+        },
+        {
+          "id": "workers",
+          "text": "เพิ่ม workers ตามคอขวดและวัดเวลารอ โดยขยายแยกจากผู้ส่งได้"
+        }
+      ],
+      "answer": "workers"
     }
   ]
 }

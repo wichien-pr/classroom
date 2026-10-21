@@ -1,3 +1,6 @@
+import './message-queue.css';
+import {queueInitial,queueAction} from './message-queue.js';
+import {queueControls,queueDiagram,queueNotes} from './message-queue-view.js';
 import './stateless-web.css';
 import {webInitial,webRequest} from './stateless-web.js';
 import {webControls,webDiagram,webNotes,webSteps} from './stateless-web-view.js';
@@ -49,7 +52,7 @@ const quizSelections=new Map(); // Per-lesson choices survive simulation reset/n
 const quizOrder=new Map(lessons.map(l=>[l.kind,Math.random()<0.5?[1,0]:[0,1]]));
 if (!account) { try{const ids=readLocalProgress(localStorage.getItem(LOCAL_PROGRESS_KEY),localStorage.getItem('scale-lab-progress'));localHistory=ids;progress=lessons.filter(l=>ids.includes(l.kind)).map(l=>l.id);localStorage.setItem(LOCAL_PROGRESS_KEY,encodeLocalProgress(ids));}catch{storageOK=false;} }
 let selected=1,state,events=[],feedback='',message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';
-function initial(){return {dataCenters:dataCentersInitial(),webLab:webInitial(),cdnLab:cdnInitial(),cacheLab:cacheInitial(),replication:replicationInitial(),balance:balanceInitial(),scaling:scalingInitial(),database:databaseInitial(),step:0,client:'browser',up:[true,true],cursor:0,shared:false,logged:false,db:100,cache:null,reads:0,primary:0,replica:0,stock:5,orders:{},pending:true,attempts:0,sent:0,done:false,dead:false,receipt:false,active:selected===1?0:-1};}
+function initial(){return {queueLab:queueInitial(),dataCenters:dataCentersInitial(),webLab:webInitial(),cdnLab:cdnInitial(),cacheLab:cacheInitial(),replication:replicationInitial(),balance:balanceInitial(),scaling:scalingInitial(),database:databaseInitial(),step:0,client:'browser',up:[true,true],cursor:0,shared:false,logged:false,db:100,cache:null,reads:0,primary:0,replica:0,stock:5,orders:{},pending:true,attempts:0,sent:0,done:false,dead:false,receipt:false,active:selected===1?0:-1};}
 const button=(id,text)=>`<button type="button" id="${id}" data-action="${id}">${text}</button>`;
 const number=(id,label,value,min=0,max=1000000)=>`<label>${label}<input id="${id}" type="number" value="${value}" min="${min}" max="${max}" step="1"></label>`;
 function controls(kind){switch(kind){
@@ -59,6 +62,7 @@ case 'stock':return scalingControls();
 case 'balance':return balanceControls();
 case 'replica':return replicationControls();
 case 'cache':return cacheControls();
+case 'message-queue':return queueControls();
 case 'stateless-web':return webControls();
 case 'shard':return number('customer','Customer ID',7,0)+number('shards','จำนวน shards',3,1,8)+button('shard','Route key');
 case 'cdn':return cdnControls();
@@ -117,6 +121,13 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
   document.querySelector('.source-ref').textContent='แยกชั้น · เลือกฐานข้อมูล';
   $('#db-layout').onchange=()=>{$('#data-size').disabled=$('#db-layout').value==='single';};
  }
+ if(l.kind==='message-queue'){
+  $('.teaching section').insertAdjacentHTML('afterend',queueNotes());
+  $('#main').classList.add('message-queue-lesson');
+  $('.source-ref').textContent='Message queue · งานภาพแบบ asynchronous';
+  for(const [id,key] of [['mq-producer','producerUp'],['mq-consumer','consumerUp']])$('#'+id).onchange=e=>{state.queueLab[key]=e.target.checked;renderState();};
+  $('#mq-workers').onchange=e=>{state.queueLab.workers=Number(e.target.value);renderState();};
+ }
  if(l.kind==='data-centers'){
   document.querySelector('.teaching section').insertAdjacentHTML('afterend',dataCentersNotes());
   $('#main').classList.add('data-centers-lesson');
@@ -139,9 +150,10 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
  $('#complete-lesson').onclick=()=>completeLesson(lessons[selected-1]);
 }
 function navigate(id){selected=id;state=initial();events=[];feedback='';message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';mount();$('#main').setAttribute('tabindex','-1');$('#main').focus({preventScroll:true});}
-function renderState(){const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='data-centers'?dataCentersDiagram(state.dataCenters):l.kind==='stateless-web'?webDiagram(state.webLab):l.kind==='cdn'?cdnDiagram(state.cdnLab):l.kind==='cache'?cacheDiagram(state.cacheLab):l.kind==='replica'?replicationDiagram(state.replication):l.kind==='balance'?balanceDiagram(state.balance):l.kind==='stock'?scalingDiagram(state.scaling):l.kind==='workload'?databaseDiagram(state.database):l.kind==='flow'?singleServerDiagram(state.step,state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+function renderState(){const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='message-queue'?queueDiagram(state.queueLab):l.kind==='data-centers'?dataCentersDiagram(state.dataCenters):l.kind==='stateless-web'?webDiagram(state.webLab):l.kind==='cdn'?cdnDiagram(state.cdnLab):l.kind==='cache'?cacheDiagram(state.cacheLab):l.kind==='replica'?replicationDiagram(state.replication):l.kind==='balance'?balanceDiagram(state.balance):l.kind==='stock'?scalingDiagram(state.scaling):l.kind==='workload'?databaseDiagram(state.database):l.kind==='flow'?singleServerDiagram(state.step,state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
 let entries=[];
 switch(l.kind){case 'flow':{const v=flowView(state.step,state.client);entries=[['ขั้นที่เดินแล้ว',`${state.step} / ${m.FLOW_STEPS}`],['Domain',v.domain],['IP ที่ client ได้รับ',v.ip],['HTTP request',v.request],['HTTP response',v.response]];break;}
+case 'message-queue':entries=[['งานรอ',state.queueLab.jobs.length],['งานเสร็จ',state.queueLab.completed.length]];break;
 case 'data-centers':{const r=evaluateDataCenters(state.dataCenters);entries=[['ปลายทาง US-East',`${r.routes[0]}%`],['ปลายทาง US-West',`${r.routes[1]}%`],['ส่งไปศูนย์ที่ล่ม',`${r.unavailable} ราย`],['ย้ายศูนย์',`${r.moved} ราย`]];break;}
 case 'workload':{const r=evaluateDatabase(state.database);entries=[['ทรัพยากร Web',`Web tier: ${r.web}`],['ทรัพยากร DB',`Data tier: ${r.data}`],['การขยาย',r.independent?'แยกอิสระ':'ทรัพยากรร่วม'],['Database',r.ready?'พร้อม':'ไม่พร้อม']];break;}
 case 'cdn':{const s=state.cdnLab;entries=[['เวลา / TTL ใหม่',`${s.now} / ${s.ttl}`],['Origin reads',s.originReads],['Hits / Misses สำเร็จ',`${s.hits} / ${s.misses}`],['รูปที่ได้รับ',s.delivered??'ไม่มี'],['Origin version',s.origin]];break;}
@@ -159,6 +171,7 @@ const lesson=lessons[selected-1].kind;
 let meaningful=!(action==='step' && state.step>=m.FLOW_STEPS) && !(action==='work' && !state.pending);
 if(action==='step' && !meaningful)return;
 try{switch(action){
+case 'enqueue-jobs':case 'process-jobs':{const r=queueAction(state.queueLab,action,$('#mq-type').value);message=r.message;meaningful=r.meaningful;break;}
 case 'web-request':{const r=webRequest(state.webLab,{target:Number($('#web-target').value),sticky:$('#web-sticky').checked});message=`${r.code} · ${r.server<0?'ไม่มี Web พร้อม':'Web '+(r.server+1)} · ${{OK:'ตรวจ session A สำเร็จและตอบโปรไฟล์',NO_SESSION:'ไม่พบ session A ที่เครื่องนี้ routing ไม่ได้ย้ายสถานะให้',STORE_UNAVAILABLE:'อ่าน shared session store ไม่ได้ แม้ web พร้อม',NO_WEB:'ยังไปไม่ถึง store เพราะไม่มี web รับงาน'}[r.code]}`;break;}
 case 'dc-request':{
  const c={eastShare:val('dc-share'),eastCapacity:val('dc-east-capacity'),westCapacity:val('dc-west-capacity')};
