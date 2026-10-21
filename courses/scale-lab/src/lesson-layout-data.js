@@ -1,8 +1,10 @@
 // Static teaching copy; stable simulation/action identities remain in existing modules.
+import {dataTierLayout} from './database-scaling-view.js';
 import {loggingLayout} from './logging-view.js';
 import {queueLayout} from './message-queue-view.js';
 import {dataCentersLayout} from './data-centers-view.js';
 export const lessonLayouts={
+ 'database-scaling':dataTierLayout,
  'logging-operations':loggingLayout,
  'message-queue':queueLayout,
  'data-centers':dataCentersLayout,

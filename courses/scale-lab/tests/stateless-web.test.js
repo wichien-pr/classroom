@@ -5,7 +5,7 @@ import {lessons} from '../src/lessons.js';
 import fs from 'node:fs';
 test('new stateless-web curriculum never reinterprets retired queue/session history',()=>{
  const manifest=JSON.parse(fs.readFileSync(new URL('../course.json',import.meta.url)));
- assert.equal(manifest.lessons.length,11);
+ assert.equal(manifest.lessons.length,12);
  assert.ok(manifest.lessons.includes('stateless-web'));
  assert.ok(!manifest.lessons.includes('queue'));
  assert.deepEqual(lessons.map(l=>l.kind),manifest.lessons);

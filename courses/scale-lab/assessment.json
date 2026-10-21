@@ -424,6 +424,38 @@
         }
       ],
       "answer": "stop"
+    },
+    {
+      "id": "database-scaling-routing",
+      "lesson_id": "database-scaling",
+      "prompt": "เมื่อเปลี่ยนจาก user_id % 4 เป็น user_id % 8 ต้องคำนึงถึงอะไร?",
+      "options": [
+        {
+          "id": "automatic",
+          "text": "ข้อมูลทั้งหมดจะย้ายไป shard ใหม่ทันทีที่แก้สูตร"
+        },
+        {
+          "id": "migration",
+          "text": "ต้องมีแผนย้ายข้อมูลและเปลี่ยน routing ให้สอดคล้องกัน"
+        }
+      ],
+      "answer": "migration"
+    },
+    {
+      "id": "database-scaling-hotspot",
+      "lesson_id": "database-scaling",
+      "prompt": "จำนวนแถวเท่ากันทุก shard แต่มี user_id หนึ่งถูกเรียกบ่อยมาก ควรสรุปอย่างไร?",
+      "options": [
+        {
+          "id": "hotspot",
+          "text": "อาจเกิด hotspot ต้องพิจารณาการกระจายคำขอ ไม่ใช่จำนวนแถวอย่างเดียว"
+        },
+        {
+          "id": "balanced",
+          "text": "โหลดต้องเท่ากัน เพราะข้อมูลกระจายเท่ากันแล้ว"
+        }
+      ],
+      "answer": "hotspot"
     }
   ]
 }
