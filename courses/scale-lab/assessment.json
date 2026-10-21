@@ -282,46 +282,6 @@
       "answer": "a"
     },
     {
-      "id": "queue-17",
-      "lesson_id": "queue",
-      "prompt": "Queue รับ message แล้วแปลว่างานสำเร็จหรือไม่?",
-      "options": [
-        {
-          "id": "a",
-          "text": "ใช่ worker ไม่จำเป็น"
-        },
-        {
-          "id": "b",
-          "text": "ใช่ side effect เสร็จแน่นอน"
-        },
-        {
-          "id": "c",
-          "text": "ไม่ ต้องติดตาม processing และ ACK"
-        }
-      ],
-      "answer": "c"
-    },
-    {
-      "id": "queue-18",
-      "lesson_id": "queue",
-      "prompt": "Worker ตายหลัง side effect ก่อน ACK ต้องเตรียมอะไร?",
-      "options": [
-        {
-          "id": "a",
-          "text": "idempotency รองรับ redelivery"
-        },
-        {
-          "id": "b",
-          "text": "เพิ่ม worker แล้วไม่ต้อง dedup"
-        },
-        {
-          "id": "c",
-          "text": "ห้าม retry ทุกกรณี"
-        }
-      ],
-      "answer": "a"
-    },
-    {
       "id": "observe-19",
       "lesson_id": "observe",
       "prompt": "CPU ปกติแต่ checkout ช้าควรทำอย่างไร?",
@@ -440,6 +400,46 @@
         }
       ],
       "answer": "c"
+    },
+    {
+      "id": "stateless-web-routing",
+      "lesson_id": "stateless-web",
+      "prompt": "ต้องการให้คำขอของผู้ใช้เดิมไปยัง web เครื่องอื่นได้ โดยทุกเครื่องยังตรวจ session เดียวกัน ควรจัดสถานะอย่างไร?",
+      "options": [
+        {
+          "id": "local",
+          "text": "เก็บ session ไว้เฉพาะดิสก์ web เครื่องแรก"
+        },
+        {
+          "id": "shared",
+          "text": "ย้าย session ไป shared store ที่ web ทุกเครื่องเข้าถึงได้"
+        },
+        {
+          "id": "none",
+          "text": "เลิกตรวจ authentication เพื่อไม่ต้องเก็บ state"
+        }
+      ],
+      "answer": "shared"
+    },
+    {
+      "id": "stateless-web-store",
+      "lesson_id": "stateless-web",
+      "prompt": "Web ทุกเครื่องต้องอ่าน session จาก shared store ที่ขณะนี้ล่ม การเพิ่ม web อีกเครื่องช่วยแก้ปัญหานี้โดยตรงหรือไม่?",
+      "options": [
+        {
+          "id": "automatic",
+          "text": "ช่วย เพราะ stateless ไม่ต้องอ่านข้อมูลอีก"
+        },
+        {
+          "id": "sticky",
+          "text": "ช่วยถ้าใช้ sticky routing โดยไม่ต้องกู้ store"
+        },
+        {
+          "id": "dependency",
+          "text": "ไม่ช่วย ต้องกู้หรือจัดความพร้อมของ store ซึ่งเป็น dependency ร่วม"
+        }
+      ],
+      "answer": "dependency"
     }
   ]
 }

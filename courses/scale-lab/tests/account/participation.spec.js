@@ -92,7 +92,7 @@ test('quiz load and lost-response retry lock choices across progress renders and
  await page.reload();await expect(page.locator('#participation-score')).toHaveText('1');
 });
 
-test('completed flow and empty worker are not new actions',async({page})=>{
+test('completed flow is not a new action and stateless setup is unscored',async({page})=>{
  let score=0; const seen=new Set();
  await page.route('**/api/courses/scale-lab/progress',r=>r.fulfill({json:{completed:[],total:11,csrf_token:'test'}}));
  await page.route('**/api/courses/scale-lab/participation',r=>{
@@ -103,10 +103,11 @@ test('completed flow and empty worker are not new actions',async({page})=>{
  for(let i=1;i<=6;i++){await page.locator('#step').click();await expect(page.locator('#participation-score')).toHaveText('1');}
  await page.locator('#step').click();
  await page.waitForTimeout(100); expect(score).toBe(1);
- await page.locator('[data-lesson="8"]').click();
- await page.locator('#failure').selectOption('ok');await page.locator('#work').click();
- await expect(page.locator('#participation-score')).toHaveText('2');
- await page.locator('#work').click(); await page.waitForTimeout(100);expect(score).toBe(2);
+ await page.getByRole('button',{name:/Stateless web tier/}).click();
+ await page.locator('#web-mode').selectOption('shared');await page.locator('#web-up-2').check();
+ await page.waitForTimeout(100);expect(score).toBe(1);
+ await page.locator('#web-request').click();await expect(page.locator('#participation-score')).toHaveText('2');
+ await page.locator('#web-request').click();await page.waitForTimeout(100);expect(score).toBe(2);
 });
 
 test('invalid input never earns score',async({page})=>{

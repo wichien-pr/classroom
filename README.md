@@ -1,5 +1,13 @@
 # Classroom — Modular courses
 
+## LAB08 Stateless web tier — deploy ในเครื่องแล้ว
+
+เปิดใช้งานที่ http://127.0.0.1:8080/ หลังได้รับอนุญาตและสำรอง DB/uploads/dist แล้ว Build ทุกไฟล์ตรงกับ isolated integrated QA; ตรวจ login 200 และ guest course/assets redirect 303 ข้อมูลบัญชี/ประวัติเดิมคงอยู่ ไม่แตะพอร์ต 8081
+
+แทน Queue ด้วยบทใหม่ `stateless-web` ไม่โอนคะแนนหรือประวัติ Queue/Session: **11 Labs / 38 active action definitions** จาก manifest ต้องมี manual + simulation + thinking ของบทใหม่ ตรวจ Node **59**, backend **399**, browser **40**, account browser **15** และ compiled standalone / real OTP QA ครบ 38 actions รวมสองบัญชี, dedup/retry/concurrency และ restart DB เดิม ภาพ 320/390/1440px
+
+Manifest/private bank เป็น dynamic-read จึงต้อง release คู่กับ compiled client; **reload แท็บเดิมก่อนเรียนต่อ** ไม่มีการล้างหรือแปลงประวัติและ frozen exam snapshots ดู [ผล QA, deployment, backup และ hashes](docs/lab08-verification.md). รายงาน LAB07/LAB06 ด้านล่างเป็นประวัติรุ่นก่อน
+
 ## LAB07 CDN — deploy ในเครื่องแล้ว
 
 LAB07 สอนการส่งไฟล์ static ผ่าน CDN พร้อมภาพเส้นทาง HIT/MISS, การแยก CDN จาก cache ข้อมูล และตัวทดลอง TTL, รูปเก่า, invalidation, URL รุ่นใหม่ และทางสำรองเมื่อ CDN ล่ม ใช้ภาษาไทยและไม่แสดงชื่อไฟล์หรือหน้าอ้างอิงในบทเรียน

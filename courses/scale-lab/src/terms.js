@@ -1,5 +1,21 @@
 // One dictionary for contextual hints. Aliases share the same explanation.
 const entries = [
+ ['Stateful','เก็บสถานะที่คำขอถัดไปต้องใช้ไว้กับ server เดิม','session ของ A อยู่ที่ Web 1 จึงหาไม่พบเมื่อไป Web 2','Sticky routing ช่วยเลือกเครื่องเดิม แต่ไม่ได้ทำสำเนาสถานะหรือรับประกันว่าเครื่องจะไม่ล่ม'],
+ ['Sticky session|Sticky routing|Sticky','นโยบายพยายามส่งคำขอของผู้ใช้เดิมกลับไปยัง server เดิม','คำขอของ A กลับไป Web 1 ที่มี session ของ A','ไม่ใช่การย้ายหรือสำรอง session; เมื่อเครื่องเดิมล่ม เครื่องอื่นอาจไม่มีสถานะนั้น'],
+ ['Cookie|Cookies','ข้อมูลขนาดเล็กที่ browser เก็บและส่งไปยังเว็บไซต์ตามเงื่อนไขของ cookie','cookie อาจเก็บ session ID ให้ server ใช้ค้นบริบทผู้ใช้','ไม่ใช่ cookie ทุกตัวมีไว้ยืนยันตัวตน; session cookie ต้องมีการป้องกันและอายุที่เหมาะสม'],
+ ['Shared store|Shared data store','ที่เก็บข้อมูลร่วมซึ่ง web หลายเครื่องเข้าถึงได้','Web 1 และ Web 2 อ่าน session A จาก store เดียวกัน','เป็น dependency ร่วมที่อาจล่มหรือเป็นคอขวด ต้องออกแบบ capacity และ recovery'],
+ ['Authentication','การตรวจยืนยันว่าผู้ใช้เป็นใคร','ตรวจ session ที่สัมพันธ์กับ cookie ก่อนตอบโปรไฟล์','ต่างจาก authorization ซึ่งตรวจว่าผู้ใช้นั้นมีสิทธิ์ทำอะไร'],
+ ['Autoscaling|Auto-scaling','การเพิ่มหรือลดทรัพยากรอัตโนมัติตามนโยบายและสัญญาณโหลด','เพิ่ม web instance เมื่อโหลดเกินเกณฑ์ และลดเมื่อโหลดต่ำ','ไม่เกิดทันทีและไม่แก้คอขวดของ shared store โดยอัตโนมัติ'],
+ ['Redis','ระบบเก็บข้อมูลแบบ key-value และโครงสร้างข้อมูลที่ประมวลผลในหน่วยความจำ พร้อมตัวเลือก persistence','เก็บ session ที่ web หลายเครื่องเข้าถึงได้','ความทนทานและ failover ขึ้นกับการตั้งค่า ไม่รับประกันว่าไม่มีข้อมูลสูญหาย'],
+ ['Memcached','ระบบ cache แบบ key-value ในหน่วยความจำสำหรับใช้งานร่วมกัน','เก็บข้อมูลที่สร้างใหม่ได้เพื่อลดการอ่าน DB','ข้อมูลอาจถูก evict หรือหายเมื่อ restart ไม่ใช่ที่เก็บถาวร'],
+ ['Persistence','การเก็บข้อมูลให้คงอยู่ข้ามการสิ้นสุดของ process หรือการเริ่มระบบใหม่ตามกลไกที่ใช้','บันทึกข้อมูลจาก memory ลง storage','ต้องตรวจจังหวะการบันทึกและ failure ที่รองรับ ไม่ได้แปลว่าข้อมูลจะไม่มีวันหาย'],
+ ['Expiry|Expiration','การหมดอายุตามเวลาหรือนโยบายที่กำหนด','session หมดอายุแล้วต้องยืนยันตัวตนใหม่','ต่างจากการที่ store ล่ม และไม่ใช่หลักประกันว่าข้อมูลถูกเก็บครบจนถึงเวลาหมดอายุ'],
+ ['Recovery','กระบวนการกู้บริการหรือข้อมูลหลังความผิดพลาด','กู้ session store และตรวจว่าข้อมูลใดสูญหายก่อนเปิดรับงาน','ต้องมีแผนและทดสอบจริง; restart อย่างเดียวไม่ได้กู้ข้อมูลที่สูญไป'],
+ ['Health check|Health checks','การตรวจสถานะเพื่อช่วยตัดสินใจว่าส่วนใดพร้อมรับงาน','LB หยุดส่งคำขอใหม่ไปยัง web ที่ตรวจว่าไม่พร้อม','การตรวจมีช่วงเวลาและขอบเขต; ผ่าน check ไม่ได้ยืนยันว่าทุก dependency พร้อม'],
+ ['Client','ผู้เรียกใช้บริการ เช่น browser หรือ mobile app','client ส่งคำขอโปรไฟล์พร้อม cookie ไปยัง web','ต้องตรวจข้อมูลและสิทธิ์ฝั่ง server ไม่เชื่อข้อมูลจาก client โดยตรง'],
+ ['HTTP','โพรโทคอลสื่อสารแบบคำขอและคำตอบที่ใช้กับเว็บ','client ส่ง GET เพื่อขอโปรไฟล์ แล้ว server ตอบสถานะและข้อมูล','HTTP อย่างเดียวไม่เข้ารหัสการส่งข้อมูล; งานจริงควรใช้ HTTPS'],
+ ['Server|Servers|Web server','เครื่องหรือโปรแกรมที่ให้บริการคำขอจาก client','web server รับคำขอและเรียก session store','คำว่า server อาจหมายถึง process หรือเครื่อง ต้องดูขอบเขตและจุดล้มร่วม'],
+ ['Benchmark','การทดสอบเพื่อวัดและเปรียบเทียบประสิทธิภาพภายใต้เงื่อนไขที่ระบุ','วัด latency และ throughput ด้วย workload ที่กำหนด','ค่าจำลองเพื่อการเรียนไม่ใช่ผล benchmark ของระบบจริง'],
  ['NoSQL','กลุ่มฐานข้อมูลนอกแบบ relational เช่น key-value, document, graph และ wide-column','รายละเอียดสินค้าอาจเก็บเป็นเอกสารหรือความสัมพันธ์เป็นกราฟตาม query','ไม่ใช่คำรับประกันว่าเร็วกว่า SQL; ความสามารถ JOIN และ transaction ต่างกันตามผลิตภัณฑ์'],
  ['SQL|RDBMS|Relational','ฐานข้อมูลเชิงสัมพันธ์จัดข้อมูลเป็นตารางและแถว; SQL เป็นภาษาสำหรับจัดการและค้นข้อมูล','เชื่อม customers กับ orders ตาม customer_id','ต้องออกแบบ schema และ index; SQL ก็เก็บ JSON ได้ในหลายผลิตภัณฑ์'],
  ['JOIN','การรวมข้อมูลจากหลายตารางตามเงื่อนไขความสัมพันธ์','หาเจ้าของ order โดยเชื่อม orders.customer_id กับ customers.id','ต้นทุนขึ้นกับข้อมูล index และ query plan ไม่ใช่ว่าทุก JOIN จะช้า'],
@@ -114,7 +130,7 @@ export function installTermHints(root) {
     observer.disconnect();
     if(trigger&&!trigger.isConnected){hint.hidePopover();trigger=null;}
     // Only explanatory prose, never navigation, input labels, quizzes or action buttons.
-    for(const target of root.querySelectorAll('.objective, .teaching > section > p:not(.eyebrow), .experiment p, #feedback, #outcome')){
+    for(const target of root.querySelectorAll('.objective, .teaching > section > p:not(.eyebrow), .experiment p, .web-steps li, .web-intro > p:not(.eyebrow), #web-details p, .web-figure .web-box, .web-figure .web-path, #feedback, #outcome')){
       const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT);
       const nodes=[];while(walker.nextNode())if(!walker.currentNode.parentElement.closest('button,a,code,pre,input,select,textarea,label'))nodes.push(walker.currentNode);
       const seen=new Set([...target.querySelectorAll('[data-term]')].map(x=>dictionary.get(x.dataset.term)?.title));

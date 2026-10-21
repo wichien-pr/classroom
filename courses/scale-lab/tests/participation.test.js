@@ -25,7 +25,7 @@ test('all eleven lesson simulation definitions match reviewed actions',async()=>
  assert.deepEqual(Object.fromEntries(Object.entries(manifest.participation).map(([lesson, definitions])=>[lesson,{[lesson]:definitions[lesson]}])),{
  flow:{flow:['step']},workload:{workload:['estimate']},stock:{stock:['order']},balance:{balance:['route']},
  replica:{replica:['write','read-replica','read-primary','sync']},
- cache:{cache:['read-cache','update','invalidate']},cdn:{cdn:['decision']},queue:{queue:['work']},
+ cache:{cache:['read-cache','update','invalidate']},cdn:{cdn:['decision']},'stateless-web':{'stateless-web':['web-request']},
  observe:{observe:['decision']},region:{region:['decision']},shard:{shard:['shard']}
  });
 });

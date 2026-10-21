@@ -1,0 +1,52 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readLocalProgress,mergeLocalProgress} from '../src/local-progress.js';
+import {lessons} from '../src/lessons.js';
+import fs from 'node:fs';
+test('new stateless-web curriculum never reinterprets retired queue/session history',()=>{
+ const manifest=JSON.parse(fs.readFileSync(new URL('../course.json',import.meta.url)));
+ assert.equal(manifest.lessons.length,11);
+ assert.ok(manifest.lessons.includes('stateless-web'));
+ assert.ok(!manifest.lessons.includes('queue'));
+ assert.deepEqual(lessons.map(l=>l.kind),manifest.lessons);
+ const old=readLocalProgress(null,'[5,9]');
+ assert.deepEqual(old,['session','queue']);
+ assert.deepEqual(old.filter(id=>manifest.lessons.includes(id)),[]);
+ assert.deepEqual(mergeLocalProgress(old,['stateless-web']),['session','queue','stateless-web']);
+ assert.deepEqual(readLocalProgress('{"version":2,"completed":["queue","stateless-web"]}',null),['queue','stateless-web']);
+});
+test('local session binds user to web1; shared session works on web2',async()=>{
+ const {webInitial,webRequest}=await import('../src/stateless-web.js');
+ const s=webInitial();
+ assert.equal(webRequest(s,{target:1}).code,'NO_SESSION');
+ assert.equal(webRequest(s,{target:1,sticky:true}).server,0);
+ assert.equal(webRequest(s,{target:1,sticky:true}).code,'OK');
+ const shared=webInitial('shared');
+ assert.equal(webRequest(shared,{target:1}).code,'OK');
+ assert.equal(shared.storeReads,1);
+});
+test('health-aware routing cannot repair missing state or failed store; new web can share state',async()=>{
+ const {webInitial,webRequest}=await import('../src/stateless-web.js');
+ const s=webInitial();s.up[0]=false;
+ assert.equal(webRequest(s,{sticky:true}).code,'NO_SESSION');
+ assert.equal(s.last.server,1);
+ const shared=webInitial('shared');shared.up[0]=false;
+ assert.equal(webRequest(shared,{sticky:true}).code,'OK');
+ shared.up[2]=true;
+ assert.equal(webRequest(shared,{target:2}).server,2);
+ assert.equal(shared.last.code,'OK');
+ shared.storeUp=false;
+ assert.equal(webRequest(shared,{target:2}).code,'STORE_UNAVAILABLE');
+ shared.up=[false,false,false];
+ const reads=shared.storeReads;
+ assert.equal(webRequest(shared).code,'NO_WEB');
+ assert.equal(shared.storeReads,reads);
+});
+test('private bank covers new lesson with new question IDs and reviewed keys',()=>{
+ const bank=JSON.parse(fs.readFileSync(new URL('../assessment.json',import.meta.url)));
+ const qs=bank.questions.filter(q=>q.lesson_id==='stateless-web');
+ assert.deepEqual(qs.map(q=>q.id),['stateless-web-routing','stateless-web-store']);
+ assert.ok(!bank.questions.some(q=>q.lesson_id==='queue'));
+ assert.equal(qs[0].answer,'shared');assert.equal(qs[1].answer,'dependency');
+ assert.equal(lessons.find(l=>l.kind==='stateless-web').answers.length,2);
+});

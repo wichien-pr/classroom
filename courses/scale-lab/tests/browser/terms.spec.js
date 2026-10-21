@@ -37,3 +37,32 @@ test('hints cover lessons without nesting in action controls; mobile stays withi
   await expect(page.locator('button button, a button, label .term-trigger')).toHaveCount(0);
   await expect(page.locator('#guide')).toHaveCount(0);
 });
+
+test('LAB08 moved prose and numbered steps retain contextual hints',async({page})=>{
+ await page.goto('/');await page.locator('[data-lesson-kind="stateless-web"]').click();
+ await page.locator('.web-steps li').first().getByRole('button',{name:'อธิบายคำศัพท์ session',exact:true}).click();
+ await expect(page.locator('#term-hint')).toContainText('บริบทผู้ใช้');await page.keyboard.press('Escape');
+ await expect(page.locator('.web-intro .term-trigger')).not.toHaveCount(0);
+ await page.locator('#web-details summary').click();
+ await page.locator('#web-details').getByRole('button',{name:'อธิบายคำศัพท์ NoSQL',exact:true}).click();await expect(page.locator('#term-hint')).toContainText('ฐานข้อมูล');
+ await expect(page.locator('button button, label .term-trigger, select .term-trigger, .answers .term-trigger')).toHaveCount(0);
+});
+
+test('LAB08 vocabulary opens meanings across steps, figures and expanded details',async({page})=>{
+ await page.setViewportSize({width:390,height:900});await page.goto('/');await page.locator('[data-lesson-kind="stateless-web"]').click();await page.locator('#web-details summary').click();
+ for(const word of ['Stateful','Sticky','Cookie','Shared store','Authentication','Autoscaling','Redis','Memcached','Persistence','Expiry','Recovery','Health check','Client','HTTP']){
+  const term=page.locator('.term-trigger').filter({hasText:new RegExp('^'+word+'$','i')}).first();await term.click();
+  await expect(page.locator('#term-hint')).toBeVisible();await expect(page.locator('#term-meaning')).not.toBeEmpty();
+  expect(await page.locator('#term-hint').evaluate(el=>{const b=el.getBoundingClientRect();return b.left>=0&&b.right<=innerWidth})).toBe(true);
+  await page.keyboard.press('Escape');await expect(term).toBeFocused();
+ }
+ await page.locator('#web-request').click();await expect(page.locator('#outcome')).toContainText('NO_SESSION');
+ await expect(page.locator('button button, label .term-trigger, select .term-trigger, .answers .term-trigger')).toHaveCount(0);
+});
+
+test('term hints remain readable on dark LAB08 figures',async({page})=>{
+ await page.goto('/');await page.locator('[data-lesson-kind="stateless-web"]').click();
+ const term=page.locator('#web-diagram .term-trigger').first();
+ await expect(term).toHaveCSS('color','rgb(188, 232, 252)');
+ await term.hover();await expect(term).toHaveCSS('color','rgb(255, 255, 255)');
+});
