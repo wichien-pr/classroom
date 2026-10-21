@@ -100,18 +100,19 @@
         "quiz-answer-b"
       ]
     },
-    "region": {
-      "region": [
-        "decision"
+    "shard": {
+      "shard": [
+        "shard"
       ],
       "check-your-thinking": [
         "quiz-answer-a",
         "quiz-answer-b"
       ]
     },
-    "shard": {
-      "shard": [
-        "shard"
+    "message-queue": {
+      "message-queue": [
+        "enqueue-jobs",
+        "process-jobs"
       ],
       "check-your-thinking": [
         "quiz-answer-a",
@@ -129,7 +130,7 @@
     "cdn",
     "stateless-web",
     "data-centers",
-    "region",
+    "message-queue",
     "shard"
   ]
 }

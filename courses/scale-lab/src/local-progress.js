@@ -1,6 +1,6 @@
 // Frozen pre-LAB05-swap order. Never interpret legacy numbers using display order.
 const legacy=['flow','workload','stock','balance','session','replica','cache','cdn','queue','observe','region','shard'];
-const known=[...legacy,'stateless-web','data-centers'];
+const known=[...legacy,'stateless-web','data-centers','message-queue'];
 export const LOCAL_PROGRESS_KEY='scale-lab-progress-v2';
 export function readLocalProgress(current,old){
  try {

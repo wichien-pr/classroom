@@ -6,7 +6,7 @@ import {readLocalProgress,mergeLocalProgress,encodeLocalProgress} from '../src/l
 const json=p=>JSON.parse(readFileSync(new URL(p,import.meta.url)));
 test('LAB09 is a new Data centers identity; old history never qualifies it',()=>{
  const manifest=json('../course.json'),bank=json('../assessment.json');
- assert.equal(lessons[8].kind,'data-centers');assert.equal(lessons[9].kind,'region');
+ assert.equal(lessons[8].kind,'data-centers');assert.equal(lessons[9].kind,'message-queue');
  assert.deepEqual(manifest.lessons,lessons.map(l=>l.kind));
  assert.equal(manifest.participation.observe,undefined);
  assert.deepEqual(manifest.participation['data-centers'],{'data-centers':['dc-request'],'check-your-thinking':['quiz-answer-a','quiz-answer-b']});
@@ -15,5 +15,5 @@ test('LAB09 is a new Data centers identity; old history never qualifies it',()=>
  const old=readLocalProgress(null,'[10]');assert.deepEqual(old,['observe']);
  assert.equal(lessons.some(l=>old.includes(l.kind)),false);
  assert.deepEqual(readLocalProgress(encodeLocalProgress(mergeLocalProgress(old,['data-centers'])),null),['observe','data-centers']);
- assert.equal(Object.values(manifest.participation).flatMap(x=>Object.values(x).flat()).length,38);
+ assert.equal(Object.values(manifest.participation).flatMap(x=>Object.values(x).flat()).length,39);
 });

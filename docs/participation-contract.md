@@ -43,3 +43,7 @@ QA uses `scripts/participation-qa-server.py --port 8116 --info evidence/particip
 ## LAB08 active definitions
 
 The active count remains programmatically verified at 38 = 16 simulation actions + 22 thinking choices over 11 lessons. Queue’s `queue / work` and its thinking choices are retired, not renamed or mapped. New `stateless-web / stateless-web / web-request` represents an actual authenticated-profile request attempt; failed requests are meaningful too. Changing the scenario, selected target, sticky routing, web availability or store availability, plus reset/navigation, is unscored. Original new-lesson answer 0 stays wrong (`quiz-answer-a`), answer 1 stays correct (`quiz-answer-b`) in either display permutation. Old Queue/Session receipts and awards remain immutable and do not qualify the replacement. See [LAB08 verification](lab08-verification.md).
+
+## LAB10 current active definitions
+
+Supersedes earlier active totals: **39 definitions = 17 simulation + 22 thinking** across 11 lessons. Retire `region / region / decision` and its thinking choices without deleting historical awards. Add `message-queue / message-queue / enqueue-jobs` and `process-jobs`, plus lesson-scoped original A/B choices. Queue enqueue scores only when accepted; worker processing scores only when at least one job completes. Full/empty/unavailable no-ops, setup, worker scaling and reset do not submit participation. Historical `queue` awards do not qualify this new namespace. See [LAB10 verification](lab10-verification.md).

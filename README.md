@@ -1,5 +1,13 @@
 # Classroom — Modular courses
 
+## LAB10 Message queue — deployed locally
+
+LAB10 is deployed at http://127.0.0.1:8080/. Manifest, private assessment bank and compiled assets were released together; all four build-file hashes match the isolated tested build. SQLite integrity and preservation of existing data/uploads were verified. Port 8081 was left untouched. Reload existing course tabs. Deployment evidence: `evidence/lab10/deployment.json`; backup: `backups/lab10-20261021T081014Z`. No commit or push was performed. The LAB09 forward-reference remains unchanged. The implementation report below records the pre-deployment verification stage.
+
+## LAB10 Message queue — pre-deployment verification
+
+Isolated worktree `classroom-lab10` replaces Multi-region with a new `message-queue` identity: Thai photo-job queue experiment, independent outages, worker scaling and private assessment. Retired history does not qualify the replacement. **11 lessons / 39 active action definitions**; Node **66**, backend **401**, compiled browser **83**, account UI **15** passed, plus two-account real local OTP and same-DB restart QA. No staging/commit/push/deployment or production services touched. See [source mapping, evidence and limitations](docs/lab10-verification.md). Earlier sections below describe historical releases.
+
 ## LAB08 Stateless web tier — deploy ในเครื่องแล้ว
 
 เปิดใช้งานที่ http://127.0.0.1:8080/ หลังได้รับอนุญาตและสำรอง DB/uploads/dist แล้ว Build ทุกไฟล์ตรงกับ isolated integrated QA; ตรวจ login 200 และ guest course/assets redirect 303 ข้อมูลบัญชี/ประวัติเดิมคงอยู่ ไม่แตะพอร์ต 8081

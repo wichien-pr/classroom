@@ -11,7 +11,7 @@ test('LAB09 routes traffic, keeps DNS/data/capacity separate and resets safely',
  await page.locator('#dc-east-capacity').fill('100');await page.locator('#dc-same-release').uncheck();await page.locator('#dc-request').click();await expect(page.locator('#outcome')).toContainText('รุ่นบริการต่างกัน');
  const n=await page.locator('#event-log li').count();await page.locator('#dc-share').fill('101');await page.locator('#dc-request').click();await expect(page.locator('#event-log li')).toHaveCount(n);
  await page.locator('#reset').click();await expect(page.locator('#dc-west-up')).toBeChecked();await expect(page.locator('#dc-share')).toHaveValue('60');
- await page.locator('[data-lesson="10"]').click();await expect(page.locator('#main h1')).toContainText('Multi-region');await expect(page.locator('#main')).not.toHaveClass(/sequence-lesson/);
+ await page.locator('[data-lesson="10"]').click();await expect(page.locator('#main h1')).toContainText('Message queue');await expect(page.locator('#main')).toHaveClass(/sequence-lesson/);
  await page.locator('[data-lesson="9"]').click();await expect(page.locator('#dc-diagram')).toHaveCount(1);expect(errors).toEqual([]);
 });
 test('LAB09 explains new terms and diagram vocabulary without nesting controls',async({page})=>{
