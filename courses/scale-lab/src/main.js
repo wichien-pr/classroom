@@ -34,6 +34,9 @@ import './single-server-layout.css';
 import {mountLessonLayout} from './lesson-layout.js';
 import './lesson-layout.css';
 import {lessons} from './lessons.js';
+import {dataCentersInitial,evaluateDataCenters} from './data-centers.js';
+import {dataCentersControls,dataCentersDiagram,dataCentersNotes,dataCentersMessage} from './data-centers-view.js';
+import './data-centers.css';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const account = import.meta.env.VITE_CLASSROOM_PROGRESS_URL
@@ -46,7 +49,7 @@ const quizSelections=new Map(); // Per-lesson choices survive simulation reset/n
 const quizOrder=new Map(lessons.map(l=>[l.kind,Math.random()<0.5?[1,0]:[0,1]]));
 if (!account) { try{const ids=readLocalProgress(localStorage.getItem(LOCAL_PROGRESS_KEY),localStorage.getItem('scale-lab-progress'));localHistory=ids;progress=lessons.filter(l=>ids.includes(l.kind)).map(l=>l.id);localStorage.setItem(LOCAL_PROGRESS_KEY,encodeLocalProgress(ids));}catch{storageOK=false;} }
 let selected=1,state,events=[],feedback='',message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';
-function initial(){return {webLab:webInitial(),cdnLab:cdnInitial(),cacheLab:cacheInitial(),replication:replicationInitial(),balance:balanceInitial(),scaling:scalingInitial(),database:databaseInitial(),step:0,client:'browser',up:[true,true],cursor:0,shared:false,logged:false,db:100,cache:null,reads:0,primary:0,replica:0,stock:5,orders:{},pending:true,attempts:0,sent:0,done:false,dead:false,receipt:false,active:selected===1?0:-1};}
+function initial(){return {dataCenters:dataCentersInitial(),webLab:webInitial(),cdnLab:cdnInitial(),cacheLab:cacheInitial(),replication:replicationInitial(),balance:balanceInitial(),scaling:scalingInitial(),database:databaseInitial(),step:0,client:'browser',up:[true,true],cursor:0,shared:false,logged:false,db:100,cache:null,reads:0,primary:0,replica:0,stock:5,orders:{},pending:true,attempts:0,sent:0,done:false,dead:false,receipt:false,active:selected===1?0:-1};}
 const button=(id,text)=>`<button type="button" id="${id}" data-action="${id}">${text}</button>`;
 const number=(id,label,value,min=0,max=1000000)=>`<label>${label}<input id="${id}" type="number" value="${value}" min="${min}" max="${max}" step="1"></label>`;
 function controls(kind){switch(kind){
@@ -59,7 +62,7 @@ case 'cache':return cacheControls();
 case 'stateless-web':return webControls();
 case 'shard':return number('customer','Customer ID',7,0)+number('shards','จำนวน shards',3,1,8)+button('shard','Route key');
 case 'cdn':return cdnControls();
-case 'observe':return '<label>CPU ปกติ แต่ checkout ช้า<select id="choice"><option value="cpu">เพิ่ม CPU ทันที</option><option value="trace">ดู trace, pool wait และ lock wait</option></select></label>'+button('decision','ทดลองการตัดสินใจ');
+case 'data-centers':return dataCentersControls();
 case 'region':return '<label>Region หลักติดต่อไม่ได้<select id="choice"><option value="dns">สลับ DNS แล้วเปิด writer ทันที</option><option value="fence">Fence writer เดิม ตรวจ lag แล้ว promote</option></select></label>'+button('decision','ทดลองการตัดสินใจ');
 }}
 function mount(){
@@ -114,6 +117,11 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
   document.querySelector('.source-ref').textContent='แยกชั้น · เลือกฐานข้อมูล';
   $('#db-layout').onchange=()=>{$('#data-size').disabled=$('#db-layout').value==='single';};
  }
+ if(l.kind==='data-centers'){
+  document.querySelector('.teaching section').insertAdjacentHTML('afterend',dataCentersNotes());
+  $('#main').classList.add('data-centers-lesson');
+  document.querySelector('.source-ref').textContent='Data centers · เส้นทางและข้อมูล';
+ }
  mountLessonLayout($('#main'),l.kind);
  document.querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>navigate(Number(b.dataset.lesson)));
  document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>act(b.dataset.action));
@@ -131,9 +139,10 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
  $('#complete-lesson').onclick=()=>completeLesson(lessons[selected-1]);
 }
 function navigate(id){selected=id;state=initial();events=[];feedback='';message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';mount();$('#main').setAttribute('tabindex','-1');$('#main').focus({preventScroll:true});}
-function renderState(){const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='stateless-web'?webDiagram(state.webLab):l.kind==='cdn'?cdnDiagram(state.cdnLab):l.kind==='cache'?cacheDiagram(state.cacheLab):l.kind==='replica'?replicationDiagram(state.replication):l.kind==='balance'?balanceDiagram(state.balance):l.kind==='stock'?scalingDiagram(state.scaling):l.kind==='workload'?databaseDiagram(state.database):l.kind==='flow'?singleServerDiagram(state.step,state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+function renderState(){const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='data-centers'?dataCentersDiagram(state.dataCenters):l.kind==='stateless-web'?webDiagram(state.webLab):l.kind==='cdn'?cdnDiagram(state.cdnLab):l.kind==='cache'?cacheDiagram(state.cacheLab):l.kind==='replica'?replicationDiagram(state.replication):l.kind==='balance'?balanceDiagram(state.balance):l.kind==='stock'?scalingDiagram(state.scaling):l.kind==='workload'?databaseDiagram(state.database):l.kind==='flow'?singleServerDiagram(state.step,state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
 let entries=[];
 switch(l.kind){case 'flow':{const v=flowView(state.step,state.client);entries=[['ขั้นที่เดินแล้ว',`${state.step} / ${m.FLOW_STEPS}`],['Domain',v.domain],['IP ที่ client ได้รับ',v.ip],['HTTP request',v.request],['HTTP response',v.response]];break;}
+case 'data-centers':{const r=evaluateDataCenters(state.dataCenters);entries=[['ปลายทาง US-East',`${r.routes[0]}%`],['ปลายทาง US-West',`${r.routes[1]}%`],['ส่งไปศูนย์ที่ล่ม',`${r.unavailable} ราย`],['ย้ายศูนย์',`${r.moved} ราย`]];break;}
 case 'workload':{const r=evaluateDatabase(state.database);entries=[['ทรัพยากร Web',`Web tier: ${r.web}`],['ทรัพยากร DB',`Data tier: ${r.data}`],['การขยาย',r.independent?'แยกอิสระ':'ทรัพยากรร่วม'],['Database',r.ready?'พร้อม':'ไม่พร้อม']];break;}
 case 'cdn':{const s=state.cdnLab;entries=[['เวลา / TTL ใหม่',`${s.now} / ${s.ttl}`],['Origin reads',s.originReads],['Hits / Misses สำเร็จ',`${s.hits} / ${s.misses}`],['รูปที่ได้รับ',s.delivered??'ไม่มี'],['Origin version',s.origin]];break;}
 case 'cache':{const s=state.cacheLab;entries=[['DB / source of truth',s.db],['Cache / สำเนา',s.cache??'ว่าง'],['DB reads',s.reads],['Hits / Misses',`${s.hits} / ${s.misses}`],['เวลาจำลอง / TTL',`${s.now} / ${s.ttl}`],['Cache server',s.up?'พร้อม':'ล่ม · fallback ไป DB']];break;}
@@ -151,6 +160,11 @@ let meaningful=!(action==='step' && state.step>=m.FLOW_STEPS) && !(action==='wor
 if(action==='step' && !meaningful)return;
 try{switch(action){
 case 'web-request':{const r=webRequest(state.webLab,{target:Number($('#web-target').value),sticky:$('#web-sticky').checked});message=`${r.code} · ${r.server<0?'ไม่มี Web พร้อม':'Web '+(r.server+1)} · ${{OK:'ตรวจ session A สำเร็จและตอบโปรไฟล์',NO_SESSION:'ไม่พบ session A ที่เครื่องนี้ routing ไม่ได้ย้ายสถานะให้',STORE_UNAVAILABLE:'อ่าน shared session store ไม่ได้ แม้ web พร้อม',NO_WEB:'ยังไปไม่ถึง store เพราะไม่มี web รับงาน'}[r.code]}`;break;}
+case 'dc-request':{
+ const c={eastShare:val('dc-share'),eastCapacity:val('dc-east-capacity'),westCapacity:val('dc-west-capacity')};
+ for(const [key,id] of [['eastUp','dc-east-up'],['westUp','dc-west-up'],['redirect','dc-redirect'],['freshDNS','dc-fresh-dns'],['synced','dc-synced'],['sameRelease','dc-same-release']])c[key]=$('#'+id).checked;
+ const r=evaluateDataCenters(c);state.dataCenters=c;message=dataCentersMessage(r);break;
+}
 case 'step':state.step=m.flowStep(state.step);message=flowView(state.step,state.client).message;break;
 case 'estimate':{
  const config={layout:$('#db-layout').value,web:val('web-size'),data:val('data-size'),available:$('#db-available').checked,scenario:$('#db-scenario').value,engine:$('#db-engine').value};

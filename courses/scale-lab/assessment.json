@@ -282,44 +282,44 @@
       "answer": "a"
     },
     {
-      "id": "observe-19",
-      "lesson_id": "observe",
-      "prompt": "CPU ปกติแต่ checkout ช้าควรทำอย่างไร?",
+      "id": "data-centers-routing",
+      "lesson_id": "data-centers",
+      "prompt": "เปลี่ยน GeoDNS หลัง US-West ล่มแล้ว ผู้ใช้ทุกคนไป US-East ทันทีหรือไม่?",
       "options": [
         {
           "id": "a",
-          "text": "ตรวจ trace และ pool/lock wait"
+          "text": "ไม่เสมอ ผู้ใช้บางส่วนยังมี DNS cache หรือ connection เดิม"
         },
         {
           "id": "b",
-          "text": "ลบ logs ทั้งหมด"
+          "text": "ทันที เพราะ DNS ส่งต่อ HTTP ทุกคำขอ"
         },
         {
           "id": "c",
-          "text": "เพิ่ม CPU โดยไม่ตรวจข้อมูล"
+          "text": "ทันที เพราะข้อมูลทุกศูนย์ sync โดย DNS"
         }
       ],
       "answer": "a"
     },
     {
-      "id": "observe-20",
-      "lesson_id": "observe",
-      "prompt": "Rollback app ทำให้ schema และข้อมูลย้อนเองหรือไม่?",
+      "id": "data-centers-readiness",
+      "lesson_id": "data-centers",
+      "prompt": "ก่อนรับ traffic ทั้งหมดที่ศูนย์สำรอง ควรตรวจอะไร?",
       "options": [
         {
           "id": "a",
-          "text": "ไม่ ต้องวางแผน migration และ recovery"
+          "text": "แค่จำนวน web servers โดยไม่ตรวจข้อมูล"
         },
         {
           "id": "b",
-          "text": "ใช่ทุก database"
+          "text": "ข้อมูลที่จำเป็น กำลังสำรอง และผลทดสอบบริการ/การ deploy ในแต่ละศูนย์"
         },
         {
           "id": "c",
-          "text": "ใช่เมื่อมี load balancer"
+          "text": "แค่ชื่อ region ให้ต่างกัน"
         }
       ],
-      "answer": "a"
+      "answer": "b"
     },
     {
       "id": "region-21",

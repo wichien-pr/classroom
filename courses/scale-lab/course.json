@@ -91,9 +91,9 @@
         "quiz-answer-b"
       ]
     },
-    "observe": {
-      "observe": [
-        "decision"
+    "data-centers": {
+      "data-centers": [
+        "dc-request"
       ],
       "check-your-thinking": [
         "quiz-answer-a",
@@ -128,7 +128,7 @@
     "cache",
     "cdn",
     "stateless-web",
-    "observe",
+    "data-centers",
     "region",
     "shard"
   ]

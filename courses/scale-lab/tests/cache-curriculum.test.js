@@ -5,7 +5,7 @@ import {lessons} from '../src/lessons.js';
 import {readLocalProgress} from '../src/local-progress.js';
 const manifest=JSON.parse(readFileSync(new URL('../course.json',import.meta.url)));
 test('LAB06 replaces Session with original Cache identity, active bank and durable buttons',()=>{
- const ids=['flow','workload','stock','balance','replica','cache','cdn','stateless-web','observe','region','shard'];
+ const ids=['flow','workload','stock','balance','replica','cache','cdn','stateless-web','data-centers','region','shard'];
  assert.deepEqual(lessons.map(l=>l.kind),ids);assert.deepEqual(manifest.lessons,ids);
  assert.deepEqual(manifest.participation.cache,{cache:['read-cache','update','invalidate'],'check-your-thinking':['quiz-answer-a','quiz-answer-b']});
  assert.equal(manifest.participation.session,undefined);
