@@ -1,0 +1,80 @@
+{
+  "id": "back-of-the-envelope-estimation",
+  "title": "Estimate Lab",
+  "subtitle": "SYSTEM DESIGN / TH",
+  "description": "ฝึกประมาณหน่วยข้อมูล latency availability QPS และพื้นที่จัดเก็บ ผ่านการทดลองและตรวจสมมติฐาน",
+  "enabled": true,
+  "order": 2,
+  "delivery": "static",
+  "build_dir": "dist",
+  "entry": "index.html",
+  "lessons": [
+    "estimate-units",
+    "estimate-latency",
+    "estimate-availability",
+    "estimate-traffic",
+    "estimate-storage",
+    "estimate-rounding"
+  ],
+  "completion_requirements": [
+    "manual",
+    "simulation",
+    "thinking"
+  ],
+  "participation": {
+    "estimate-units": {
+      "estimate-units": [
+        "calculate"
+      ],
+      "check-your-thinking": [
+        "quiz-answer-a",
+        "quiz-answer-b"
+      ]
+    },
+    "estimate-latency": {
+      "estimate-latency": [
+        "calculate"
+      ],
+      "check-your-thinking": [
+        "quiz-answer-a",
+        "quiz-answer-b"
+      ]
+    },
+    "estimate-availability": {
+      "estimate-availability": [
+        "calculate"
+      ],
+      "check-your-thinking": [
+        "quiz-answer-a",
+        "quiz-answer-b"
+      ]
+    },
+    "estimate-traffic": {
+      "estimate-traffic": [
+        "calculate"
+      ],
+      "check-your-thinking": [
+        "quiz-answer-a",
+        "quiz-answer-b"
+      ]
+    },
+    "estimate-storage": {
+      "estimate-storage": [
+        "calculate"
+      ],
+      "check-your-thinking": [
+        "quiz-answer-a",
+        "quiz-answer-b"
+      ]
+    },
+    "estimate-rounding": {
+      "estimate-rounding": [
+        "calculate"
+      ],
+      "check-your-thinking": [
+        "quiz-answer-a",
+        "quiz-answer-b"
+      ]
+    }
+  }
+}

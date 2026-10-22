@@ -57,6 +57,10 @@ artifacts/
 profile-photos/
 community-uploads/
 
+# Saved reference page contains personal metadata; never publish
+/Back-of-the-envelope-Estimation.html
+/Back-of-the-envelope-Estimation_files/
+
 # Local reference documents (not published in Git)
 *.[pP][dD][fF]
 

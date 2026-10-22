@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "id": "estimate-units-review",
+      "lesson_id": "estimate-units",
+      "prompt": "ไฟล์ 1 MiB มีขนาดเท่ากับ 1 MB พอดีหรือไม่?",
+      "options": [
+        {
+          "id": "option-0",
+          "text": "เท่ากัน เพราะ M หมายถึงล้านเสมอ"
+        },
+        {
+          "id": "option-1",
+          "text": "ไม่เท่ากัน ต้องระบุฐานและหน่วยก่อนคำนวณ"
+        }
+      ],
+      "answer": "option-1"
+    },
+    {
+      "id": "estimate-latency-review",
+      "lesson_id": "estimate-latency",
+      "prompt": "ตัวเลข latency อ้างอิงเก่าใช้ตัดสิน capacity จริงได้ทันทีหรือไม่?",
+      "options": [
+        {
+          "id": "option-0",
+          "text": "ได้ เพราะอัตราส่วนของทุกระบบเหมือนกัน"
+        },
+        {
+          "id": "option-1",
+          "text": "ใช้ตั้งสมมติฐาน แล้ววัดระบบจริงก่อนตัดสินใจ"
+        }
+      ],
+      "answer": "option-1"
+    },
+    {
+      "id": "estimate-availability-review",
+      "lesson_id": "estimate-availability",
+      "prompt": "99.99% ในหนึ่งปีหมายความว่าอะไรในโมเดลตามเวลา?",
+      "options": [
+        {
+          "id": "option-0",
+          "text": "เทียบเท่า downtime ราว 52.6 นาที เมื่อใช้ปี 365 วัน"
+        },
+        {
+          "id": "option-1",
+          "text": "รับประกันว่าจะหยุดครั้งเดียวไม่เกิน 52.6 นาที"
+        }
+      ],
+      "answer": "option-0"
+    },
+    {
+      "id": "estimate-traffic-review",
+      "lesson_id": "estimate-traffic",
+      "prompt": "QPS เฉลี่ยราว 3,500 พอสำหรับเลือก capacity หรือไม่?",
+      "options": [
+        {
+          "id": "option-0",
+          "text": "พอ เลือก capacity เท่าค่าเฉลี่ยก็รับทุกช่วงได้"
+        },
+        {
+          "id": "option-1",
+          "text": "ยังไม่พอ ต้องระบุ peak และขอบเขต request ให้ชัด"
+        }
+      ],
+      "answer": "option-1"
+    },
+    {
+      "id": "estimate-storage-review",
+      "lesson_id": "estimate-storage",
+      "prompt": "ค่าประมาณ 55 PB จากตัวอย่างพื้นฐานรวม 3 สำเนาแล้วหรือไม่?",
+      "options": [
+        {
+          "id": "option-0",
+          "text": "ยังไม่รวม เป็นสื่อหลักภายใต้การเขียนคงที่และปีละ 365 วัน"
+        },
+        {
+          "id": "option-1",
+          "text": "รวมแล้ว เพราะ storage ทุกระบบทำ 3 สำเนา"
+        }
+      ],
+      "answer": "option-0"
+    },
+    {
+      "id": "estimate-rounding-review",
+      "lesson_id": "estimate-rounding",
+      "prompt": "ควรนำค่าที่ปัดไปใช้เลือก capacity อย่างไร?",
+      "options": [
+        {
+          "id": "option-0",
+          "text": "ใช้ค่าที่ปัดเป็นคำตอบแน่นอนโดยไม่ต้องเขียนหน่วย"
+        },
+        {
+          "id": "option-1",
+          "text": "ใช้สื่อสารลำดับขนาด ระบุสมมติฐานและตรวจความไว"
+        }
+      ],
+      "answer": "option-1"
+    }
+  ]
+}
