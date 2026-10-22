@@ -25,7 +25,8 @@ def test_discovered_course_card_and_authenticated_build(setup_course):
     assert '/courses/example/' in page.text
     assert 'Example' in page.text
     assert 'appworks-progress' not in page.text
-    assert client.get('/courses/example/').text == '<h1>Actual course</h1>'
+    assert client.get('/courses/example/').text.startswith('<h1>Actual course</h1>')
+    assert client.get('/courses/example/').text.count('/platform/presence.js') == 1
     assert client.get('/courses/example/assets/main.js').mimetype in ('text/javascript', 'application/javascript')
     guest = client.application.test_client()
     for path in ('/courses/example/', '/courses/example/assets/main.js'):
@@ -89,7 +90,8 @@ def test_source_traversal_missing_assets_not_served(setup_course, path):
 
 def test_direct_deep_route_serves_entry(setup_course):
     client, _, _ = setup_course
-    assert client.get('/courses/example/labs/replication').text == '<h1>Actual course</h1>'
+    assert client.get('/courses/example/labs/replication').text.startswith('<h1>Actual course</h1>')
+    assert client.get('/courses/example/labs/replication').text.count('/platform/presence.js') == 1
 
 
 def test_validation_command():

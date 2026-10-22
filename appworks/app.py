@@ -222,4 +222,6 @@ def create_app(config=None):
     install_password_reset(app, connect)
     from registration import install as install_registration
     install_registration(app, connect)
+    from presence import install as install_presence
+    install_presence(app, connect)
     return app
