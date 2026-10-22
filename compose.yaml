@@ -1,0 +1,33 @@
+services:
+  classroom:
+    image: ${CLASSROOM_IMAGE:-classroom:local}
+    build:
+      context: .
+      target: runtime
+    env_file:
+      - path: ${CLASSROOM_ENV_FILE:-./docker/runtime.env}
+        required: true
+        format: raw
+    environment:
+      APPWORKS_DATABASE: /data/classroom.sqlite3
+      APPWORKS_PROFILE_UPLOAD_DIR: /data/profile-photos
+      APPWORKS_COMMUNITY_UPLOAD_DIR: /data/community-uploads
+    ports:
+      - "${CLASSROOM_BIND_IP:-127.0.0.1}:${CLASSROOM_PORT:-8082}:8080"
+    volumes:
+      - classroom-data:/data
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s
+volumes:
+  classroom-data:
+    # Explicit selection prevents accidental return to the old QA volume.
+    name: ${CLASSROOM_DATA_VOLUME:?Use sh scripts/classroom-compose.sh for the active deployment}
+    external: true

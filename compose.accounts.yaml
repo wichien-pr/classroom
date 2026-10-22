@@ -1,0 +1,6 @@
+# Active account-only deployment. Use scripts/classroom-compose.sh.
+# This external volume must already exist; Compose must never create/reset it.
+volumes:
+  classroom-data:
+    external: true
+    name: classroom-accounts-20261022

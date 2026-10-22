@@ -1,5 +1,39 @@
 # Classroom — Modular courses
 
+## Active Docker deployment — account-only migration
+
+**http://localhost:8082** now serves one imported host account from fresh external volume `classroom-accounts-20261022`, without learning/activity/community history or uploads. Original host DB and old QA volume are preserved; host 8080 is stopped. Account timestamps/password hash are unchanged, photo reference cleared, derived level starts at L1.
+
+```sh
+# Always select the existing project and BOTH Compose files:
+sh scripts/classroom-compose.sh config --quiet
+sh scripts/classroom-compose.sh ps
+sh scripts/classroom-compose.sh up -d --no-build --no-deps --wait --wait-timeout 180 classroom
+```
+
+See [active operations and account-only migration](docs/account-only-migration.md). Never run the old QA fixture verifier on this volume. Real mail settings are retained, but no email or real-user login was tested. Plain Compose now requires explicit `CLASSROOM_DATA_VOLUME` selection to prevent accidental reversion.
+
+## Historical Docker setup (not the active deployment)
+
+The examples below require a separately pre-created external volume and explicit `CLASSROOM_DATA_VOLUME=<that-volume>`. Do not use the active account volume with another project. Older rollout/verification sections describe their original state, not the current deployment.
+
+```sh
+# รันจาก root ของ repository; ต้องมี Docker Compose 2.30+
+cp -n docker/runtime.env.example docker/runtime.env
+chmod 600 docker/runtime.env
+# ตั้งค่า mail provider / origin ใน runtime.env แบบ private ก่อนเปิดรับสมัคร
+# QA container ใช้ 8082 อยู่: เปลี่ยน CLASSROOM_PORT=8083 หากต้องเปิดอีก stack
+export CLASSROOM_PORT=8083
+docker compose -p classroom -f compose.yaml config --quiet
+docker compose -p classroom -f compose.yaml build
+docker compose -p classroom -f compose.yaml up -d --no-build --wait --wait-timeout 180
+```
+
+เปิด http://localhost:8083 — build จาก source ใน checkout นี้โดยไม่เขียนทับ host `dist` ใช้ non-root runtime และ named volume เก็บ SQLite/รูป/ไฟล์แนบถาวร ค่าเริ่มต้น mail ปิดเพื่อความปลอดภัย **ไม่ได้ข้าม OTP**; ต้องตั้งค่า Graph/SMTP ก่อนสมัครสมาชิกใหม่ ใช้เพียงหนึ่ง instance ต่อฐานข้อมูล SQLite
+
+ทดสอบ image จริงบน linux/arm64 แล้ว: **414 backend + 7 Node + 36 container integration/persistence checks ผ่าน** พร้อม backup/restore แยก volume; QA ที่ http://localhost:8082 ยัง healthy ไม่แทน production 8080 ดู [คู่มือ Docker, prebuilt image, secrets, backup/restore, migration และหลักฐาน](docs/docker-deployment.md)
+
+
 ## LAB12 addition (isolated, not deployed)
 
 Adds `database-scaling` with `evaluate-data-tier`, preserving retired Shard history. Current proposed curriculum: **12 lessons / 44 active definitions**. Earlier totals below describe previous revisions. See [LAB12 verification](docs/lab12-verification.md) for source mapping, limits and actual test results.

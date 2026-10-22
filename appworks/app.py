@@ -101,6 +101,14 @@ def create_app(config=None):
 
     dummy_hash = generate_password_hash(secrets.token_urlsafe(32), method='scrypt')
 
+    @app.get('/healthz')
+    def health():
+        # load_session already verifies the SQLite connection and session schema.
+        # Unlike /login this endpoint never allocates an anonymous session.
+        with connect() as db:
+            db.execute('SELECT id FROM users LIMIT 1').fetchone()
+        return {'status': 'ok'}
+
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         if request.method == 'POST':
