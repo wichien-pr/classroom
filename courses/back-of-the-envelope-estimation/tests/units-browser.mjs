@@ -26,7 +26,7 @@ test('Power of two reference presents all five source rows, separates exact unit
   for(const word of ['Thousand','Million','Billion','Trillion','Quadrillion','Kilobyte','Megabyte','Gigabyte','Terabyte','Petabyte','≈ 1 KB','≈ 1 MB','≈ 1 GB','≈ 1 TB','≈ 1 PB'])assert.ok(table.includes(word),word);
   const note=await page.locator('#units-precision').textContent();
   for(const word of ['1,024 bytes','1,000 bytes','KiB','MiB','GiB','TiB','PiB'])assert.ok(note.includes(word),word);
-  assert.equal(await page.locator('#progress-count').textContent(),'0 / 6');
+  assert.equal(await page.locator('#progress-count').textContent(),'0 / 5');
   await page.locator('[data-lesson="estimate-latency"]').click();assert.equal(await page.locator('.units-reference').count(),0);
   await page.locator('[data-lesson="estimate-units"]').click();assert.equal(await page.locator('.units-reference tbody tr').count(),5);
   for(const width of [320,390,1440]){
@@ -49,6 +49,6 @@ test('source-reference addition keeps exact calculator outputs, reset and local 
    assert.ok((await page.locator('#result').textContent()).includes((2**power).toLocaleString('en')));
   }
   await page.locator('#reset').click();assert.equal(await page.locator('#input-power').inputValue(),'20');
-  await page.locator('#complete-lesson').click();assert.equal(await page.locator('#progress-count').textContent(),'1 / 6');
+  await page.locator('#complete-lesson').click();assert.equal(await page.locator('#progress-count').textContent(),'1 / 5');
  }finally{await page.close()}
 });

@@ -66,33 +66,17 @@
       "answer": "option-1"
     },
     {
-      "id": "estimate-storage-review",
-      "lesson_id": "estimate-storage",
-      "prompt": "ค่าประมาณ 55 PB จากตัวอย่างพื้นฐานรวม 3 สำเนาแล้วหรือไม่?",
+      "id": "estimate-tips-review",
+      "lesson_id": "estimate-tips",
+      "prompt": "บันทึกผลประมาณว่า “5” เพียงอย่างเดียวเพียงพอหรือไม่?",
       "options": [
         {
           "id": "option-0",
-          "text": "ยังไม่รวม เป็นสื่อหลักภายใต้การเขียนคงที่และปีละ 365 วัน"
+          "text": "เพียงพอ เพราะผู้อ่านเดาหน่วยและสมมติฐานได้"
         },
         {
           "id": "option-1",
-          "text": "รวมแล้ว เพราะ storage ทุกระบบทำ 3 สำเนา"
-        }
-      ],
-      "answer": "option-0"
-    },
-    {
-      "id": "estimate-rounding-review",
-      "lesson_id": "estimate-rounding",
-      "prompt": "ควรนำค่าที่ปัดไปใช้เลือก capacity อย่างไร?",
-      "options": [
-        {
-          "id": "option-0",
-          "text": "ใช้ค่าที่ปัดเป็นคำตอบแน่นอนโดยไม่ต้องเขียนหน่วย"
-        },
-        {
-          "id": "option-1",
-          "text": "ใช้สื่อสารลำดับขนาด ระบุสมมติฐานและตรวจความไว"
+          "text": "ไม่พอ ต้องระบุหน่วย เช่น 5 MB และเขียนสมมติฐาน"
         }
       ],
       "answer": "option-1"

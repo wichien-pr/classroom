@@ -1,0 +1,24 @@
+.traffic-reference { margin: 20px 0 28px; color: #263d32; line-height: 1.8; }
+.traffic-reference p { font-size: 14px; margin: 10px 0; overflow-wrap: anywhere; }
+.traffic-reference .traffic-example-note { padding: 16px; background: #eaf0e8; border-radius: 8px; margin-bottom: 20px; }
+.traffic-reference table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 14px; background: white; }
+.traffic-reference caption { text-align: left; font-size: 19px; font-weight: 600; padding-bottom: 12px; }
+.traffic-reference th, .traffic-reference td { padding: 12px 16px; text-align: left; vertical-align: top; border: 1px solid #d6dfd6; overflow-wrap: anywhere; }
+.traffic-reference thead th { background: #eaf0e8; }
+.traffic-reference tbody th { font-weight: 500; }
+.traffic-reference tbody tr:nth-child(even) { background: #f5f7f2; }
+.traffic-reference .traffic-worked { padding: 20px; margin: 24px 0; border: 1px solid #d6dfd6; border-radius: 8px; background: white; }
+.traffic-reference h2 { font-size: 19px; margin: 0 0 14px; }
+.traffic-reference ol { padding-left: 24px; margin: 0; }
+.traffic-reference li { padding: 6px 0; font-size: 14px; }
+.traffic-reference li p { margin: 5px 0; }
+#traffic-size-note { color: #52675b; }
+@media (max-width: 600px) {
+ .traffic-reference table, .traffic-reference tbody, .traffic-reference caption { display: block; }
+ .traffic-reference thead { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+ .traffic-reference tbody tr { display: block; margin-bottom: 12px; border: 1px solid #d6dfd6; border-radius: 6px; overflow: hidden; }
+ .traffic-reference tbody th, .traffic-reference td { display: block; border: 0; padding: 10px 14px; }
+ .traffic-reference tbody th { background: #eaf0e8; font-weight: 600; }
+ .traffic-reference td::before { content: attr(data-label); display: block; color: #52675b; font-size: 12px; }
+ .traffic-reference .traffic-worked { padding: 16px; }
+}

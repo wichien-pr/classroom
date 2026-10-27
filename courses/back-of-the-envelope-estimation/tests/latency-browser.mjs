@@ -26,11 +26,11 @@ async function open(mode){
  const awards=new Set();
  await page.route('**/api/courses/*/progress',async r=>{
   if(r.request().method()==='POST')criteria[r.request().postDataJSON().lesson_id].manual=true;
-  await r.fulfill({json:{csrf_token:'qa-only',completed:lessons.filter(l=>Object.values(criteria[l.id]).every(Boolean)).map(l=>l.id),total:6,criteria}});
+  await r.fulfill({json:{csrf_token:'qa-only',completed:lessons.filter(l=>Object.values(criteria[l.id]).every(Boolean)).map(l=>l.id),total:5,criteria}});
  });
  await page.route('**/api/courses/*/participation',async r=>{
   if(r.request().method()==='POST'){const b=r.request().postDataJSON();criteria[b.lesson_id][b.simulation_id==='check-your-thinking'?'thinking':'simulation']=true;awards.add(`${b.lesson_id}/${b.action}`)}
-  await r.fulfill({json:{csrf_token:'qa-only',score:awards.size,total:18}});
+  await r.fulfill({json:{csrf_token:'qa-only',score:awards.size,total:15}});
  });
  await page.goto(urls[mode]);await page.locator('[data-lesson="estimate-latency"]').click();await page.locator('#calculate:enabled').waitFor();return page;
 }
@@ -74,7 +74,7 @@ test(`${mode}: every historical comparison calculates correctly and retains snap
   await page.locator('#reset').click();assert.equal(await page.locator('#input-first').inputValue(),'100');assert.equal(await page.locator('#input-second').inputValue(),'150000000');
   const term=page.locator('.lesson-intro .term-trigger').first();await term.focus();await page.keyboard.press('Enter');assert.equal(await page.locator('#term-hint').evaluate(e=>e.matches(':popover-open')),true);await page.keyboard.press('Escape');
   assert.equal(await term.evaluate(e=>e===document.activeElement),true);
-  await page.locator('#complete-lesson').click();await page.locator('#calculate:enabled').waitFor();await page.locator('[data-answer]').first().click();await page.waitForFunction(()=>document.querySelector('#progress-count').textContent==='1 / 6');assert.deepEqual(errors,[]);
+  await page.locator('#complete-lesson').click();await page.locator('#calculate:enabled').waitFor();await page.locator('[data-answer]').first().click();await page.waitForFunction(()=>document.querySelector('#progress-count').textContent==='1 / 5');assert.deepEqual(errors,[]);
  }finally{await page.close()}
 });
 }

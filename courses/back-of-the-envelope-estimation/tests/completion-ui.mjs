@@ -51,7 +51,7 @@ async function fixture(options={}){
    awards.add(`${body.lesson_id}/${body.action}`);
    if(failParticipation){failParticipation=false;await route.fulfill({status:503,body:'lost response after commit'});return}
   }
-  await route.fulfill({json:{csrf_token:'qa-only',score:awards.size,total:18}});
+  await route.fulfill({json:{csrf_token:'qa-only',score:awards.size,total:15}});
  });
  await page.goto(urls.account);
  return {page,criteria,calls,events,holdLoad:()=>{options.holdLoad=true},release:()=>release(),releaseLoad:()=>{options.holdLoad=false;releaseLoad()},close:async()=>{assert.deepEqual(errors,[]);await context.close()}};
@@ -81,7 +81,7 @@ test('participation retry retains event identity across navigation and qualifies
   assert.equal(await f.page.locator('#completion-status').textContent(),missing.replace('กดเรียนจบ · ทดลองหลักอย่างน้อย 1 ครั้ง · ',''));
   await f.page.locator('[data-answer="0"]').click();
   await text(f.page,'#completion-status','เรียนจบบทนี้แล้ว · บันทึกในบัญชีแล้ว');
-  assert.equal(await f.page.locator('#progress-count').textContent(),'1 / 6');
+  assert.equal(await f.page.locator('#progress-count').textContent(),'1 / 5');
   assert.equal(f.calls.length,1);await f.page.reload();
   await text(f.page,'#complete-lesson','✓ เรียนจบแล้ว');
  }finally{await f.close()}
@@ -108,7 +108,7 @@ test('standalone completion and unavailable storage never claim account persiste
    assert.equal(await page.locator('#complete-lesson').textContent(),'✓ เรียนจบแล้ว');
    assert.equal(await page.locator('#complete-lesson').isDisabled(),true);
    await capture(page,denied?'storage-error':'standalone-complete');
-   await page.reload();assert.equal(await page.locator('#progress-count').textContent(),denied?'0 / 6':'1 / 6');
+   await page.reload();assert.equal(await page.locator('#progress-count').textContent(),denied?'0 / 5':'1 / 5');
    assert.deepEqual(requests,[]);
   }finally{await context.close()}
  }
@@ -147,7 +147,7 @@ test('pending manual save stays attached to its lesson through navigation and re
   await expect.poll(()=>f.calls.length).toBe(2);f.release();
   await text(f.page,'#complete-lesson','✓ กดเรียนจบแล้ว');
   assert.deepEqual(f.calls,[{lesson_id:id,manual:true},{lesson_id:id,manual:true}]);
-  assert.equal(await f.page.locator('#progress-count').textContent(),'0 / 6');
+  assert.equal(await f.page.locator('#progress-count').textContent(),'0 / 5');
  }finally{await f.close()}
 });
 test('marked and complete states match Scale Lab wording',async()=>{

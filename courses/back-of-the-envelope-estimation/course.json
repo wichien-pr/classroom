@@ -13,8 +13,7 @@
     "estimate-latency",
     "estimate-availability",
     "estimate-traffic",
-    "estimate-storage",
-    "estimate-rounding"
+    "estimate-tips"
   ],
   "completion_requirements": [
     "manual",
@@ -58,17 +57,8 @@
         "quiz-answer-b"
       ]
     },
-    "estimate-storage": {
-      "estimate-storage": [
-        "calculate"
-      ],
-      "check-your-thinking": [
-        "quiz-answer-a",
-        "quiz-answer-b"
-      ]
-    },
-    "estimate-rounding": {
-      "estimate-rounding": [
+    "estimate-tips": {
+      "estimate-tips": [
         "calculate"
       ],
       "check-your-thinking": [

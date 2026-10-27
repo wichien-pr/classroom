@@ -45,7 +45,7 @@ export function installTermHints(root) {
     observer.disconnect();
     if(trigger&&!trigger.isConnected){hint.hidePopover();trigger=null;}
     // Only explanatory prose, never navigation, input labels, quizzes or action buttons.
-    for(const target of root.querySelectorAll('.lesson-intro p, .lesson-steps li, .lesson-notes p, .concept p')){
+    for(const target of root.querySelectorAll('.lesson-intro p, .lesson-steps li, .lesson-notes p, .concept p, .tips-reference p, .tips-reference [data-tip="practice"] ul li')){
       const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT);
       const nodes=[];while(walker.nextNode())if(!walker.currentNode.parentElement.closest('button,a,code,pre,input,select,textarea,label'))nodes.push(walker.currentNode);
       const seen=new Set([...target.querySelectorAll('[data-term]')].map(x=>dictionary.get(x.dataset.term)?.title));

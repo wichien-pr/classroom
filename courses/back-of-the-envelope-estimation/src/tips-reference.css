@@ -1,0 +1,14 @@
+.tips-reference { margin: 20px 0 28px; color: #263d32; line-height: 1.8; }
+.tips-reference h2 { font-size: 20px; margin: 0 0 16px; }
+.tips-reference h3 { font-size: 17px; margin: 0 0 10px; }
+.tips-reference .tips-list { margin: 0; padding-left: 28px; }
+.tips-reference .tips-list > li { padding: 18px 20px; margin: 0 0 14px; background: #fff; border: 1px solid #d6dfd6; border-radius: 8px; }
+.tips-reference p, .tips-reference li { font-size: 14px; overflow-wrap: anywhere; }
+.tips-reference p { margin: 8px 0; }
+.tips-reference ul { padding-left: 20px; }
+.tips-reference .tips-checklist { background: #eaf0e8; padding: 16px 20px; border-radius: 8px; }
+@media (max-width: 600px) {
+ .tips-reference .tips-list { padding-left: 22px; }
+ .tips-reference .tips-list > li { padding: 14px; }
+ .tips-reference .tips-checklist { padding: 14px; }
+}
