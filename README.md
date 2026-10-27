@@ -2,7 +2,7 @@
 
 ## Active Docker deployment — account-only migration
 
-**http://localhost:8082** now serves one imported host account from fresh external volume `classroom-accounts-20261022`, without learning/activity/community history or uploads. Original host DB and old QA volume are preserved; host 8080 is stopped. Account timestamps/password hash are unchanged, photo reference cleared, derived level starts at L1.
+**http://localhost:8082** now serves one imported host account from fresh external volume `classroom-accounts-20261022`, without learning/activity/community history or uploads. Original host DB and old QA volume are preserved. Host **http://localhost:8080** has also been restarted separately with its original accounts/history and the Estimate Lab completion-strip fix; Docker 8082 was not updated by that host deployment. Account timestamps/password hash are unchanged, photo reference cleared, derived level starts at L1.
 
 ```sh
 # Always select the existing project and BOTH Compose files:

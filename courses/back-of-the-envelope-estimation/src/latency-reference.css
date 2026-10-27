@@ -1,0 +1,24 @@
+.latency-reference{margin:20px 0 28px;color:#263d32;line-height:1.8}
+.latency-units{padding:20px;background:#eaf0e8;border-radius:8px;margin-bottom:24px}
+.latency-units h2,.latency-insights h2{font-size:19px;margin-bottom:14px}
+.latency-units dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0}
+.latency-units dt{font-weight:600;font-size:14px}.latency-units dd{margin:5px 0 0;font-size:14px}
+.latency-reference table{width:100%;border-collapse:collapse;background:white;table-layout:fixed;font-size:14px}
+.latency-reference caption{text-align:left;font-size:19px;font-weight:600;padding:0 0 12px}
+.latency-reference th,.latency-reference td{padding:13px 16px;text-align:left;vertical-align:top;border:1px solid #d6dfd6;overflow-wrap:anywhere}
+.latency-reference th:first-child{width:60%}.latency-reference thead th{background:#eaf0e8;font-weight:600}
+.latency-reference tbody th{font-weight:500}.latency-reference tbody tr:nth-child(even){background:#f5f7f2}
+.latency-reference small{display:block;color:#52675b;font-size:12px;font-weight:400;margin-top:4px}
+#latency-table-note{font-size:14px;margin:14px 0 24px;color:#52675b}
+.latency-insights{padding:20px;border:1px solid #d6dfd6;border-radius:8px;background:#fff}
+.latency-insights ol{margin:0;padding-left:24px}.latency-insights li{padding:6px 0;font-size:14px}
+.latency-era{margin:16px 0;padding:16px;background:#f1f4ed;border-radius:8px;font-size:14px}.latency-era summary{cursor:pointer;font-weight:600}.latency-era p{margin:12px 0 0}
+@media(max-width:600px){
+ .latency-units dl{grid-template-columns:1fr}.latency-units{padding:16px}
+ .latency-reference table,.latency-reference tbody{display:block}.latency-reference caption{display:block}
+ .latency-reference thead{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ .latency-reference tbody tr{display:block;margin-bottom:12px;border:1px solid #d6dfd6;border-radius:6px;overflow:hidden}
+ .latency-reference tbody th,.latency-reference td{display:block;border:0;width:auto;padding:12px 14px}
+ .latency-reference td{padding-top:0;font-weight:600;color:#176b5b}
+ .latency-insights{padding:16px}
+}

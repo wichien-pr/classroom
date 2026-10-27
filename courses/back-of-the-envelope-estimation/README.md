@@ -48,6 +48,26 @@ npm run build -- --base /courses/back-of-the-envelope-estimation/
 
 The generic Classroom registry/build/Docker course discovery needs no backend special case. Do not run an all-course host build while protecting the existing Scale Lab dist. The checked-out new-course `dist/` is the integrated artifact; standalone output is separate under ignored evidence.
 
+## LAB02 latency revision (deployed on host localhost:8080)
+
+LAB02 follows `Latency-numbers-every-programmer.pdf`: all 13 rows of its historical 2010 table, nanosecond/microsecond/millisecond conversion, five design takeaways, and a separate note on the 2020 illustration. Both calculator menus use the same 2010 reference; equal timings share an explicitly labeled option to avoid duplicate numeric selection identities. No current-hardware benchmark claims are made. Other lessons, quiz identities, progress and model arithmetic are unchanged.
+
+Run `npm test` (19 tests), `npm run test:latency` (four Chrome tests), `npm run test:units`, and `npm run test:completion`. Latency tests build to fresh OS temporary directories, exercise every reference timing, staged calculator updates, navigation/reset and 320/390/1440px layout, without backend/account/mail calls. `LATENCY_DIST` accepts an existing integrated candidate. Evidence: `../../evidence/estimation-latency/`. This revision is deployed on host **http://localhost:8080**. Published assets match the tested candidate; database/schema and prior learning history were preserved. Health/login checks passed. Docker is unchanged. See `../../evidence/estimation-latency/deployment.json` for backup and verification.
+
+## LAB01 Power of two revision (deployed on host localhost:8080)
+
+LAB01 now introduces distributed-system data-size estimation, byte/bit and ASCII basics, followed by the five reference magnitudes from 2¹⁰ through 2⁵⁰. A full-width table shows Thousand–Quadrillion and Kilobyte–Petabyte; narrow screens show labeled row cards. Decimal KB–PB are explicitly approximate, while the note gives exact binary KiB–PiB identities. Existing calculator, quiz semantics, completion and durable IDs are unchanged; the private assessment still tests the same MB/MiB distinction. Other lessons are unchanged.
+
+Run `npm test`, `npm run test:units` and `npm run test:completion`. The units browser runner builds into a fresh OS temporary directory and verifies all five reference rows, navigation, all calculator powers, reset, local completion and 320/390/1440px layout. Screenshots and a separate integrated build are under `../../evidence/estimation-units/`. The browser-tested integrated candidate is now deployed on host **http://localhost:8080**. Published files match the tested candidate exactly. Database/schema and prior sessions were preserved; health checks added only anonymous sessions. Docker 8082 is unchanged. Backup and verification: `../../evidence/estimation-units/deployment.json`. No real-account login or email was tested.
+
+## Completion-strip UI parity (host localhost deployed)
+
+The verified integrated build is now served by the host Waitress app at **http://localhost:8080**, using the original host database and its existing learning history. Docker on 8082 was not updated. Health/login/protection checks passed; database schema and all preexisting data were preserved (health checks added only anonymous sessions). No real-account login or email was tested. See `../../evidence/estimation-completion/localhost-deployment.json` for backup and verification.
+
+The source now matches Scale Lab’s explicit missing-requirement, marked, completed, loading, saving, failure/retry and standalone-storage messages. Only the original failed lesson offers its completion retry; the existing global retry still preserves the captured lesson/event across navigation. IDs, scoring, adapters and calculator behavior are unchanged.
+
+`npm run test:completion` builds account and standalone assets into fresh OS temporary directories, starts loopback previews on ephemeral ports, and runs seven Chrome browser tests against intercepted progress/participation APIs. No backend, account database, mail or running Docker service is used. It captures 320/390/1440px evidence in `../../evidence/estimation-completion/`. To test an already-built integrated artifact, set `COMPLETION_ACCOUNT_DIST` to its absolute path. This is frontend contract verification, not an authenticated backend journey. `npm test` now runs 19 course/model/adapter/content tests.
+
 ## State contracts
 
 - Integrated mode loads account progress and participation, blocks controls during either load/save, never reads/imports/falls back to localStorage, and renders only confirmed server state.
