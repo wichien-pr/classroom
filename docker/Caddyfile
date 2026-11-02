@@ -1,0 +1,9 @@
+# Caddy obtains/renews certificates and redirects HTTP to HTTPS.
+# Persist /data: it contains private keys and ACME account state.
+{$CLASSROOM_DOMAIN} {
+    reverse_proxy classroom:8080 {
+        # Preserve the browser's public Host (including any nonstandard port).
+        # Waitress uses a fixed HTTPS scheme, NOT client-supplied headers.
+        header_up Host {http.request.hostport}
+    }
+}

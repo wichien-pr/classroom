@@ -109,7 +109,7 @@ Runtime secrets อยู่ใน `docker/runtime.env` แบบ private/gitign
 
 ### ย้ายขึ้น production เครื่องอื่น
 
-- ตั้ง HTTPS, canonical origin และ secure cookies ให้ตรงปลายทาง ไม่ใช้ local HTTP exceptions เป็นค่า production
+- เปิด HTTPS ด้วย [Caddy + Compose override](docs/https-deployment.md) ซึ่งตั้ง canonical origin, secure cookies และ HTTPS scheme ให้ตรงกัน พร้อมปิดพอร์ต backend จากภายนอก ไม่ใช้ local HTTP exceptions เป็นค่า production
 - เตรียม persistent volume/host storage สำหรับ SQLite, profile photos และ community uploads รันหนึ่ง app instance ต่อฐานข้อมูลตามรูปแบบ deployment นี้
 - หยุดการเขียนก่อนย้ายข้อมูลพร้อม uploads หรือใช้ SQLite Backup API สำหรับสำเนาฐานข้อมูลที่สอดคล้องกัน อย่าคัดลอกเฉพาะ `.sqlite3` ขณะมีการเขียนหรือยังมีข้อมูลค้างใน WAL
 - หลัง production มีข้อมูลใหม่แล้ว การ deploy ครั้งต่อไปต้องเก็บ DB เดิม ไม่ copy DB จาก local ไปทับ

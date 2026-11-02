@@ -1,0 +1,6 @@
+# Local-machine HTTPS only; apply after compose.https.yaml.
+services:
+  https:
+    ports: !override
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"

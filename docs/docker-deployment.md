@@ -34,7 +34,7 @@ The example deliberately has **mail disabled**; new registrations still require 
 - `/healthz` checks application/SQLite schema readability, returns only `{"status":"ok"}`, and never creates a session/cookie. It is not a mail-delivery check, full SQLite integrity check, or disk-capacity/write-readiness guarantee. Container health polls it every 30 seconds.
 - **One application instance only.** SQLite and private uploads are local single-instance storage, not a supported horizontally scaled/shared-NFS database. Do not use Compose `--scale`. Back up the entire data volume together.
 
-For remote deployment, terminate TLS at a trusted reverse proxy, set `APPWORKS_COOKIE_SECURE=1`, `APPWORKS_RESET_ALLOW_LOCAL=0`, and the canonical HTTPS `APPWORKS_RESET_BASE_URL`. Preserve the public Host and Origin for CSRF validation. Do not blindly trust forwarded headers or publish the database/uploads as static files. `CLASSROOM_BIND_IP` defaults to `127.0.0.1`; changing to `0.0.0.0` exposes the host port and requires firewall/TLS planning.
+For remote deployment, use the optional [HTTPS Compose deployment](https-deployment.md): Caddy terminates TLS, the backend port is no longer published, and Waitress uses a fixed HTTPS scheme so Origin/CSRF validation works. The override sets `APPWORKS_COOKIE_SECURE=1`, `APPWORKS_RESET_ALLOW_LOCAL=0`, and the canonical HTTPS `APPWORKS_RESET_BASE_URL`. Preserve the public Host and Origin; setting Secure cookies alone does not enable TLS. Do not blindly trust forwarded headers or publish the database/uploads as static files. Without the HTTPS override, `CLASSROOM_BIND_IP` defaults to `127.0.0.1`; changing to `0.0.0.0` exposes the HTTP host port and requires firewall/TLS planning.
 
 ## Prebuilt image, registry and platform
 
