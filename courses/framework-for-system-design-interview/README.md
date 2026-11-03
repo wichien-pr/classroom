@@ -1,5 +1,11 @@
 # A Framework For System Design Interviews
 
+## LAB02 — เสนอภาพรวมและตกลงแนวทางร่วมกัน
+
+LAB01 + LAB02 deployed together to the existing real-account Docker HTTPS site. Canonical source: `/Users/prommeesee/projects/classroom`. [Current deployment report](../../docs/framework-lab02-deployment.md).
+
+LAB02 uses independent `framework-blueprint / review-blueprint`, manual completion and either original thinking choice (A correct, B incorrect; display randomized). It teaches blueprint feedback, publishing versus feed building, use-case review and agreeing detail level. The checklist is supplementary, not a real distributed-system simulation. Source mapping is developer-only; PDFs remain ignored and unchanged. Private bank total: 7 questions.
+
 ## LAB01 — ทำความเข้าใจโจทย์และกำหนดขอบเขต
 
 **Deploy LAB01 แล้วบน Docker HTTPS: https://localhost/courses/framework-for-system-design-interview/**

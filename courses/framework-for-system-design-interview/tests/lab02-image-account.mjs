@@ -1,0 +1,24 @@
+import {chromium} from '@playwright/test';import assert from 'node:assert/strict';
+import {spawn,execFileSync} from 'node:child_process';import {mkdtemp,mkdir,copyFile,rm,writeFile} from 'node:fs/promises';import {resolve} from 'node:path';import {once} from 'node:events';
+const id='framework-for-system-design-interview',base=`/courses/${id}/`,api=`/api/courses/${id}/`,evidence='../../evidence/framework-lab02-release/image-browser';
+await mkdir('node_modules/.cache',{recursive:true});await mkdir(evidence,{recursive:true});const qa=await mkdtemp(resolve('node_modules/.cache/framework-lab02-qa-')),course=qa+'/courses/'+id;await mkdir(course,{recursive:true});for(const f of ['course.json','assessment.json'])await copyFile(f,course+'/'+f);
+const image=process.env.LAB02_QA_IMAGE;if(!image||!image.startsWith('sha256:'))throw Error('Require pinned disposable QA image');
+let container,url;async function start(){container=execFileSync('docker',['run','-d','--rm','--user','0:0','--publish','127.0.0.1::8080','--mount',`type=bind,src=${qa},dst=/qa/framework-lab02-qa-data`,'--mount',`type=bind,src=${resolve('tests/lab02-image-server.py')},dst=/qa-server.py,readonly`,'--env','PYTHONPATH=/app/appworks',image,'python','/qa-server.py','/qa/framework-lab02-qa-data'],{encoding:'utf8'}).trim();url='http://'+execFileSync('docker',['port',container,'8080/tcp'],{encoding:'utf8'}).trim();for(let i=0;i<80;i++){try{if((await fetch(url+'/healthz')).ok)return}catch{}await new Promise(r=>setTimeout(r,250))}throw Error('QA readiness failed')}
+async function stop(){if(container){execFileSync('docker',['stop',container]);container=null}}
+const browser=await chromium.launch(),report={accounts:2,widths:[1280,390,320],lessons:['framework-scope','framework-blueprint'],restart:false,errors:[]};
+async function login(page,n){await page.goto(url+'/login');await page.locator('[name=email]').fill(`lab02-${n}@example.test`);await page.locator('[name=password]').fill('disposable-qa-password');await page.locator('button[type=submit]').click();await page.waitForURL(url+'/');await page.locator(`a[href="${base}"]`).click();await page.locator('#calculate:enabled').waitFor();}
+try{await start();for(const n of [1,2]){
+ const context=await browser.newContext(),page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.message));await login(page,n);
+ const get=async suffix=>(await context.request.get(url+api+suffix)).json();assert.deepEqual((await get('progress')).completed,[]);
+ for(const lesson of report.lessons){await page.locator(`[data-lesson="${lesson}"]`).click();await page.locator('#complete-lesson').click();await page.locator('#calculate:enabled').waitFor();assert.equal((await get('progress')).criteria[lesson].simulation,false);
+ await page.locator('#calculate').click();await page.locator('#calculate:enabled').waitFor();await page.locator('[data-answer="1"]').click();await page.locator('#completion-status').filter({hasText:'เรียนจบบทนี้แล้ว'}).waitFor();
+ if(lesson==='framework-scope'){assert.deepEqual((await get('progress')).completed,['framework-scope']);assert.deepEqual((await get('progress')).criteria['framework-blueprint'],{manual:false,simulation:false,thinking:false});}
+ }
+ assert.equal((await get('participation')).score,4);assert.equal((await get('progress')).completed.length,2);
+ await page.reload();await page.locator('[data-lesson="framework-blueprint"]').click();await page.locator('#calculate:enabled').waitFor();await page.locator('[data-answer="1"]').click();await page.locator('#calculate:enabled').waitFor();assert.equal((await get('participation')).score,4);
+ for(const width of report.widths){await page.setViewportSize({width,height:900});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);if(n===1){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`${evidence}/integrated-${width}.png`,fullPage:true});}}
+ for(const file of ['assessment.json','Step2.pdf','src/blueprint.js'])assert.equal((await context.request.get(url+base+file)).status(),404);
+ await page.getByRole('link',{name:'ออกจากคลาส · กลับหน้าแรก'}).click();await page.waitForURL(url+'/');assert.equal((await (await context.request.get(url+'/api/leaderboards')).json()).members.find(m=>m.name===`LAB02 QA ${n}`).level,2);await context.close();
+ }
+ await stop();await start();for(const n of [1,2]){const context=await browser.newContext(),page=await context.newPage();await login(page,n);assert.equal((await (await context.request.get(url+api+'progress')).json()).completed.length,2);assert.equal((await (await context.request.get(url+api+'participation')).json()).score,4);await context.close();}report.restart=true;assert.deepEqual(report.errors,[]);await writeFile(evidence+'/integrated-report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+}finally{await browser.close();await stop();await rm(qa,{recursive:true,force:true});}

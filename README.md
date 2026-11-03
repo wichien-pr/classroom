@@ -11,7 +11,7 @@
 - Docker มีทั้ง **Scale Lab 12 บท** และ **Estimate Lab 5 บท** รวม LAB12 Database scaling และ LAB05 Tips แล้ว
 - ข้อมูล host ใน `appworks/instance/` เป็นคนละชุดกับ Docker ไม่ได้ sync กันอัตโนมัติ การอัปเดต Docker ไม่ได้อัปเดต host service หรือ host `dist`
 
-Deployment ล่าสุดปรับคำใน LAB01 จาก “ผู้สัมภาษณ์” เป็น “ลูกค้า” รวม private assessment บน Docker HTTPS เดิม build/validate ผ่านและ container healthy เก็บ environment, Secure cookies, Caddy และ volume เดิมครบ ตรวจ integrity, schema, fingerprints ทั้ง 25 ตารางและ uploads ตรงกันก่อน HTTP probes; login probeเพิ่ม anonymous session 1 รายการ บัญชี/session เดิมไม่เปลี่ยน ไม่ส่งอีเมลหรือใช้บัญชีจริงทดสอบ ดู [รายงานล่าสุด](docs/framework-lab01-deployment.md) สำหรับ image/backup/evidence และผลทดสอบจริง TLS ใช้ CA เดิมเฉพาะ test client ไม่แก้ machine trust
+Deployment LAB01 ก่อนหน้า (historical) ปรับคำใน LAB01 จาก “ผู้สัมภาษณ์” เป็น “ลูกค้า” รวม private assessment บน Docker HTTPS เดิม build/validate ผ่านและ container healthy เก็บ environment, Secure cookies, Caddy และ volume เดิมครบ ตรวจ integrity, schema, fingerprints ทั้ง 25 ตารางและ uploads ตรงกันก่อน HTTP probes; login probeเพิ่ม anonymous session 1 รายการ บัญชี/session เดิมไม่เปลี่ยน ไม่ส่งอีเมลหรือใช้บัญชีจริงทดสอบ ดู [รายงานล่าสุด](docs/framework-lab01-deployment.md) สำหรับ image/backup/evidence และผลทดสอบจริง TLS ใช้ CA เดิมเฉพาะ test client ไม่แก้ machine trust
 
 > Volume นี้เริ่มต้นจากการย้ายเฉพาะบัญชี ไม่ใช่ประวัติการเรียนทั้งหมด แต่หลังใช้งานอาจมี progress, activity และ uploads เพิ่มแล้ว ห้ามถือว่ายังว่างหรือย้ายฐานข้อมูล local มาทับ ดู [ประวัติการย้ายบัญชีและข้อควรระวัง](docs/account-only-migration.md)
 
@@ -25,6 +25,8 @@ Deployment ล่าสุดปรับคำใน LAB01 จาก “ผู�
 จำนวนข้างต้นอิง `lessons` และ `participation` ใน manifest ไม่ใช่จำนวนคะแนนที่ทุกบัญชีต้องมี คะแนนเก่าอาจรวมกิจกรรมจากบทที่เลิกใช้แล้ว
 
 ### Framework Lab
+
+**ล่าสุด: LAB01 + LAB02 deploy แล้วบน Docker HTTPS เดิม** — LAB02 ใช้ `framework-blueprint` แยกจาก LAB01; canonical source sync แล้ว ดู [รายงาน LAB02](docs/framework-lab02-deployment.md).
 
 [A Framework For System Design Interviews](courses/framework-for-system-design-interview/README.md) — LAB01 เปิดใน catalog แล้ว (`framework-for-system-design-interview`, `framework-scope`) เรียนจบด้วย manual + ตรวจขอบเขต + ตอบหนึ่งตัวเลือก ใช้ progress/participation และ private assessment ตาม generic contract ดู [ผล deployment และ verification](docs/framework-lab01-deployment.md)
 

@@ -1,14 +1,15 @@
 {
   "id": "framework-for-system-design-interview",
   "title": "A Framework For System Design Interviews",
-  "subtitle": "SYSTEM DESIGN / TH · ทำความเข้าใจโจทย์และกำหนดขอบเขต",
+  "subtitle": "SYSTEM DESIGN / TH · ขอบเขตโจทย์และภาพรวมระบบ",
   "enabled": true,
   "order": 3,
   "delivery": "static",
   "build_dir": "dist",
   "entry": "index.html",
   "lessons": [
-    "framework-scope"
+    "framework-scope",
+    "framework-blueprint"
   ],
   "completion_requirements": [
     "manual",
@@ -19,6 +20,15 @@
     "framework-scope": {
       "framework-scope": [
         "review-scope"
+      ],
+      "check-your-thinking": [
+        "quiz-answer-a",
+        "quiz-answer-b"
+      ]
+    },
+    "framework-blueprint": {
+      "framework-blueprint": [
+        "review-blueprint"
       ],
       "check-your-thinking": [
         "quiz-answer-a",

@@ -37,6 +37,6 @@ def test_framework_manifest_has_source_grounded_curriculum():
     manifest = json.loads((path / 'course.json').read_text())
     assert manifest['enabled'] is True
     assert manifest['title'] == 'A Framework For System Design Interviews'
-    assert manifest['lessons'] == ['framework-scope']
+    assert manifest['lessons'] == ['framework-scope', 'framework-blueprint']
     assert manifest['completion_requirements'] == ['manual', 'simulation', 'thinking']
     assert (path / 'assessment.json').exists()

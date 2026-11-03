@@ -20,7 +20,11 @@ Account photos are platform-owned, not course assets. See [profile contract](pro
 ```
 ID matches directory and `[a-z0-9]+(?:-[a-z0-9]+)*`; unique by directory. `title`/`subtitle` are nonempty strings, HTML-escaped in catalog. `enabled` is a JSON boolean, `order` integer. Only `static` delivery and dedicated `dist` output are supported in v1 (not source directory or arbitrary build_dir). Entry must be relative HTML inside dist. No absolute/dot/traversal/hidden paths or symlink components. Missing enabled entry means unavailable. Invalid manifests do not crash catalog; strict CLI returns nonzero. No manifest = no course. Sort by order then ID.
 
-## Published Framework LAB01
+## Published Framework LAB01 + LAB02
+
+LAB02 adds independent `framework-blueprint / review-blueprint` plus both semantic thinking choices; it requires its own manual, simulation and thinking evidence. The active course now has 2 lessons, 6 action definitions and 7 private questions (4 unchanged LAB01 + 3 LAB02). LAB01 credit never grants LAB02. Whole-course eligibility now requires both; retained rows and frozen exam snapshots are unchanged. No backend/schema change. Deployed to existing local Docker HTTPS; see [LAB02 release](framework-lab02-deployment.md).
+
+### LAB01 identity (preserved)
 
 `courses/framework-for-system-design-interview/` publishes **A Framework For System Design Interviews** with enabled LAB01 `framework-scope`. Its generic qualification requires manual completion, main `framework-scope / review-scope` participation and either stable `check-your-thinking / quiz-answer-a|quiz-answer-b` choice. The private bank contains four questions outside dist/public. Progress, levels and assessment use the existing generic contracts; no backend exception or schema change was needed. The former empty shell is now historical; generic empty-course exclusion tests remain. See [current deployment verification](framework-lab01-deployment.md).
 

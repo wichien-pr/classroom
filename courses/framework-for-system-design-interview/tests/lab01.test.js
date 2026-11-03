@@ -6,12 +6,12 @@ test('lesson metadata no longer advertises an empty scaffold',()=>{
 });
 test('LAB01 owns qualification and private source-grounded assessment',()=>{
  const m=JSON.parse(readFileSync(new URL('../course.json',import.meta.url)));
- assert.deepEqual(m.lessons,['framework-scope']);
+ assert.equal(m.lessons[0],'framework-scope');
  assert.deepEqual(m.completion_requirements,['manual','simulation','thinking']);
  assert.deepEqual(m.participation['framework-scope']['framework-scope'],['review-scope']);
  const bank=JSON.parse(readFileSync(new URL('../assessment.json',import.meta.url)));
  assert.ok(bank.questions.length>=3);
- assert.ok(bank.questions.every(q=>q.lesson_id==='framework-scope'));
+ assert.equal(bank.questions.filter(q=>q.lesson_id==='framework-scope').length,4);
 });
 test('LAB01 uses customer wording throughout lesson copy and private assessment',()=>{
  const paths=['../src/main.js','../src/lessons.js','../src/scope.js','../assessment.json'];

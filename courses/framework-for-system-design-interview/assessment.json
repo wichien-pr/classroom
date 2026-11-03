@@ -64,6 +64,54 @@
         }
       ],
       "answer": "horizon"
+    },
+    {
+      "id": "framework-blueprint-buy-in",
+      "lesson_id": "framework-blueprint",
+      "prompt": "หลังร่างภาพรวมระบบ ควรทำอะไรต่อ?",
+      "options": [
+        {
+          "id": "explain",
+          "text": "ขอความเห็นและตกลงแนวทางร่วมกับลูกค้า"
+        },
+        {
+          "id": "rush",
+          "text": "ถือว่าแบบได้รับอนุมัติโดยไม่ต้องคุย"
+        }
+      ],
+      "answer": "explain"
+    },
+    {
+      "id": "framework-blueprint-flows",
+      "lesson_id": "framework-blueprint",
+      "prompt": "Feed publishing ต่างจาก news feed building อย่างไร?",
+      "options": [
+        {
+          "id": "explain",
+          "text": "publishing บันทึกและกระจายโพสต์ ส่วน building รวมโพสต์เพื่อนเรียงใหม่ไปเก่า"
+        },
+        {
+          "id": "rush",
+          "text": "ทั้งสองคือการส่งแจ้งเตือนเท่านั้น"
+        }
+      ],
+      "answer": "explain"
+    },
+    {
+      "id": "framework-blueprint-detail",
+      "lesson_id": "framework-blueprint",
+      "prompt": "ควรลงรายละเอียด API และ database schema ในขั้นภาพรวมเสมอหรือไม่?",
+      "options": [
+        {
+          "id": "explain",
+          "text": "ขึ้นกับขอบเขตโจทย์ ควรตกลงระดับรายละเอียดกับลูกค้า"
+        },
+        {
+          "id": "rush",
+          "text": "ต้องลงทุกตารางก่อนวาดภาพรวมเสมอ"
+        }
+      ],
+      "answer": "explain"
     }
   ]
 }

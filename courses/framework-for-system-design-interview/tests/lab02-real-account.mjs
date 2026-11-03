@@ -1,0 +1,24 @@
+import {chromium} from '@playwright/test';import assert from 'node:assert/strict';
+import {spawn,execFileSync} from 'node:child_process';import {mkdtemp,mkdir,copyFile,rm,writeFile} from 'node:fs/promises';import {resolve} from 'node:path';import {once} from 'node:events';
+const id='framework-for-system-design-interview',base=`/courses/${id}/`,api=`/api/courses/${id}/`,evidence='../../evidence/framework-lab02';
+await mkdir('node_modules/.cache',{recursive:true});await mkdir(evidence,{recursive:true});const qa=await mkdtemp(resolve('node_modules/.cache/framework-lab02-qa-')),course=qa+'/courses/'+id;await mkdir(course,{recursive:true});for(const f of ['course.json','assessment.json'])await copyFile(f,course+'/'+f);
+execFileSync(process.execPath,['node_modules/vite/bin/vite.js','build','--base',base,'--outDir',course+'/dist'],{env:{...process.env,VITE_CLASSROOM_URL:'/',VITE_CLASSROOM_PROGRESS_URL:api+'progress'}});
+let child,url;async function start(){child=spawn(process.env.QA_PYTHON||'python3',['tests/lab02-qa-server.py',qa],{stdio:['ignore','pipe','pipe']});child.stderr.on('data',()=>{});url=await new Promise((resolve,reject)=>{let text='';child.stdout.on('data',d=>{text+=d;if(text.includes('\n'))resolve(JSON.parse(text.split('\n')[0]).url)});child.on('exit',code=>reject(Error('QA server exited '+code)));});}
+async function stop(){if(child&&child.exitCode===null){const exited=once(child,'exit');child.kill('SIGTERM');await exited;}}
+const browser=await chromium.launch(),report={accounts:2,widths:[1280,390,320],lessons:['framework-scope','framework-blueprint'],restart:false,errors:[]};
+async function login(page,n){await page.goto(url+'/login');await page.locator('[name=email]').fill(`lab02-${n}@example.test`);await page.locator('[name=password]').fill('disposable-qa-password');await page.locator('button[type=submit]').click();await page.waitForURL(url+'/');await page.locator(`a[href="${base}"]`).click();await page.locator('#calculate:enabled').waitFor();}
+try{await start();for(const n of [1,2]){
+ const context=await browser.newContext(),page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.message));await login(page,n);
+ const get=async suffix=>(await context.request.get(url+api+suffix)).json();assert.deepEqual((await get('progress')).completed,[]);
+ for(const lesson of report.lessons){await page.locator(`[data-lesson="${lesson}"]`).click();await page.locator('#complete-lesson').click();await page.locator('#calculate:enabled').waitFor();assert.equal((await get('progress')).criteria[lesson].simulation,false);
+ await page.locator('#calculate').click();await page.locator('#calculate:enabled').waitFor();await page.locator('[data-answer="1"]').click();await page.locator('#completion-status').filter({hasText:'เรียนจบบทนี้แล้ว'}).waitFor();
+ if(lesson==='framework-scope'){assert.deepEqual((await get('progress')).completed,['framework-scope']);assert.deepEqual((await get('progress')).criteria['framework-blueprint'],{manual:false,simulation:false,thinking:false});}
+ }
+ assert.equal((await get('participation')).score,4);assert.equal((await get('progress')).completed.length,2);
+ await page.reload();await page.locator('[data-lesson="framework-blueprint"]').click();await page.locator('#calculate:enabled').waitFor();await page.locator('[data-answer="1"]').click();await page.locator('#calculate:enabled').waitFor();assert.equal((await get('participation')).score,4);
+ for(const width of report.widths){await page.setViewportSize({width,height:900});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);if(n===1){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`${evidence}/integrated-${width}.png`,fullPage:true});}}
+ for(const file of ['assessment.json','Step2.pdf','src/blueprint.js'])assert.equal((await context.request.get(url+base+file)).status(),404);
+ await page.getByRole('link',{name:'ออกจากคลาส · กลับหน้าแรก'}).click();await page.waitForURL(url+'/');assert.equal((await (await context.request.get(url+'/api/leaderboards')).json()).members.find(m=>m.name===`LAB02 QA ${n}`).level,2);await context.close();
+ }
+ await stop();await start();for(const n of [1,2]){const context=await browser.newContext(),page=await context.newPage();await login(page,n);assert.equal((await (await context.request.get(url+api+'progress')).json()).completed.length,2);assert.equal((await (await context.request.get(url+api+'participation')).json()).score,4);await context.close();}report.restart=true;assert.deepEqual(report.errors,[]);await writeFile(evidence+'/integrated-report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+}finally{await browser.close();await stop();await rm(qa,{recursive:true,force:true});}
