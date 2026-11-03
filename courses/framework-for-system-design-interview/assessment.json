@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "id": "framework-clarify",
+      "lesson_id": "framework-scope",
+      "prompt": "เมื่อได้รับโจทย์ออกแบบระบบ ขั้นแรกควรทำอะไร?",
+      "options": [
+        {
+          "id": "clarify",
+          "text": "ถามให้เข้าใจข้อกำหนดและสมมติฐานก่อนกำหนดขอบเขต"
+        },
+        {
+          "id": "stack",
+          "text": "เลือกเทคโนโลยีที่ซับซ้อนที่สุดทันที"
+        }
+      ],
+      "answer": "clarify"
+    },
+    {
+      "id": "framework-assumptions",
+      "lesson_id": "framework-scope",
+      "prompt": "ถ้าลูกค้าให้กำหนดสมมติฐานเอง ควรทำอย่างไร?",
+      "options": [
+        {
+          "id": "hide",
+          "text": "คิดไว้ในใจเพื่อให้ตอบเร็ว"
+        },
+        {
+          "id": "record",
+          "text": "เขียนสมมติฐานให้ชัด เพื่อใช้อ้างอิงและทบทวนร่วมกัน"
+        }
+      ],
+      "answer": "record"
+    },
+    {
+      "id": "framework-feed-order",
+      "lesson_id": "framework-scope",
+      "prompt": "ในตัวอย่าง news feed ที่ตกลงเรียงใหม่ไปเก่า ควรยึดขอบเขตใด?",
+      "options": [
+        {
+          "id": "weighted",
+          "text": "สร้างระบบให้น้ำหนักเพื่อนสนิทก่อนเสมอ"
+        },
+        {
+          "id": "time",
+          "text": "เรียงตามเวลาย้อนกลับ ไม่เพิ่มการจัดอันดับเอง"
+        }
+      ],
+      "answer": "time"
+    },
+    {
+      "id": "framework-growth",
+      "lesson_id": "framework-scope",
+      "prompt": "คำถามใดช่วยทำความเข้าใจการขยายตัวก่อนออกแบบ?",
+      "options": [
+        {
+          "id": "horizon",
+          "text": "คาดการณ์ขนาดใน 3 เดือน 6 เดือน และ 1 ปี รวมบริการเดิมที่ใช้ได้"
+        },
+        {
+          "id": "guess",
+          "text": "เดาว่าทุกระบบต้องมีผู้ใช้พันล้านคน"
+        }
+      ],
+      "answer": "horizon"
+    }
+  ]
+}

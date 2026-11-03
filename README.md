@@ -4,14 +4,14 @@
 
 ## สถานะปัจจุบัน
 
-- Docker ที่ใช้งานในเครื่อง: **http://localhost:8082** (bind เฉพาะ `127.0.0.1` ไม่ใช่ public production endpoint)
+- Docker ที่ใช้งานในเครื่อง: **https://localhost/** (bind เฉพาะ `127.0.0.1` ไม่ใช่ public production endpoint)
 - Compose project: `classroom-docker-qa` — ชื่อนี้มาจากการติดตั้งเดิม แต่ volume ปัจจุบันมีข้อมูลบัญชีจริง **ห้ามใช้เป็นฐานข้อมูลทดสอบ**
-- ใช้ `compose.yaml` ร่วมกับ `compose.accounts.yaml` ผ่าน `scripts/classroom-compose.sh` เสมอ
+- ใช้ override ตามลำดับ `compose.yaml` + `compose.accounts.yaml` + `compose.https.yaml` + `compose.https-local.yaml` ผ่าน `scripts/classroom-https-local.sh` เสมอ; Caddy เปิดเฉพาะ loopback 80/443 และ backend ไม่ publish พอร์ต
 - SQLite และ uploads อยู่ใน external volume **`classroom-accounts-20261022`** ที่ mount เป็น `/data` ไม่หายเมื่อเปลี่ยน container
 - Docker มีทั้ง **Scale Lab 12 บท** และ **Estimate Lab 5 บท** รวม LAB12 Database scaling และ LAB05 Tips แล้ว
 - ข้อมูล host ใน `appworks/instance/` เป็นคนละชุดกับ Docker ไม่ได้ sync กันอัตโนมัติ การอัปเดต Docker ไม่ได้อัปเดต host service หรือ host `dist`
 
-การ rebuild/deploy ล่าสุดใช้ source commit `2b3290a`: build/validate ทั้งสองคลาสผ่าน, container healthy และใช้ image ใหม่ ตรวจ SQLite integrity ผ่าน รวมถึง schema/ข้อมูลทุกตารางและ uploads ตรงกับก่อน restart ก่อนทดสอบ HTTP หน้า login ตอบ 200, guest เข้า course ถูก redirect 303 และ progress/participation APIs ตอบ 401 การตรวจหน้า login เพิ่ม anonymous session หนึ่งรายการ ไม่ได้ทดสอบ login ด้วยบัญชีจริงหรือส่งอีเมลจริงในรอบนี้
+Deployment ล่าสุดปรับคำใน LAB01 จาก “ผู้สัมภาษณ์” เป็น “ลูกค้า” รวม private assessment บน Docker HTTPS เดิม build/validate ผ่านและ container healthy เก็บ environment, Secure cookies, Caddy และ volume เดิมครบ ตรวจ integrity, schema, fingerprints ทั้ง 25 ตารางและ uploads ตรงกันก่อน HTTP probes; login probeเพิ่ม anonymous session 1 รายการ บัญชี/session เดิมไม่เปลี่ยน ไม่ส่งอีเมลหรือใช้บัญชีจริงทดสอบ ดู [รายงานล่าสุด](docs/framework-lab01-deployment.md) สำหรับ image/backup/evidence และผลทดสอบจริง TLS ใช้ CA เดิมเฉพาะ test client ไม่แก้ machine trust
 
 > Volume นี้เริ่มต้นจากการย้ายเฉพาะบัญชี ไม่ใช่ประวัติการเรียนทั้งหมด แต่หลังใช้งานอาจมี progress, activity และ uploads เพิ่มแล้ว ห้ามถือว่ายังว่างหรือย้ายฐานข้อมูล local มาทับ ดู [ประวัติการย้ายบัญชีและข้อควรระวัง](docs/account-only-migration.md)
 
@@ -23,6 +23,10 @@
 | Estimate Lab | `/courses/back-of-the-envelope-estimation/` | 5 | 15 |
 
 จำนวนข้างต้นอิง `lessons` และ `participation` ใน manifest ไม่ใช่จำนวนคะแนนที่ทุกบัญชีต้องมี คะแนนเก่าอาจรวมกิจกรรมจากบทที่เลิกใช้แล้ว
+
+### Framework Lab
+
+[A Framework For System Design Interviews](courses/framework-for-system-design-interview/README.md) — LAB01 เปิดใน catalog แล้ว (`framework-for-system-design-interview`, `framework-scope`) เรียนจบด้วย manual + ตรวจขอบเขต + ตอบหนึ่งตัวเลือก ใช้ progress/participation และ private assessment ตาม generic contract ดู [ผล deployment และ verification](docs/framework-lab01-deployment.md)
 
 ### Scale Lab
 
@@ -58,7 +62,7 @@
 
 Leaderboards นับ **คลาสทั้งคลาสที่ครบทุกบท** ไม่ใช่คะแนนหรือจำนวนบทแยกกัน: L1 เริ่มต้น; L2–L8 ต้องจบอย่างน้อย 1/3/5/7/9/11/13 คลาสตามลำดับ ส่วน L9 ต้องถึง L8 และสอบได้อย่างน้อย 95% ข้อสอบสุ่มจาก private `assessment.json` ของทุกคลาสที่จบ หนึ่งข้อต่อบท ตรวจโดย server ไม่ใช่ LLM สร้างข้อสอบ เมื่อได้ L9 แล้วจะคงอยู่แม้หลักสูตรเปลี่ยน
 
-ปัจจุบันมีสองคลาส จึงยังไม่สามารถถึง L8 จากหลักสูตรจริงที่มีอยู่ ไม่เพิ่มคลาสหรือบัญชี QA ลงระบบจริงเพื่อให้ถึงเกณฑ์ ดู [course contract](docs/course-contract.md) และ [participation contract](docs/participation-contract.md)
+ปัจจุบันมีสามคลาสที่มีบทเรียน รวม Framework Lab LAB01 จึงยังไม่สามารถถึง L8 จากหลักสูตรจริงที่มีอยู่ ไม่เพิ่มคลาสหรือบัญชี QA ลงระบบจริงเพื่อให้ถึงเกณฑ์ ดู [course contract](docs/course-contract.md) และ [participation contract](docs/participation-contract.md)
 
 ## บัญชีและฟีเจอร์แพลตฟอร์ม
 
@@ -77,30 +81,30 @@ Leaderboards นับ **คลาสทั้งคลาสที่ครบ�
 
 ```sh
 # ตรวจ configuration โดยไม่แสดงค่า secrets
-sh scripts/classroom-compose.sh config --quiet
-sh scripts/classroom-compose.sh ps
+sh scripts/classroom-https-local.sh config --quiet
+sh scripts/classroom-https-local.sh ps
 
 # เปิด service จาก image ที่มีอยู่ ไม่ rebuild
-sh scripts/classroom-compose.sh up -d --no-build --no-deps --wait --wait-timeout 180 classroom
+sh scripts/classroom-https-local.sh up -d --no-build --no-deps --wait --wait-timeout 180 classroom
 
 # ตรวจ readiness โดยไม่สร้าง anonymous session
-curl -fsS http://localhost:8082/healthz
+curl --noproxy '*' --cacert evidence/framework-deploy-20261103T033859Z/localhost-root.crt -fsS https://localhost/healthz
 ```
 
 ### Rebuild และ deploy รุ่นใหม่
 
 ```sh
 # Build ใน Docker ไม่เขียนทับ host dist; container เดิมยังให้บริการระหว่าง build
-sh scripts/classroom-compose.sh build classroom
+sh scripts/classroom-https-local.sh build classroom
 
 # เมื่อ build ผ่าน: หยุด writer แล้วสำรอง SQLite และ uploads เป็นชุดเดียวกัน
-sh scripts/classroom-compose.sh stop classroom
+sh scripts/classroom-https-local.sh stop classroom
 # สำรอง /data จาก volume ที่ตรวจสอบแล้วตามคู่มือ backup/restore ก่อนคำสั่งถัดไป
 
 # ใช้ image ใหม่และ volume เดิม
-sh scripts/classroom-compose.sh up -d --no-build --no-deps --force-recreate --wait --wait-timeout 180 classroom
-sh scripts/classroom-compose.sh ps
-curl -fsS http://localhost:8082/healthz
+sh scripts/classroom-https-local.sh up -d --no-build --no-deps --force-recreate --wait --wait-timeout 180 classroom
+sh scripts/classroom-https-local.sh ps
+curl --noproxy '*' --cacert evidence/framework-deploy-20261103T033859Z/localhost-root.crt -fsS https://localhost/healthz
 ```
 
 ต้องมี backup และ rollback image ก่อน recreate; หาก backup ไม่สำเร็จ ห้ามข้ามไป deploy ตรวจ mount, image ID, integrity และข้อมูลหลังเริ่มระบบด้วย **ห้ามใช้ `down -v`, ลบ volume หรือรัน fixture-seeding QA บน volume นี้** คำสั่งข้างต้นใช้กับ deployment เดิม ไม่ใช่วิธีสร้าง production เครื่องใหม่
