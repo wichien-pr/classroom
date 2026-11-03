@@ -1,10 +1,18 @@
 # A Framework For System Design Interviews
 
+## LAB03 — เจาะรายละเอียดให้ตรงจุด (deployed on local HTTPS)
+
+เพิ่ม `framework-deep-dive / review-deep-dive` พร้อมแผนภาพ publishing / retrieval และแบบฝึกเลือกประเด็นตามความเห็นลูกค้า ใช้ manual + simulation + thinking ผ่าน generic adapters เดิม รวม 3 บท / 9 action definitions / 10 private questions; LAB01/LAB02 และตัวเลือกเดิมไม่เปลี่ยน
+
+Implementation จาก `/Users/prommeesee/projects/classroom-framework-lab03` sync ไป canonical `/Users/prommeesee/projects/classroom` และ deploy แล้วที่ **https://localhost/courses/framework-for-system-design-interview/** ใช้บัญชีจริงชุดเดิม; commit/push ได้รับอนุญาตแยกหลัง deployment ดู [deployment ล่าสุด](../../docs/framework-lab03-deployment.md) และ [source mapping / historical implementation tests](../../docs/framework-lab03-verification.md).
+
+Disposable QA จาก course directory: `QA_PYTHON=/Users/prommeesee/projects/classroom-framework-lab01/appworks/.venv/bin/python node tests/lab03-real-account.mjs` สร้าง synthetic accounts เองในฐานข้อมูลแยก ไม่ส่งอีเมล ปิด server และลบ QA database เมื่อจบ
+
 ## LAB02 — เสนอภาพรวมและตกลงแนวทางร่วมกัน
 
-LAB01 + LAB02 deployed together to the existing real-account Docker HTTPS site. Canonical source: `/Users/prommeesee/projects/classroom`. [Current deployment report](../../docs/framework-lab02-deployment.md).
+LAB01 + LAB02 deployed together to the existing real-account Docker HTTPS site. Canonical source: `/Users/prommeesee/projects/classroom`. [Historical LAB02 deployment report](../../docs/framework-lab02-deployment.md).
 
-LAB02 uses independent `framework-blueprint / review-blueprint`, manual completion and either original thinking choice (A correct, B incorrect; display randomized). It teaches blueprint feedback, publishing versus feed building, use-case review and agreeing detail level. The checklist is supplementary, not a real distributed-system simulation. Source mapping is developer-only; PDFs remain ignored and unchanged. Private bank total: 7 questions.
+LAB02 uses independent `framework-blueprint / review-blueprint`, manual completion and either original thinking choice (A correct, B incorrect; display randomized). It teaches blueprint feedback, publishing versus feed building, use-case review and agreeing detail level. The checklist is supplementary, not a real distributed-system simulation. Source mapping is developer-only; PDFs remain ignored and unchanged. Private bank at LAB02 release: 7 questions; current LAB03 total: 10.
 
 ## LAB01 — ทำความเข้าใจโจทย์และกำหนดขอบเขต
 

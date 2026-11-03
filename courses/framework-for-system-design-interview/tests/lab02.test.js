@@ -4,7 +4,7 @@ import {existsSync,readFileSync} from 'node:fs';
 import {lessons} from '../src/lessons.js';
 test('LAB02 has independent learning identity, allowlist and private bank',()=>{
  const manifest=JSON.parse(readFileSync(new URL('../course.json',import.meta.url)));
- assert.deepEqual(lessons.map(l=>l.id),['framework-scope','framework-blueprint']);
+ assert.deepEqual(lessons.slice(0,2).map(l=>l.id),['framework-scope','framework-blueprint']);
  assert.deepEqual(manifest.lessons,lessons.map(l=>l.id));
  assert.deepEqual(manifest.participation['framework-blueprint']['framework-blueprint'],['review-blueprint']);
  const bank=JSON.parse(readFileSync(new URL('../assessment.json',import.meta.url)));

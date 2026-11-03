@@ -26,7 +26,7 @@ Deployment LAB01 ก่อนหน้า (historical) ปรับคำใน 
 
 ### Framework Lab
 
-**ล่าสุด: LAB01 + LAB02 deploy แล้วบน Docker HTTPS เดิม** — LAB02 ใช้ `framework-blueprint` แยกจาก LAB01; canonical source sync แล้ว ดู [รายงาน LAB02](docs/framework-lab02-deployment.md).
+**ล่าสุด: LAB01 + LAB02 + LAB03 deploy แล้วบน Docker HTTPS เดิม** — 3 บท / 9 action definitions / 10 private questions; LAB03 ใช้ `framework-deep-dive / review-deep-dive` แยกจากบทเดิม canonical source sync แล้ว; การ commit/push ได้รับอนุญาตแยกภายหลัง deployment ดู [รายงาน LAB03](docs/framework-lab03-deployment.md).
 
 [A Framework For System Design Interviews](courses/framework-for-system-design-interview/README.md) — LAB01 เปิดใน catalog แล้ว (`framework-for-system-design-interview`, `framework-scope`) เรียนจบด้วย manual + ตรวจขอบเขต + ตอบหนึ่งตัวเลือก ใช้ progress/participation และ private assessment ตาม generic contract ดู [ผล deployment และ verification](docs/framework-lab01-deployment.md)
 

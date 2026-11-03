@@ -112,6 +112,54 @@
         }
       ],
       "answer": "explain"
+    },
+    {
+      "id": "framework-deep-dive-priority",
+      "lesson_id": "framework-deep-dive",
+      "prompt": "ก่อนเจาะรายละเอียด ควรเลือกหัวข้ออย่างไร?",
+      "options": [
+        {
+          "id": "explain",
+          "text": "ใช้เป้าหมาย ภาพรวม และความเห็นลูกค้าจัดลำดับส่วนสำคัญร่วมกัน"
+        },
+        {
+          "id": "rush",
+          "text": "เลือกอัลกอริทึมที่ละเอียดที่สุดโดยไม่ดูเป้าหมาย"
+        }
+      ],
+      "answer": "explain"
+    },
+    {
+      "id": "framework-deep-dive-publishing",
+      "lesson_id": "framework-deep-dive",
+      "prompt": "ส่วนใดกระจายงานก่อน Fanout Workers เขียน News Feed Cache?",
+      "options": [
+        {
+          "id": "explain",
+          "text": "Message Queue รับงานจาก Fanout Service"
+        },
+        {
+          "id": "rush",
+          "text": "CDN ทำหน้าที่แทนคิวและ worker"
+        }
+      ],
+      "answer": "explain"
+    },
+    {
+      "id": "framework-deep-dive-retrieval",
+      "lesson_id": "framework-deep-dive",
+      "prompt": "News Feed Service ใช้ข้อมูลใดประกอบรายการอ่าน?",
+      "options": [
+        {
+          "id": "explain",
+          "text": "News Feed Cache รวมกับข้อมูลผู้ใช้และโพสต์จาก cache ที่เชื่อมฐานข้อมูล"
+        },
+        {
+          "id": "rush",
+          "text": "อ่านเฉพาะ Graph DB แล้วส่งแจ้งเตือนแทน feed"
+        }
+      ],
+      "answer": "explain"
     }
   ]
 }

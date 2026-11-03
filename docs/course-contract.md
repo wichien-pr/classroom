@@ -20,7 +20,11 @@ Account photos are platform-owned, not course assets. See [profile contract](pro
 ```
 ID matches directory and `[a-z0-9]+(?:-[a-z0-9]+)*`; unique by directory. `title`/`subtitle` are nonempty strings, HTML-escaped in catalog. `enabled` is a JSON boolean, `order` integer. Only `static` delivery and dedicated `dist` output are supported in v1 (not source directory or arbitrary build_dir). Entry must be relative HTML inside dist. No absolute/dot/traversal/hidden paths or symlink components. Missing enabled entry means unavailable. Invalid manifests do not crash catalog; strict CLI returns nonzero. No manifest = no course. Sort by order then ID.
 
-## Published Framework LAB01 + LAB02
+## Published Framework LAB01 + LAB02 + LAB03
+
+Current LAB03 release adds independent `framework-deep-dive / review-deep-dive`: **3 lessons / 9 action definitions / 10 private questions**. Prior lesson identities, questions and history are retained; whole-course eligibility requires all three. No backend/schema change. [Fresh deployment evidence](framework-lab03-deployment.md).
+
+### Historical LAB02 release
 
 LAB02 adds independent `framework-blueprint / review-blueprint` plus both semantic thinking choices; it requires its own manual, simulation and thinking evidence. The active course now has 2 lessons, 6 action definitions and 7 private questions (4 unchanged LAB01 + 3 LAB02). LAB01 credit never grants LAB02. Whole-course eligibility now requires both; retained rows and frozen exam snapshots are unchanged. No backend/schema change. Deployed to existing local Docker HTTPS; see [LAB02 release](framework-lab02-deployment.md).
 

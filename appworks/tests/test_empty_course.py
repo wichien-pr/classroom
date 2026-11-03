@@ -37,6 +37,10 @@ def test_framework_manifest_has_source_grounded_curriculum():
     manifest = json.loads((path / 'course.json').read_text())
     assert manifest['enabled'] is True
     assert manifest['title'] == 'A Framework For System Design Interviews'
-    assert manifest['lessons'] == ['framework-scope', 'framework-blueprint']
+    assert manifest['lessons'] == ['framework-scope', 'framework-blueprint', 'framework-deep-dive']
+    from achievements import load_bank
+    bank = load_bank({**manifest, 'course_path': path})
+    assert len(bank) == 10
+    assert len([q for q in bank if q['lesson_id'] == 'framework-deep-dive']) == 3
     assert manifest['completion_requirements'] == ['manual', 'simulation', 'thinking']
     assert (path / 'assessment.json').exists()

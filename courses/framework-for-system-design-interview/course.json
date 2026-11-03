@@ -9,7 +9,8 @@
   "entry": "index.html",
   "lessons": [
     "framework-scope",
-    "framework-blueprint"
+    "framework-blueprint",
+    "framework-deep-dive"
   ],
   "completion_requirements": [
     "manual",
@@ -29,6 +30,15 @@
     "framework-blueprint": {
       "framework-blueprint": [
         "review-blueprint"
+      ],
+      "check-your-thinking": [
+        "quiz-answer-a",
+        "quiz-answer-b"
+      ]
+    },
+    "framework-deep-dive": {
+      "framework-deep-dive": [
+        "review-deep-dive"
       ],
       "check-your-thinking": [
         "quiz-answer-a",
