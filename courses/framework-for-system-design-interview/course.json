@@ -1,6 +1,7 @@
 {
   "id": "framework-for-system-design-interview",
   "title": "Framework Lab",
+  "description": "ฝึกออกแบบระบบผ่าน 4 Labs ตั้งแต่ทำความเข้าใจข้อกำหนดและขอบเขต ร่างภาพรวมร่วมกับลูกค้า เจาะรายละเอียดส่วนสำคัญ ไปจนถึงสรุปแบบ ระบุคอขวด และวางแผนปรับปรุง",
   "subtitle": "SYSTEM DESIGN / TH · ขอบเขตโจทย์และภาพรวมระบบ",
   "enabled": true,
   "order": 3,

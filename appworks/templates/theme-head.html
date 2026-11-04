@@ -1,0 +1,48 @@
+{# Synchronous, before page CSS: no request or account data involved. #}
+<script data-theme-bootstrap>
+(() => {
+  const key = 'classroom-theme';
+  const system = window.matchMedia('(prefers-color-scheme: dark)');
+  let preference;
+  try { preference = localStorage.getItem(key); } catch (_) { /* Storage may be blocked. */ }
+  if (preference !== 'dark' && preference !== 'light') preference = null;
+  function apply(theme) {
+    document.documentElement.dataset.theme = theme;
+    const button = document.getElementById('theme-toggle');
+    if (button) {
+      button.setAttribute('aria-pressed', String(theme === 'dark'));
+      button.querySelector('[data-theme-label]').textContent = theme === 'dark' ? 'Dark' : 'Light';
+    }
+  }
+  apply(preference || (system.matches ? 'dark' : 'light'));
+  document.addEventListener('DOMContentLoaded', () => {
+    let mountedButton;
+    function mountControl() {
+      const button = document.getElementById('theme-toggle');
+      if (!button || button === mountedButton) return;
+      mountedButton = button;
+      apply(document.documentElement.dataset.theme);
+      button.hidden = false;
+    }
+    mountControl();
+    // Course navigation replaces its header. Observe only child changes, not
+    // attributes; a remount must not reset preference or duplicate listeners.
+    const app = document.getElementById('app');
+    if (app) new MutationObserver(mountControl).observe(app, {childList:true, subtree:true});
+    document.addEventListener('click', event => {
+      if (!event.target.closest('#theme-toggle')) return;
+      preference = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      apply(preference);
+      try { localStorage.setItem(key, preference); } catch (_) { /* Keep this page usable. */ }
+    });
+  });
+  system.addEventListener('change', () => {
+    if (!preference) apply(system.matches ? 'dark' : 'light');
+  });
+  window.addEventListener('storage', event => {
+    if (event.key !== key && event.key !== null) return;
+    preference = event.newValue === 'dark' || event.newValue === 'light' ? event.newValue : null;
+    apply(preference || (system.matches ? 'dark' : 'light'));
+  });
+})();
+</script>

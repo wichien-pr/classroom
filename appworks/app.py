@@ -232,4 +232,6 @@ def create_app(config=None):
     install_registration(app, connect)
     from presence import install as install_presence
     install_presence(app, connect)
+    from course_theme import install as install_course_theme
+    install_course_theme(app)
     return app

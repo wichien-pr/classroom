@@ -11,6 +11,7 @@ import './stateless-web.css';
 import {webInitial,webRequest} from './stateless-web.js';
 import {webControls,webDiagram,webNotes,webSteps} from './stateless-web-view.js';
 import './style.css';
+import './theme.css';
 import './cdn.css';
 import {cdnInitial,cdnAction} from './cdn.js';
 import {cdnControls,cdnDiagram,cdnNotes} from './cdn-view.js';

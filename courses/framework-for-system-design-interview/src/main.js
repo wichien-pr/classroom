@@ -1,7 +1,8 @@
 import './wrap-up.css';import {wrapUpMarkup,wrapUpResult} from './wrap-up-view.js';import {reviewWrapUp} from './wrap-up.js';
 import './deep-dive.css';import {deepDiveMarkup,deepDiveResult} from './deep-dive-view.js';import {reviewDeepDive} from './deep-dive.js';
 import './blueprint.css';import {blueprintMarkup,blueprintResult,reviewBlueprint} from './blueprint-view.js';
-import './style.css';import './course.css';import './scope.css';
+import './style.css';
+import './theme.css';import './course.css';import './scope.css';
 import {lessons} from './lessons.js';import {questions,evaluateScope} from './scope.js';
 import {createAccountProgress} from './progress.js';import {createParticipation} from './participation.js';import {classroomLink} from './integration.js';
 const endpoint=import.meta.env.VITE_CLASSROOM_PROGRESS_URL;

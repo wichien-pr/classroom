@@ -1,0 +1,62 @@
+/* Course-owned palette. Platform supplies only data-theme + preference behavior.
+   Standalone retains the original palette; semantic diagrams stay intact. No image filters. */
+/* Navigation follows the reading palette; green identifies actions, not chrome.
+   Scope to platform themes so standalone teaching/diagram colors stay intact. */
+:root[data-theme=light]{--nav-surface:#fff;--nav-hover:#eef2f8;--nav-text:#253431;--nav-muted:#526173;--nav-border:#c5ced9;--nav-focus:#996000}
+:root[data-theme=dark]{--nav-surface:#1b2432;--nav-hover:#263347;--nav-text:#e7edf7;--nav-muted:#afbdd0;--nav-border:#45556c;--nav-focus:#ffd078}
+:root[data-theme] :is(.sidebar,.classroom-exit,.topbar,.course-top){background:var(--nav-surface);color:var(--nav-text);border-color:var(--nav-border)}
+:root[data-theme] .sidebar{border-right:1px solid var(--nav-border)}
+:root[data-theme] :is(.brand small,.course-label,.sidebar-bottom,.sidebar-progress,.topbar,.course-top){color:var(--nav-muted);border-color:var(--nav-border)}
+:root[data-theme] .sidebar-progress strong{color:var(--nav-text)}
+:root[data-theme] .brand-mark{background:var(--nav-hover);color:var(--nav-text)}
+:root[data-theme] .sidebar nav button{background:transparent;color:var(--nav-text)}
+:root[data-theme] :is(.classroom-exit a,.sidebar-bottom button){background:var(--nav-surface);color:var(--nav-text);border:1px solid var(--nav-border)}
+:root[data-theme] :is(.sidebar nav button,.classroom-exit a,.sidebar-bottom button):hover{background:var(--nav-hover);color:var(--nav-text)}
+:root[data-theme] .sidebar nav button:is([aria-current=page],[aria-current=step]){background:#176b5b;color:#fff;box-shadow:inset 3px 0 0 #82cbb3}
+:root[data-theme] .sidebar nav button:is([aria-current=page],[aria-current=step]):hover{background:#125747;color:#fff}
+:root[data-theme] .sidebar nav button :is(.nav-num,.done){color:inherit;opacity:1}
+:root[data-theme] :is(.sidebar button,.classroom-exit a,#theme-toggle):focus-visible{outline:3px solid var(--nav-focus);outline-offset:3px}
+
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark;background:#111722;color:#e7edf7;--border:#45556c;--theme-surface:#1b2432;--theme-soft:#263347;--theme-text:#e7edf7;--theme-muted:#afbdd0;--theme-link:#a8d9cb}
+html .classroom-exit{gap:12px;flex-wrap:wrap}
+html .classroom-exit a{min-width:0;flex:1 1 180px;max-width:max-content}
+html #theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:0 0 auto;min-width:88px;min-height:44px;margin-left:auto;padding:9px 12px;border:1px solid #a9b7ac;border-radius:24px;background:#eef2f8;color:#202735;font:600 14px system-ui}
+html #theme-toggle [data-theme-label]{display:inline;font-size:14px}
+html #theme-toggle[hidden]{display:none}
+:root[data-theme=dark] #theme-toggle{background:var(--theme-soft);color:var(--theme-text);border-color:var(--border)}
+:root[data-theme=dark] :is(button,a,input,select,textarea,summary,[tabindex]):focus-visible{outline:3px solid #ffd078;outline-offset:3px}
+:root[data-theme=dark] :is(.lab,.experiment-panel,.thinking,.quiz,dialog,.question-list>button){background:var(--theme-surface);color:var(--theme-text);border-color:var(--border)}
+:root[data-theme=dark] :is(.participation,.lesson-completion,.simulation,.experiment,.observation,.lesson-steps,.lesson-notes,.result,.interviewer,.dialog-header,.quiz #feedback){background:var(--theme-soft);color:var(--theme-text);border-color:var(--border)}
+:root[data-theme=dark] :is(.objective,.topbar,.course-top,.manual-tag,.controls label,.event-heading>span,footer,.result-note,.quiz-note,.question-why,.note-help,.experiment-heading span){color:var(--theme-muted)}
+:root[data-theme=dark] :is(.teaching section>p:not(.eyebrow),.experiment p,.experiment strong,.observation p,.lesson-steps h3,.result h3,.eyebrow){color:var(--theme-link)}
+:root[data-theme=dark] :is(.control-area h3,.event-area h3,.observation h3,.scope-compare h3){color:var(--theme-muted)}
+:root[data-theme=dark] :is(input,select,textarea){background:var(--theme-surface);color:var(--theme-text);border-color:var(--border);accent-color:#82cbb3}
+:root[data-theme=dark] :is(input,textarea)::placeholder{color:var(--theme-muted);opacity:1}
+:root[data-theme=dark] :is(.panel-title button,.answers button,footer button,.lesson-footer button,.actions button:not(.primary),.participation button,.question-list>button){background:var(--theme-surface);color:var(--theme-text);border-color:var(--border)}
+:root[data-theme=dark] :is(.answers button[aria-pressed=true],.question-list>button[aria-expanded=true]){background:#254c43;border-color:#82cbb3}
+:root[data-theme=dark] .answers button b{color:var(--theme-link)}
+:root[data-theme=dark] .error{color:#ffb4ae}
+:root[data-theme=dark] :is(.metrics>div,.scope-compare>div){background:var(--theme-surface);color:var(--theme-text);border-color:var(--border)}
+:root[data-theme=dark] .scope-compare>div+div{background:var(--theme-soft)}
+:root[data-theme=dark] :is(.metrics dt,.metrics dd){color:var(--theme-link)}
+/* Preserve the semantic light diagram canvas; prevent inherited light text.
+   Component-specific fills, warning states, arrows and SVG strokes stay intact. */
+:root[data-theme=dark] :is(.architecture,.state-grid,.estimate-diagram){color:#253431;color-scheme:light}
+:root[data-theme=dark] #term-hint{background:var(--theme-surface);color:var(--theme-text);border-color:var(--border)}
+:root[data-theme=dark] #term-hint :is(dt,dd){color:var(--theme-link)}
+:root[data-theme=dark] #term-hint button{background:var(--theme-soft);color:var(--theme-text);border-color:var(--border)}
+:root[data-theme=dark] .term-trigger{color:var(--theme-link);background:transparent}
+:root[data-theme=dark] .term-trigger:hover{background:#254c43;color:#d4f3e9}
+:root[data-theme=dark] :is(.architecture,.state-grid,.estimate-diagram) .term-trigger{color:#09675e}
+/* Full-width Scale Lab reading rhythm and grouped simulation controls. */
+:root[data-theme=dark] :is(.flow-intro,.lesson-intro,.web-intro)>p:not(.eyebrow){color:var(--theme-muted)}
+:root[data-theme=dark] .controls :is(.flow-control-group,.lesson-control-group,.web-control-group){background:var(--theme-soft);color:var(--theme-text);border-color:var(--border)}
+:root[data-theme=dark] :is(#flow-details,#lesson-details,#web-details){background:var(--theme-surface);color:var(--theme-text);border-color:var(--border)}
+:root[data-theme=dark] :is(#flow-details,#lesson-details,#web-details) h3{color:var(--theme-link)}
+:root[data-theme=dark] :is(.web-scenario p,.flow-submit span,.web-submit span,.flow-step-note,.lesson-step-note,.web-step-note){color:var(--theme-muted)}
+:root[data-theme=dark] :is(.flow-steps,.lesson-steps,.web-steps) li::marker{color:var(--theme-link)}
+:root[data-theme=dark] .database-notes pre{background:var(--theme-soft);color:var(--theme-text)}
+:root[data-theme=dark] :is(.cdn-figure,.cache-box,.cache-selected,.cache-notes pre) .term-trigger{color:#09675e}
+:root[data-theme=dark] .web-figure .term-trigger{color:#bce8fc}
+:root[data-theme=dark] .web-figure .term-trigger:hover{background:#29435e;color:#fff}

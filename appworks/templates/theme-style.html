@@ -1,0 +1,79 @@
+<style id="theme-style">
+/* Platform-only tokens. Course applications own their palettes and diagrams. */
+:root{color-scheme:light;--page:#f7f8fa;--surface:#fff;--surface-soft:#eef2f8;--text:#202735;--muted:#586579;--border:#d5dce6;--link:#2854cf;--action:#305de8;--on-action:#fff;--focus:#996300;--danger:#a72e28;--danger-bg:#fff0ef;--success:#285c3b}
+:root[data-theme=dark]{color-scheme:dark;--page:#111722;--surface:#1b2432;--surface-soft:#263347;--text:#e7edf7;--muted:#afbdd0;--border:#45556c;--link:#a8c4ff;--action:#305de8;--on-action:#fff;--focus:#ffd078;--danger:#ffb4ae;--danger-bg:#47282c;--success:#9bdfb5}
+html body{background:var(--page);color:var(--text)}
+html header{background:var(--surface);border-color:var(--border)}
+html p,html small,html .sub,html .muted,html .notice,html main .activity-inception{color:var(--muted)}
+/* Green identity belongs to catalog covers, not course lesson surfaces. */
+:root{--catalog-cover:#e2efe8;--catalog-cover-text:#204c3c;--catalog-cover-muted:#395e4e;--catalog-cover-decoration:#adccb9}
+:root[data-theme=dark]{--catalog-cover:#1e3931;--catalog-cover-text:#e3f4e9;--catalog-cover-muted:#b4d0c1;--catalog-cover-decoration:#426656}
+html .cover{background:var(--catalog-cover,#e2efe8);color:var(--catalog-cover-text,#204c3c)}
+html .grid>.card .cover small{color:var(--catalog-cover-muted,#395e4e);position:relative;z-index:1}
+html .cover:after{color:var(--catalog-cover-decoration,#adccb9);opacity:1}
+html a,html nav a,html .account-link{color:var(--link)}
+html :is(input,textarea,select){color:var(--text);background:var(--surface);border-color:var(--border);accent-color:var(--action)}
+html :is(input,textarea)::placeholder{color:var(--muted);opacity:1}
+html :is(a,button,input,textarea,select,summary,[tabindex]):focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+/* Native theme control; authenticated headers group it with account actions. */
+html #theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex-shrink:0;width:auto;min-width:88px;min-height:44px;margin:0 0 0 auto;padding:9px 12px;border:1px solid var(--border);border-radius:24px;background:var(--surface-soft);color:var(--text);font:600 14px system-ui;cursor:pointer}
+html #theme-toggle[hidden]{display:none}
+html #theme-toggle:hover{border-color:var(--link)}
+/* Keep the authenticated header on the same centered rail as nav/main.
+   Brand/presence and account actions wrap as groups, never around an overlay. */
+html .top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px 24px;max-width:1160px;margin:auto;padding:20px 24px;min-height:100px;line-height:1.5}
+html .header-brand{display:flex;align-items:center;gap:16px;min-width:0;max-width:100%}
+html .header-brand>div:not(.logo){min-width:0}
+html .header-brand .logo{display:grid;place-items:center;flex:0 0 44px;height:44px;padding:0}
+html .header-brand .brand-line{gap:8px 12px}
+html .header-brand .brand{font-size:20px;line-height:1.4;overflow-wrap:anywhere}
+html .header-brand .sub{margin-top:4px;overflow-wrap:anywhere}
+html .header-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:12px;margin-left:auto;max-width:100%;min-width:0}
+html .header-actions .account-link{margin:0;min-width:0;max-width:240px}
+html .header-actions .account-link>span:last-child{min-width:0;overflow-wrap:anywhere}
+html .header-actions form{margin:0;flex-shrink:0}
+html .header-actions form button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;font:600 14px/22px system-ui;white-space:nowrap}
+html .header-actions #theme-toggle{position:static;margin:0;height:44px;line-height:22px}
+@media(max-width:600px){
+  html .top{padding:16px;gap:16px}
+  html .header-brand{width:100%;gap:12px}
+  html .header-brand .brand{font-size:18px}
+  html .header-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;width:100%;gap:12px}
+  html .header-actions .account-link{grid-column:1/-1;max-width:100%}
+  html .header-actions form button{width:100%}
+  html header:has(.top) nav{padding-left:16px;padding-right:16px}
+}
+html .theme-auth-header{position:relative;padding-right:132px;min-height:100px}
+html .theme-auth-header>#theme-toggle{position:absolute;right:24px;top:22px}
+html .theme-compact-header{display:flex;justify-content:flex-end;background:transparent;border:0;padding:0;min-height:44px}
+@media(max-width:600px){html .theme-auth-header{padding-left:16px;padding-right:116px;gap:12px}html .theme-auth-header>#theme-toggle{right:16px;top:22px}html .theme-auth-header .logo{display:none}html .brand{overflow-wrap:anywhere}html .sub{overflow-wrap:anywhere}}
+/* Specificity beats page-owned light surfaces without filtering images. */
+:root[data-theme=dark] :is(.panel,.card,.profile-card,.profile-editor,.activity-card,.presence-panel,.community-grid .post-card,.chips a,.comment,.comment-card,.question){background:var(--surface);color:var(--text);border-color:var(--border)}
+:root[data-theme=dark] :is(.profile-form input,.profile-editor input,.profile-editor textarea,.community-grid input,.community-grid textarea,.community-grid select,#composer input,#composer textarea,#composer select){background:var(--surface);color:var(--text);border-color:var(--border)}
+:root[data-theme=dark] :is(.sub,small:not(.cover small),p,.muted,.post-text,.post-meta,.profile-handle,.profile-bio,.profile-dates p,.level-help,.level-caption p,.activity-subtitle,.activity-summary,.activity-months,.activity-weekdays,.activity-legend,.activity-help,.activity-inception,.presence-panel p,.presence-panel li a small,.composer-author span,#composer-requirements,#composer details p,#composer details small){color:var(--muted)}
+:root[data-theme=dark] :is(a,nav a,nav span,.account-link,.level-caption,.edit-profile-button,.presence-panel li a,.activity-summary strong){color:var(--link)}
+:root[data-theme=dark] :is(.pill,.badge,.number,.profile-avatar,.presence-face,.level-tag,.profile-form .secondary,.profile-editor .secondary,.chips a[aria-current=page],.presence button,#activity-detail,.editor-media){background:var(--surface-soft);color:var(--link);border-color:var(--border)}
+:root[data-theme=dark] :is(th,td,.profile,.profile-dates,.edit-profile-button,.profile-editor hr,hr){border-color:var(--border)}
+:root[data-theme=dark] :is(.ranking tr.self,.ranking tr:hover,.edit-profile-button:hover){background:var(--surface-soft)}
+:root[data-theme=dark] .reached .number{background:var(--action);color:var(--on-action)}
+:root[data-theme=dark] :is(th,.rank){color:var(--link)}
+:root[data-theme=dark] :is(fieldset label,.result){background:var(--surface-soft);color:var(--text)}
+:root[data-theme=dark] fieldset{border-color:var(--border)}
+:root[data-theme=dark] :is(.error,.profile-form [role=alert]){color:var(--danger);background:var(--danger-bg)}
+:root[data-theme=dark] .profile-form [role=status]{color:var(--success)}
+:root[data-theme=dark] :is(.level-ring .profile-avatar.large,.level-medallion){border-color:var(--surface)}
+:root[data-theme=dark] .level-ring{background:conic-gradient(#a5afff var(--progress),var(--surface-soft) 0)}
+:root[data-theme=dark] .activity-day[aria-pressed=true]{outline-color:var(--link)}
+:root[data-theme=dark] .activity-day.unknown{background:repeating-linear-gradient(135deg,#263347,#263347 3px,#45556c 3px,#45556c 4px);border-color:var(--border)}
+:root[data-theme=dark] #composer-dialog{background:var(--surface);color:var(--text);border-color:var(--border)}
+:root[data-theme=dark] :is(#composer .composer-footer,#block-editor,#composer #file-preview figure,#composer #file-preview .media-add){background:var(--surface);color:var(--text);border-color:var(--border)}
+:root[data-theme=dark] :is(#composer .composer-tools button,#composer #file-preview figure button){background:var(--surface-soft);color:var(--text)}
+:root[data-theme=dark] :is(#composer-status,.post-card.pinned){background:var(--surface-soft);color:var(--text)}
+:root[data-theme=dark] #composer input:not([type=hidden]):not([type=file]),:root[data-theme=dark] #composer .category-select{background:var(--surface);color:var(--text)}
+:root[data-theme=dark] :is(.eyebrow,#composer-cancel){color:var(--link)}
+:root[data-theme=dark] :is(.media-link,.community-poll label){background:var(--surface-soft);color:var(--text)}
+:root[data-theme=dark] #composer input::placeholder,:root[data-theme=dark] #composer textarea::placeholder{color:var(--muted)}
+:root[data-theme=dark] .editor-text:empty:before{color:var(--muted)}
+/* Auth recovery pages have a standalone panel instead of the shared header. */
+:root[data-theme=dark] .theme-compact-header+main{background:var(--surface);border-color:var(--border)}
+</style>

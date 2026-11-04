@@ -1,4 +1,5 @@
-import './style.css';import './course.css';import './terms.css';
+import './style.css';
+import './theme.css';import './course.css';import './terms.css';
 import './units-reference.css';import {renderUnitsReference} from './units-reference.js';
 import './tips-reference.css';import {renderTipsReference} from './tips-reference.js';
 import {restoreLocalHistory,activeLocalHistory} from './local-history.js';
