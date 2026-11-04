@@ -31,16 +31,30 @@ def test_empty_course_has_no_completion_level_or_exam_credit(setup_course):
             assert db.execute(f'SELECT count(*) FROM {table}').fetchone()[0] == 0
 
 
+def test_framework_catalog_card_title(setup_course):
+    import re
+    client, _, _ = setup_course
+    client.application.config['COURSES_ROOT'] = str(Path(__file__).resolve().parents[2] / 'courses')
+    page = client.get('/')
+    assert page.status_code == 200
+    card = re.search(r'<a\b[^>]*href="/courses/framework-for-system-design-interview/"[^>]*>(.*?)</a>', page.text, re.S)
+    assert card is not None
+    assert '<strong>Framework Lab</strong>' in card[1]
+    assert '<h2>Framework Lab</h2>' in card[1]
+    assert 'A Framework For System Design Interviews' not in card[1]
+
+
 def test_framework_manifest_has_source_grounded_curriculum():
     root = Path(__file__).resolve().parents[2]
     path = root / 'courses/framework-for-system-design-interview'
     manifest = json.loads((path / 'course.json').read_text())
     assert manifest['enabled'] is True
-    assert manifest['title'] == 'A Framework For System Design Interviews'
-    assert manifest['lessons'] == ['framework-scope', 'framework-blueprint', 'framework-deep-dive']
+    assert manifest['title'] == 'Framework Lab'
+    assert manifest['lessons'] == ['framework-scope', 'framework-blueprint', 'framework-deep-dive', 'framework-wrap-up']
     from achievements import load_bank
     bank = load_bank({**manifest, 'course_path': path})
-    assert len(bank) == 10
+    assert len(bank) == 13
+    assert len([q for q in bank if q['lesson_id'] == 'framework-wrap-up']) == 3
     assert len([q for q in bank if q['lesson_id'] == 'framework-deep-dive']) == 3
     assert manifest['completion_requirements'] == ['manual', 'simulation', 'thinking']
     assert (path / 'assessment.json').exists()

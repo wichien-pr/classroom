@@ -160,6 +160,54 @@
         }
       ],
       "answer": "explain"
+    },
+    {
+      "id": "framework-wrap-up-limits",
+      "lesson_id": "framework-wrap-up",
+      "prompt": "ก่อนจบการออกแบบ ควรสรุปอย่างไร?",
+      "options": [
+        {
+          "id": "review",
+          "text": "ทบทวนแบบ คอขวด และสิ่งที่จะปรับปรุง แล้วขอความเห็นลูกค้า"
+        },
+        {
+          "id": "assume",
+          "text": "ยืนยันว่าแบบสมบูรณ์และไม่มีสิ่งต้องปรับปรุง"
+        }
+      ],
+      "answer": "review"
+    },
+    {
+      "id": "framework-wrap-up-operations",
+      "lesson_id": "framework-wrap-up",
+      "prompt": "ประเด็นใดควรตรวจเพื่อเตรียมใช้งานจริง?",
+      "options": [
+        {
+          "id": "review",
+          "text": "server failure, network loss, metrics, error logs และแผน rollout"
+        },
+        {
+          "id": "assume",
+          "text": "จำนวนบริการในภาพเพียงอย่างเดียว"
+        }
+      ],
+      "answer": "review"
+    },
+    {
+      "id": "framework-wrap-up-growth",
+      "lesson_id": "framework-wrap-up",
+      "prompt": "ตัวอย่างจาก 1 ล้านเป็น 10 ล้านผู้ใช้บอกอะไร?",
+      "options": [
+        {
+          "id": "review",
+          "text": "เป็นสถานการณ์ให้ทบทวนภาระงานและข้อจำกัด ไม่ใช่ความจุที่วัดแล้ว"
+        },
+        {
+          "id": "assume",
+          "text": "รับรองว่าระบบรองรับ 10 ล้านผู้ใช้ได้ทันที"
+        }
+      ],
+      "answer": "review"
     }
   ]
 }

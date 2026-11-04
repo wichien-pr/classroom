@@ -21,7 +21,7 @@ test('compiled LAB03 three-way navigation, scoped figures, priorities, retention
  assert.ok(await page.locator('.deep-chain li').evaluateAll(nodes=>nodes.every(n=>parseFloat(getComputedStyle(n).fontSize)>=16)));
  assert.ok(!(await page.locator('#lesson').innerText()).match(/Step3|\.pdf|ผู้สัมภาษณ์/));
  await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`../../evidence/framework-lab03/standalone-${width}.png`,fullPage:true});
- await page.locator('#complete-lesson').click();assert.equal(await page.locator('#progress-count').innerText(),'1 / 3');await page.reload();await page.locator('[data-lesson="framework-deep-dive"]').click();assert.match(await page.locator('#completion-status').innerText(),/เรียนจบบทนี้แล้ว/);
+ await page.locator('#complete-lesson').click();assert.equal(await page.locator('#progress-count').innerText(),'1 / 4');await page.reload();await page.locator('[data-lesson="framework-deep-dive"]').click();assert.match(await page.locator('#completion-status').innerText(),/เรียนจบบทนี้แล้ว/);
  assert.deepEqual(errors,[]);await page.close();
  }}finally{await browser.close();await new Promise(r=>server.httpServer.close(r));}
 });

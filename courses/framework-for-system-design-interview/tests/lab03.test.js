@@ -4,7 +4,7 @@ import {existsSync,readFileSync} from 'node:fs';
 import {lessons} from '../src/lessons.js';
 test('LAB03 has independent manifest, assessment and unchanged prior choices',()=>{
  const manifest=JSON.parse(readFileSync(new URL('../course.json',import.meta.url)));
- assert.deepEqual(lessons.map(l=>l.id),['framework-scope','framework-blueprint','framework-deep-dive']);
+ assert.deepEqual(lessons.slice(0,3).map(l=>l.id),['framework-scope','framework-blueprint','framework-deep-dive']);
  assert.deepEqual(manifest.lessons,lessons.map(l=>l.id));
  assert.deepEqual(manifest.participation['framework-deep-dive']['framework-deep-dive'],['review-deep-dive']);
  const bank=JSON.parse(readFileSync(new URL('../assessment.json',import.meta.url)));

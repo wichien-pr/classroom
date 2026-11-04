@@ -48,7 +48,7 @@ class FrameworkPlatformTests(unittest.TestCase):
             self.assertNotIn('/src/main.js', html)
             built = discover_courses(isolated / 'courses', strict=True)
             self.assertEqual(len(built), 1)
-            self.assertEqual(built[0]['lessons'], ['framework-scope', 'framework-blueprint'])
+            self.assertEqual(built[0]['lessons'], manifest['lessons'])
             self.assertFalse((target / 'dist/assessment.json').exists())
             self.assertTrue(json.loads((COURSE / 'course.json').read_text())['enabled'])
 

@@ -1,6 +1,6 @@
 {
   "id": "framework-for-system-design-interview",
-  "title": "A Framework For System Design Interviews",
+  "title": "Framework Lab",
   "subtitle": "SYSTEM DESIGN / TH · ขอบเขตโจทย์และภาพรวมระบบ",
   "enabled": true,
   "order": 3,
@@ -10,7 +10,8 @@
   "lessons": [
     "framework-scope",
     "framework-blueprint",
-    "framework-deep-dive"
+    "framework-deep-dive",
+    "framework-wrap-up"
   ],
   "completion_requirements": [
     "manual",
@@ -39,6 +40,15 @@
     "framework-deep-dive": {
       "framework-deep-dive": [
         "review-deep-dive"
+      ],
+      "check-your-thinking": [
+        "quiz-answer-a",
+        "quiz-answer-b"
+      ]
+    },
+    "framework-wrap-up": {
+      "framework-wrap-up": [
+        "review-wrap-up"
       ],
       "check-your-thinking": [
         "quiz-answer-a",

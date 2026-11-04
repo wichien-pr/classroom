@@ -1,4 +1,14 @@
-# A Framework For System Design Interviews
+# Framework Lab
+
+## LAB04 — สรุปแบบและวางแผนปรับปรุง (deployed on local HTTPS)
+
+เพิ่ม `framework-wrap-up / review-wrap-up` พร้อม checklist และ private assessment 3 ข้อ รวม 4 บท / 12 action definitions / 13 private questions โดยไม่เปลี่ยน LAB01–03 ใช้ completion UI เดิมครบทุกสถานะ
+
+Sync จาก isolated worktree ไป `/Users/prommeesee/projects/classroom` และ deploy แล้วที่ https://localhost/courses/framework-for-system-design-interview/ ใช้บัญชีเดิม ไม่ commit/push ดู [deployment](../../docs/framework-lab04-deployment.md) และ [ผลตรวจและ source mapping](../../docs/framework-lab04-verification.md)
+
+QA ปัจจุบัน: `QA_PYTHON_ARCH=arm64 QA_PYTHON=/Users/prommeesee/.hermes/cache/scratch/classroom-login-venv/bin/python node tests/lab04-real-account.mjs` (macOS mixed architecture; บนระบบอื่นละ `QA_PYTHON_ARCH`) สร้างบัญชีสังเคราะห์โดยตรง ไม่ทดสอบ signup/OTP และไม่ใช้บัญชีจริง
+
+ส่วนด้านล่างเป็นประวัติการปล่อย LAB01–03:
 
 ## LAB03 — เจาะรายละเอียดให้ตรงจุด (deployed on local HTTPS)
 

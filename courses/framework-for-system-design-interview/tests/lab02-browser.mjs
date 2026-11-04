@@ -12,7 +12,7 @@ test('compiled LAB02 navigation, diagrams, use case, reset and separate completi
  await page.locator('[data-lesson="framework-scope"]').click();assert.equal(await page.locator('.blueprint-figure').count(),0);assert.ok(!(await page.locator('#lesson').innerText()).includes('ผู้สัมภาษณ์'));await page.locator('#calculate').click();assert.match(await page.locator('#result').innerText(),/ยังมีช่องว่าง/);
  await page.locator('[data-lesson="framework-blueprint"]').click();assert.match(await page.locator('#result').innerText(),/พร้อมนำไปคุย/);
  await page.locator('[data-answer="1"]').click();assert.match(await page.locator('#feedback').innerText(),/ลองทบทวน/);await page.locator('#reset').click();assert.equal(await page.locator('[data-answer="1"]').getAttribute('aria-pressed'),'true');
- await page.locator('#complete-lesson').click();assert.equal(await page.locator('#progress-count').innerText(),'1 / 3');await page.reload();await page.locator('[data-lesson="framework-blueprint"]').click();assert.match(await page.locator('#completion-status').innerText(),/เรียนจบบทนี้แล้ว/);
+ await page.locator('#complete-lesson').click();assert.equal(await page.locator('#progress-count').innerText(),'1 / 4');await page.reload();await page.locator('[data-lesson="framework-blueprint"]').click();assert.match(await page.locator('#completion-status').innerText(),/เรียนจบบทนี้แล้ว/);
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`../../evidence/framework-lab02/standalone-${width}.png`,fullPage:true});
  assert.deepEqual(errors,[]);await page.close();
  }}finally{await browser.close();await new Promise(r=>server.httpServer.close(r));}
