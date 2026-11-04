@@ -71,7 +71,7 @@ def test_login_throttling_is_persistent_and_generic(client, app):
     responses = [client.post('/login', data={'csrf_token': csrf, 'email': email, 'password': 'wrong'}) for email in ['learner@example.com', 'missing@example.com']]
     assert [r.status_code for r in responses] == [401, 401]
     assert responses[0].data == responses[1].data
-    for _ in range(3):
+    for _ in range(198):
         assert client.post('/login', data={'csrf_token': csrf, 'email': 'missing@example.com', 'password': 'wrong'}).status_code == 401
     from app import create_app
     restarted = create_app({'TESTING': True, 'DATABASE': app.config['DATABASE']}).test_client()

@@ -98,12 +98,12 @@ def test_duplicate_submit_does_not_replace_password_or_resend(otp):
 
 def test_durable_email_and_ip_limits_include_resends(otp):
     app, client, messages = otp
-    for _ in range(3):
+    for _ in range(50):
         assert start(app.test_client()).status_code == 303
     assert start(app.test_client()).status_code == 429
     restarted = create_app(dict(app.config))
     assert start(restarted.test_client()).status_code == 429
-    for n in range(7):
+    for n in range(50):
         assert start(app.test_client(), email=f'other{n}@example.test').status_code == 303
     assert start(app.test_client(), email='last@example.test').status_code == 429
 

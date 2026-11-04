@@ -30,8 +30,8 @@ def install(app, connect):
         now = time.time()
         db.execute('DELETE FROM registration_limits WHERE attempted<=?', (now-3600,))
         db.execute('DELETE FROM pending_registrations WHERE sent_at<=?', (now-28800,))
-        keys = [('email', hashlib.sha256(email.encode()).hexdigest(), 3),
-                ('ip', hashlib.sha256((request.remote_addr or '').encode()).hexdigest(), 10)]
+        keys = [('email', hashlib.sha256(email.encode()).hexdigest(), 50),
+                ('ip', hashlib.sha256((request.remote_addr or '').encode()).hexdigest(), 100)]
         for kind, key, cap in keys:
             if db.execute('SELECT count(*) FROM registration_limits WHERE kind=? AND key_hash=?', (kind,key)).fetchone()[0] >= cap:
                 return False

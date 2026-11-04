@@ -116,7 +116,7 @@ def create_app(config=None):
                 db.execute('BEGIN IMMEDIATE')
                 db.execute('DELETE FROM login_attempts WHERE attempted < ?', (time.time() - 900,))
                 attempts = db.execute('SELECT count(*) FROM login_attempts WHERE ip=?', (request.remote_addr,)).fetchone()[0]
-                if attempts >= 5:
+                if attempts >= 200:
                     return render_template('auth.html', mode='login', csrf_token=g.session['csrf'], error='ลองเข้าสู่ระบบมากเกินไป กรุณารอ 15 นาที'), 429, {'Retry-After': '900'}
                 db.execute('INSERT INTO login_attempts VALUES(?,?)', (request.remote_addr, time.time()))
             with connect() as db:

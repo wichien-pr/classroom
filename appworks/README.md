@@ -52,7 +52,7 @@ APPWORKS_DATABASE=instance/browser-test.sqlite3 .venv/bin/waitress-serve --liste
 - รหัสผ่าน 12–128 ตัวอักษร เก็บ Werkzeug scrypt hash ไม่เก็บ plaintext; email trim + lowercase และ unique constraint; SQL ใช้ parameters
 - Session token สุ่ม 256 bits เก็บเฉพาะ SHA-256 hash ใน SQLite อายุ 8 ชั่วโมงแบบ absolute ทั้ง anonymous/authenticated; เปลี่ยน token เมื่อ login และลบทิ้งเมื่อ logout
 - Cookie `HttpOnly`, `SameSite=Lax`; local HTTP ไม่ตั้ง Secure สำหรับ HTTPS ตั้ง `APPWORKS_COOKIE_SECURE=1` และตั้งค่า reverse proxy/Origin ให้ถูกต้องก่อนเปิดใช้งานจริง
-- จำกัด login ผิด 5 ครั้ง/IP ใน 15 นาที เก็บใน SQLite และล้างเมื่อ login สำเร็จ ไม่เชื่อ X-Forwarded-For; ผู้ใช้หลัง NAT อาจกระทบกัน ยังไม่มี distributed/account rate limit หรือ register/CAPTCHA limit
+- จำกัด login ผิด 200 ครั้ง/IP ใน 15 นาที เก็บใน SQLite และล้างเมื่อ login สำเร็จ ไม่เชื่อ X-Forwarded-For; ผู้ใช้หลัง NAT อาจกระทบกัน ยังไม่มี distributed/account rate limit หรือ register/CAPTCHA limit
 - ไม่มี email verification, password reset, MFA, roles/admin หรือระบบ audit เหมาะกับ local development ไม่ใช่ production deployment สำเร็จรูป
 - ไม่เปิด static directory; ไม่มี route ดาวน์โหลด DB/source; responses ใช้ no-store และป้องกัน framing; CSP ยังอนุญาต inline script/style เพื่อคง prototype เดิม
 - Classroom แสดงความคืบหน้าจาก SQLite ตามบัญชี/คอร์ส/stable lesson ID; `GET/POST /api/courses/<id>/progress` ใช้ session เดิมและ POST JSON ต้องส่ง `X-CSRF-Token` จาก GET พร้อมผ่าน Origin check ดูรายละเอียด [course contract](../docs/course-contract.md)
