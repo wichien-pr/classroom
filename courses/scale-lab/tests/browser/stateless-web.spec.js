@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-const open=async page=>{await page.goto('/');await page.getByRole('button',{name:/Stateless web tier/}).click();};
+const open=async page=>{await page.goto('/');await page.getByRole('button',{name:/Stateless web tier/}).click();await page.locator('#lesson-topic-settings').click();};
 test('routing and shared state are separate dependencies',async({page})=>{
  await open(page);await page.locator('#web-request').click();await expect(page.locator('#outcome')).toContainText('NO_SESSION');
  await page.locator('#web-sticky').check();await page.locator('#web-request').click();await expect(page.locator('#outcome')).toContainText('OK');

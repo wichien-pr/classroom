@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 test('CDN request journey: miss hit stale expiry invalidation version and explicit fallback',async({page})=>{
- await page.goto('/');await page.locator('[data-lesson="7"]').click();
+ await page.goto('/');await page.locator('[data-lesson="7"]').click();await page.locator('#lesson-topic-settings').click();
  await page.locator('#decision').click();await expect(page.locator('#outcome')).toContainText('MISS');
  await page.locator('#decision').click();await expect(page.locator('#outcome')).toContainText('HIT');
  await page.locator('#cdn-publish').click();await page.locator('#decision').click();await expect(page.locator('#outcome')).toContainText('STALE');

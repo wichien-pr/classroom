@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import fs from 'node:fs';
 test('photo queue separates outages, scales workers and resets without losing thinking selection',async({page})=>{
- await page.goto('/');await page.locator('[data-lesson="10"]').click();
+ await page.goto('/');await page.locator('[data-lesson="10"]').click();await page.locator('#lesson-topic-settings').click();
  await expect(page.locator('#main h1')).toContainText('Message queue');
  await expect(page.locator('#main')).toHaveClass(/sequence-lesson/);
  await expect(page.locator('.lesson-steps li')).toHaveCount(6);

@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 test('LAB09 routes traffic, keeps DNS/data/capacity separate and resets safely',async({page})=>{
- const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/');await page.locator('[data-lesson="9"]').click();
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/');await page.locator('[data-lesson="9"]').click();await page.locator('#lesson-topic-settings').click();
  await expect(page.locator('#main h1')).toContainText('Data centers');
  await page.locator('#dc-request').click();await expect(page.locator('#dc-east')).toContainText('60%');await expect(page.locator('#dc-west')).toContainText('40%');
  await page.locator('#dc-west-up').uncheck();await page.locator('#dc-request').click();await expect(page.locator('#outcome')).toContainText('ปลายทางล่ม 40');

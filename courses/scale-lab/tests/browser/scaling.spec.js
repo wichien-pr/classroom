@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 test('LAB 03 compares power and pool, direct outage and routed spare',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('/');await page.locator('[data-lesson="3"]').click();
+ await page.goto('/');await page.locator('[data-lesson="3"]').click();await page.locator('#lesson-topic-settings').click();
  await expect(page.locator('h1')).toContainText('Vertical scaling');
  await page.locator('#order').click();await expect(page.locator('#outcome')).toContainText('โหลดเกิน');
  await page.locator('#scale-power').fill('3');await page.locator('#order').click();await expect(page.locator('#outcome')).toContainText('รับโหลดได้');

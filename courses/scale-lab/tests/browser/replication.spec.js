@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 test('LAB05 source topology, manual lag/failure/recovery and LAB06 Cache',async({page})=>{
- await page.goto('/');await page.locator('[data-lesson="5"]').click();
+ await page.goto('/');await page.locator('[data-lesson="5"]').click();await page.locator('#lesson-topic-settings').click();
  await expect(page.locator('.source-ref')).toHaveText('Database replication');
  await expect(page.locator('#architecture .replication-diagram')).toContainText('DNS คืน IP');
  await expect(page.locator('#architecture .replication-diagram')).toContainText('Web tier');

@@ -1,6 +1,7 @@
 import {test,expect} from '@playwright/test';
 for(const width of [320,390,1440])test(`LAB08 grouped controls and compact checkboxes ${width}`,async({page})=>{
  await page.setViewportSize({width,height:1000});await page.goto('/');await page.locator('[data-lesson-kind="stateless-web"]').click();
+ await page.locator('#lesson-topic-settings').click();
  const box=await page.locator('#web-sticky').boundingBox();expect(box.width).toBeLessThanOrEqual(24);expect(box.height).toBeLessThanOrEqual(24);
  await expect(page.getByRole('group',{name:'เส้นทางคำขอ'})).toBeVisible();
  await expect(page.getByRole('group',{name:'ความพร้อมของระบบ'})).toBeVisible();
@@ -28,5 +29,5 @@ test('LAB08 experiment instructions are ordered steps with separate note',async(
  await page.goto('/');await page.locator('[data-lesson-kind="stateless-web"]').click();
  await expect(page.locator('.experiment ol > li')).toHaveCount(6);
  await expect(page.locator('.experiment ol > li').first()).toContainText('Web 2');
- await expect(page.locator('.experiment .web-step-note')).toContainText('ปุ่มส่งคำขอเท่านั้น');
+ await expect(page.locator('.lesson-topic-history .web-step-note')).toContainText('ปุ่มส่งคำขอเท่านั้น');
 });

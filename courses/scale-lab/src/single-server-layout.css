@@ -1,4 +1,65 @@
-/* LAB08 reading rhythm, scoped to LAB01 to preserve other lessons. */
+/* Reading rhythm and topic workspace scoped to LAB01. */
+.flow-lesson #flow-topic{padding:20px;scroll-margin-top:90px;min-width:0}
+.flow-lesson #flow-topic .experiment{margin:0;padding:0;border:0;background:transparent}
+.flow-lesson #flow-topic .experiment>strong{display:none}
+/* Topic text stays readable at narrow widths; never scale the workspace down. */
+.flow-lesson #flow-topic .flow-steps li{font-size:17px;line-height:1.75}
+.flow-lesson #flow-topic #flow-slide-title{font-size:22px;line-height:1.6}
+.flow-lesson #flow-topic .flow-topic-map strong{font-size:18px;line-height:1.6}
+.flow-lesson #flow-topic .flow-topic-map span{font-size:16px;line-height:1.65}
+.flow-lesson #flow-topic .flow-submit span{font-size:14px;line-height:1.65}
+.flow-lesson #flow-topic #step,.flow-lesson #flow-topic select{font-size:16px;line-height:1.6;min-height:48px}
+.flow-lesson #flow-topic #flow-slide-title{margin:0 0 8px}
+.flow-lesson #flow-topic .flow-steps{margin:0 0 14px}
+.flow-lesson #flow-topic .flow-steps li{line-height:1.65;margin:0}
+.flow-topic-map{padding:12px 16px;border:1px solid var(--border);border-radius:10px;background:var(--theme-soft,#edf3ec);display:grid;gap:4px}
+.flow-topic-map strong{font-size:17px;color:var(--theme-text,#253431)}
+.flow-topic-map span{font-size:13px;line-height:1.6;color:var(--theme-text,#253431)}
+.flow-topic-map[hidden]{display:none}
+/* Keep the full live diagram above its action, without a desktop-sized canvas. */
+.flow-lesson #flow-topic #architecture{margin-top:12px;scroll-margin-top:90px}
+.flow-lesson #flow-topic .single-server-figure{max-width:360px}
+@media(max-width:650px){.flow-lesson #flow-topic #architecture{margin-inline:-14px;scroll-margin-top:70px}}
+.flow-lesson #flow-topic .control-area,.flow-lesson #flow-topic .observation{padding:12px 0;border:0}
+.flow-lesson #flow-topic .control-area h3{display:none}
+.flow-lesson #flow-topic .observation h3{font-size:14px;margin:0 0 4px}
+.flow-lesson #flow-topic #outcome{margin:0;line-height:1.75;font-size:17px}
+.flow-lesson #flow-topic .controls{gap:10px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}
+.flow-lesson #flow-topic .flow-control-group{padding:6px 10px}
+.flow-lesson #flow-topic .flow-control-group label{font-size:14px;gap:4px}
+.flow-lesson #flow-topic .flow-submit{gap:5px;display:grid}
+.flow-lesson #flow-topic .flow-submit button{min-height:44px;width:100%}
+.flow-lesson #flow-topic .state-grid{margin:0;gap:8px;background:transparent;border:0}
+.flow-lesson #flow-topic .state-grid>div{padding:8px 10px;border:1px solid var(--border);border-radius:8px}
+.flow-lesson #flow-topic .state-grid strong{font-size:16px;line-height:1.6;overflow-wrap:anywhere;color:var(--theme-text,#253431)}
+.flow-lesson #flow-topic .state-grid span{font-size:14px;line-height:1.65;color:var(--theme-text,#253431)}
+.flow-lesson #flow-topic #flow-payload{padding:10px;font-size:16px;line-height:1.6;background:var(--theme-soft,#edf3ec);color:var(--theme-text,#253431);border-radius:8px}
+.flow-lesson #flow-topic[data-topic="0"] .state-grid>div:nth-child(n+4),
+.flow-lesson #flow-topic[data-topic="0"] #flow-payload,
+.flow-lesson #flow-topic[data-topic="1"] .state-grid>div:nth-child(2),
+.flow-lesson #flow-topic[data-topic="1"] .state-grid>div:nth-child(5),
+.flow-lesson #flow-topic[data-topic="1"] #flow-payload,
+.flow-lesson #flow-topic[data-topic="2"] .state-grid>div:nth-child(2),
+.flow-lesson #flow-topic[data-topic="2"] .state-grid>div:nth-child(3),
+.flow-lesson #flow-topic[data-topic="2"] .state-grid>div:nth-child(4),
+.flow-lesson #flow-topic[data-topic="3"] .state-grid>div:nth-child(2),
+.flow-lesson #flow-topic[data-topic="3"] .state-grid>div:nth-child(3),
+.flow-lesson #flow-topic[data-topic="3"] .state-grid>div:nth-child(4),
+.flow-lesson #flow-topic[data-topic="1"] .flow-control-group,
+.flow-lesson #flow-topic[data-topic="2"] .flow-control-group{display:none}
+.flow-lesson #flow-topic[data-topic="1"] .controls,.flow-lesson #flow-topic[data-topic="2"] .controls{grid-template-columns:1fr}
+.flow-lesson #flow-topic .flow-slide-nav{margin:14px 0 8px}
+.flow-lesson #flow-topic .flow-step-note{margin:0;padding:0;border:0;font-size:14px}
+.flow-lesson .flow-full-view{border-top:1px solid var(--border);padding:10px 20px}
+@media(max-width:650px){
+ .flow-lesson #flow-topic{padding:14px;scroll-margin-top:70px}
+ .flow-lesson #flow-topic .controls{grid-template-columns:1fr}
+ .flow-lesson #flow-topic .flow-submit span{display:none}
+ .flow-lesson #flow-topic .flow-slide-nav{gap:8px;flex-wrap:nowrap}
+ .flow-lesson #flow-topic .flow-slide-nav button{flex:1 1 0;padding:8px;font-size:13px}
+ .flow-lesson #flow-topic .state-grid{grid-template-columns:1fr 1fr}
+ .flow-lesson #flow-topic .state-grid>div:first-child{grid-column:1/-1;display:flex;justify-content:space-between}
+}
 .flow-lesson .learning-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;max-width:1080px;margin-inline:auto}
 .flow-lesson .learning-grid>*,.flow-lesson .lab{min-width:0;width:100%}
 .flow-intro>p:not(.eyebrow){max-width:85ch;font-size:15px;line-height:1.9;color:#43534d}
@@ -12,9 +73,24 @@
 .flow-lesson .lab>.experiment{margin:16px 20px;padding:14px 18px;font-size:14px}
 .flow-lesson .flow-steps{margin:10px 0;padding-inline-start:24px;list-style:decimal}
 .flow-steps li{padding-inline-start:4px;margin:8px 0;line-height:1.85}.flow-steps li::marker{font-weight:700;color:#176b5b}
+.flow-lesson .flow-steps > li[hidden]{display:none}
+.flow-lesson #flow-slide-title{font-size:18px;line-height:1.6;overflow-wrap:anywhere;margin:12px 0;color:var(--theme-text,#253431)}
+.flow-lesson #flow-topic .flow-slide-nav{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;--flow-nav-accent:#245b91;--flow-nav-hover:#174773;--flow-nav-ink:#fff;--flow-back-bg:#edf3f8;--flow-back-hover:#dce8f3;--flow-back-ink:#214f79;--flow-disabled-bg:#e5e8eb;--flow-disabled-ink:#535e69}
+:root[data-theme=dark] .flow-lesson #flow-topic .flow-slide-nav{--flow-nav-accent:#9bc9f5;--flow-nav-hover:#c2e0fc;--flow-nav-ink:#122b43;--flow-back-bg:#263347;--flow-back-hover:#354963;--flow-back-ink:#b5d9fa;--flow-disabled-bg:#303b49;--flow-disabled-ink:#b4becb}
+.flow-lesson #flow-topic .flow-slide-nav button{display:block;min-height:48px;min-width:0;flex:1 1 0;white-space:normal;text-align:center;font-size:16px;line-height:1.6;font-weight:700;padding:10px 14px;border:2px solid var(--flow-back-ink);border-radius:8px;background:var(--flow-back-bg);color:var(--flow-back-ink);opacity:1;cursor:pointer;transition:none}
+.flow-lesson #flow-topic #flow-slide-next{background:var(--flow-nav-accent);color:var(--flow-nav-ink);border-color:var(--flow-nav-accent)}
+.flow-lesson #flow-topic .flow-slide-nav button:hover:not(:disabled){background:var(--flow-back-hover)}
+.flow-lesson #flow-topic #flow-slide-next:hover:not(:disabled){background:var(--flow-nav-hover);border-color:var(--flow-nav-hover)}
+.flow-lesson #flow-topic .flow-slide-nav button:active:not(:disabled){transform:translateY(2px)}
+.flow-lesson #flow-topic .flow-slide-nav button:focus-visible,.flow-lesson #flow-slide-title:focus-visible{outline:3px solid var(--flow-back-ink,currentColor);outline-offset:4px}
+.flow-lesson #flow-topic .flow-slide-nav button:disabled,.flow-lesson #flow-topic #flow-slide-next:disabled{background:var(--flow-disabled-bg);color:var(--flow-disabled-ink);border-color:var(--flow-disabled-ink);border-style:dashed;cursor:not-allowed;opacity:1}
 .flow-step-note{border-top:1px solid #ccd8c8;padding-top:10px;color:#536358;font-size:13px;line-height:1.8}
 .flow-lesson .quiz{padding:24px;border:1px solid #d9ded5;border-radius:12px;background:#fff}.flow-lesson .quiz h2{font-size:19px}
-.flow-lesson .answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}.flow-lesson .answers button{font-size:15px;margin:0}
+.flow-lesson .answers{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+/* LAB01 thinking choices/explanation only; glossary controls inherit this type. */
+.flow-lesson .answers button{font-size:16px;line-height:1.6;margin:0;min-width:0;overflow-wrap:anywhere}
+.flow-lesson .answers button > span{font-size:12px;line-height:1.6;flex:none}
+.flow-lesson .quiz #feedback{font-size:16px;line-height:1.6;overflow-wrap:anywhere}
 .flow-lesson #flow-details{border:1px solid #d9ded5;border-radius:10px;background:#f8faf6;padding:14px 20px}
 .flow-lesson summary{cursor:pointer;min-height:44px;align-content:center;font-weight:600}
 .flow-lesson #flow-details p{max-width:85ch;font-size:14px;line-height:1.9}.flow-score-help small{display:block;padding:10px 0}

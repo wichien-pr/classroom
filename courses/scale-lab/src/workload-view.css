@@ -1,0 +1,77 @@
+.topic-lesson #lesson-topic[data-kind="workload"] #architecture{display:block;padding:0;background:none;min-height:0}
+.topic-lesson .workload-playback #estimate{background:#176b5b;color:#fff;border-color:#176b5b;font-weight:700}
+.topic-lesson .workload-resource span,.topic-lesson .workload-resource b{display:inline}
+.topic-lesson #lesson-topic[data-kind="workload"] #workload-scenario{font-size:16px;line-height:1.7;margin:0}
+.topic-lesson .workload-units{width:100%;min-width:80px}
+.topic-lesson #lesson-topic[data-kind="workload"] .lesson-submit:empty{display:none}
+.topic-lesson .workload-scene{--wl-ink:#193b50;--wl-muted:#466170;--wl-bg:#f3f7fa;--wl-line:#b8cbd5;--wl-accent:#006e89;--wl-error:#b52b35;display:block;margin:0;padding:24px;background:var(--wl-bg);color:var(--wl-ink);border:1px solid var(--wl-line);border-radius:16px}
+[data-theme="dark"] .topic-lesson .workload-scene{--wl-ink:#e0edf4;--wl-muted:#aec3d1;--wl-bg:#162634;--wl-line:#496271;--wl-accent:#65d6eb;--wl-error:#ffadb4}
+.topic-lesson .workload-scene :is(strong,b,span,small,figcaption){color:inherit}
+.topic-lesson .workload-caption{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:16px}
+.topic-lesson .workload-caption span{color:var(--wl-muted);font-size:14px}
+.topic-lesson .workload-system{display:grid;grid-template-columns:110px 90px minmax(0,1fr);align-items:center;gap:12px;padding:24px 0}
+.topic-lesson .workload-scene svg{width:86px;height:76px;fill:none;stroke:currentColor;stroke-width:2.5;flex-shrink:0}
+.topic-lesson .workload-client{display:flex;align-items:center;flex-direction:column;text-align:center;gap:4px}
+.topic-lesson .workload-client strong{font-size:18px}
+.topic-lesson .workload-client span{font-size:14px}
+.topic-lesson .workload-hosts{display:grid;grid-template-columns:minmax(0,1fr) 104px minmax(0,1fr);align-items:center;gap:12px;border:0;padding:0;background:none}
+.topic-lesson .workload-machine{display:flex;align-items:center;flex-direction:column;gap:6px;min-width:0;padding:16px 10px;border:1px solid var(--wl-line);border-radius:12px;background:transparent;text-align:center;color:var(--wl-ink)}
+.topic-lesson .workload-machine>strong{font-size:22px;line-height:1.4}
+.topic-lesson .workload-machine>span{font-size:14px;min-height:40px;display:flex;align-items:center}
+.topic-lesson .workload-hosts.single{border:2px dashed var(--wl-line);border-radius:14px;padding:12px}
+.topic-lesson .workload-hosts.single .workload-machine{border-color:transparent;padding:4px}
+.topic-lesson .workload-resource{width:100%;font-size:14px}
+.topic-lesson .workload-units{display:flex;gap:4px;margin-top:8px}
+.topic-lesson .workload-units i{height:12px;flex:1;border:1px solid var(--wl-line);border-radius:3px}
+.topic-lesson .workload-units i.allocated{background:var(--wl-accent);border-color:var(--wl-accent)}
+.topic-lesson .workload-health{font-size:14px;color:var(--wl-accent)}
+.topic-lesson .workload-machine.unavailable{border-color:var(--wl-error);color:var(--wl-error)}
+.topic-lesson .workload-machine.unavailable .workload-health{color:var(--wl-error)}
+.topic-lesson .workload-link{font-size:14px;text-align:center;color:var(--wl-muted)}
+.topic-lesson .workload-link small{font-size:14px;display:block;margin-top:6px}
+.topic-lesson .workload-track{height:3px;background:var(--wl-line);position:relative;margin-top:10px}
+.topic-lesson .workload-track i{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--wl-accent);top:-5px;left:0;opacity:0;box-shadow:0 0 0 4px var(--wl-bg)}
+.topic-lesson .workload-scene #workload-result{font-size:17px;font-weight:650;text-align:left;border-top:1px solid var(--wl-line);padding:16px 0 8px;margin:0;line-height:1.65}
+.topic-lesson .workload-playback{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.topic-lesson .workload-playback button{min-height:48px;font-size:16px;padding:8px 12px;background:transparent;color:var(--wl-ink);border:1px solid var(--wl-line);border-radius:8px}
+.topic-lesson .workload-playback button:disabled{opacity:.55;cursor:default}
+.topic-lesson .workload-playback button:focus-visible{outline:3px solid var(--wl-accent);outline-offset:3px}
+.topic-lesson .workload-playback span{font-size:14px;color:var(--wl-muted)}
+.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-http i{animation:workload-http-flight 4.8s linear both}
+.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-query i{animation:workload-query-flight 4.8s linear both}
+.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-machine{animation:workload-activation 1.2s 1s ease both}
+.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-units{animation:workload-allocation 1.2s ease both;transform-origin:left}
+.topic-lesson .workload-scene[data-playback="paused"] *{animation-play-state:paused!important}
+.topic-lesson .workload-scene[data-ready="false"] .workload-query{color:var(--wl-error)}
+.topic-lesson .workload-scene[data-ready="false"] .workload-query i{background:var(--wl-error)}
+.topic-lesson .workload-scene[data-ready="false"]:is([data-playback="running"],[data-playback="paused"]) .workload-query i{animation-name:workload-blocked-flight}
+.topic-lesson .workload-scene[data-ready="false"]:is([data-playback="running"],[data-playback="paused"]) .workload-http i{animation-name:workload-http-stop}
+.topic-lesson .workload-link>span::after{content:' →'}
+@keyframes workload-http-stop{0%{left:0;opacity:1}24%{left:100%;opacity:1}25%,100%{left:100%;opacity:0}}
+@keyframes workload-blocked-flight{0%,24%{left:0;opacity:0}25%{left:0;opacity:1}50%,90%{left:100%;opacity:1}100%{left:100%;opacity:0}}
+@keyframes workload-http-flight{0%{left:0;opacity:1}24%{left:100%;opacity:1}25%,74%{left:100%;opacity:0}75%{left:100%;opacity:1}99%{left:0;opacity:1}100%{left:0;opacity:0}}
+@keyframes workload-query-flight{0%,24%{left:0;opacity:0}25%{left:0;opacity:1}50%{left:100%;opacity:1}74%{left:0;opacity:1}75%,100%{left:0;opacity:0}}
+@keyframes workload-activation{50%{box-shadow:0 0 0 3px var(--wl-accent)}}
+@keyframes workload-allocation{50%{filter:brightness(1.4)}}
+.topic-lesson #lesson-topic[data-kind="workload"] #state-view{display:none}
+@media(max-width:1050px){
+ .topic-lesson .workload-system{grid-template-columns:1fr;padding:16px 0;gap:12px}
+ .topic-lesson .workload-client{flex-direction:row;justify-content:center;flex-wrap:wrap}.topic-lesson .workload-client svg{width:48px;height:42px}
+ .topic-lesson .workload-http{width:120px;justify-self:center}
+}
+@media(max-width:600px){
+ .topic-lesson .workload-scene{padding:16px 12px}
+ .topic-lesson .workload-hosts{grid-template-columns:1fr;gap:12px}
+ .topic-lesson .workload-machine{display:grid;grid-template-columns:64px minmax(0,1fr);text-align:left;gap:4px 12px;padding:12px}
+ .topic-lesson .workload-machine svg{width:64px;height:60px;grid-row:1/4}
+ .topic-lesson .workload-machine>span{min-height:0}
+ .topic-lesson .workload-resource{grid-column:2}
+ .topic-lesson .workload-health{grid-column:2}
+ .topic-lesson .workload-link{width:100%;min-height:48px;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:28px;position:relative}
+ .topic-lesson .workload-link .workload-track{position:absolute;width:36px;left:calc(50% - 18px);top:50%;margin:0;transform:rotate(90deg)}
+ .topic-lesson .workload-link>span::after{content:' ↓'}
+ .topic-lesson .workload-link span,.topic-lesson .workload-link small{display:inline;font-size:14px}
+ .topic-lesson .workload-link small{margin-left:8px}
+ .topic-lesson .workload-caption{gap:4px}
+}
+@media(prefers-reduced-motion:reduce){.topic-lesson .workload-scene *{animation:none!important}}

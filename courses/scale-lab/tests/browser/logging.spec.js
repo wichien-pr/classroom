@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import fs from 'node:fs';
 test('LAB11 compares evidence and gates deployment without changing other lessons',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('/');await page.locator('[data-lesson="11"]').click();
+ await page.goto('/');await page.locator('[data-lesson="11"]').click();await page.locator('#lesson-topic-settings').click();
  await expect(page.locator('#main')).toHaveClass(/sequence-lesson/);
  await page.locator('#inspect-logs').click();await expect(page.locator('#logging-results')).toContainText('ไม่พบ');
  await page.locator('#log-scope').selectOption('all');await page.locator('#inspect-logs').click();await expect(page.locator('#logging-results')).toContainText('DB_TIMEOUT');await expect(page.locator('#logging-results')).toContainText('PHOTO_JOB_FAILED');

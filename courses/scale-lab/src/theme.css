@@ -1,5 +1,13 @@
 /* Course-owned palette. Platform supplies only data-theme + preference behavior.
    Standalone retains the original palette; semantic diagrams stay intact. No image filters. */
+/* Readable lesson menu only: never target the LAB01 slide navigation. */
+.sidebar nav button[data-lesson]{font-size:16px;line-height:1.55;padding:12px 10px;grid-template-columns:26px minmax(0,1fr) 16px;gap:10px;align-items:start}
+.sidebar nav button[data-lesson] .nav-num{font-size:16px;line-height:1.55}
+.sidebar nav button[data-lesson] .done{font-size:16px;line-height:1.55}
+.sidebar nav button[data-lesson]>span:nth-child(2){min-width:0;overflow-wrap:anywhere}
+@media(min-width:701px){.layout{grid-template-columns:320px minmax(0,1fr)}}
+@media(max-width:700px){.sidebar nav{grid-template-columns:minmax(0,1fr);max-height:55vh;overflow-y:auto;padding:4px;scroll-padding-block:4px}}
+
 /* Navigation follows the reading palette; green identifies actions, not chrome.
    Scope to platform themes so standalone teaching/diagram colors stay intact. */
 :root[data-theme=light]{--nav-surface:#fff;--nav-hover:#eef2f8;--nav-text:#253431;--nav-muted:#526173;--nav-border:#c5ced9;--nav-focus:#996000}

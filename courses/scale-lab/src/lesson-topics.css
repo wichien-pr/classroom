@@ -1,0 +1,77 @@
+/* Scope to LAB02–12 presentation; LAB01 and other classes are untouched. */
+.topic-lesson #lesson-topic{--topic-ink:#172b41;--topic-muted:#415469;--topic-surface:#fff;--topic-line:#a7b7c8;--topic-blue:#175bc2;color:var(--topic-ink);display:grid;gap:18px;min-width:0;scroll-margin-top:100px}
+html[data-theme=dark] .topic-lesson #lesson-topic,html[data-classroom-theme=dark] .topic-lesson #lesson-topic{--topic-ink:#e6edf5;--topic-muted:#b7c7d9;--topic-surface:#182737;--topic-line:#73869c;--topic-blue:#2469d3}
+.topic-lesson #lesson-topic [hidden]{display:none!important}
+.topic-lesson #lesson-topic .experiment{margin:0;padding:18px;background:var(--topic-surface);color:var(--topic-ink);border:1px solid var(--topic-line);border-radius:12px}
+.topic-lesson #lesson-topic-title{font-size:22px;line-height:1.5;color:var(--topic-ink);margin:0 0 10px;overflow-wrap:anywhere}
+.topic-lesson #lesson-topic .experiment>h3:not(#lesson-topic-title){display:none}
+.topic-lesson #lesson-topic ol{margin:0;padding-left:24px}
+.topic-lesson #lesson-topic .experiment li{font-size:17px;line-height:1.75;color:var(--topic-ink)}
+.topic-lesson #lesson-topic .experiment .term{font:inherit}
+.topic-lesson #lesson-topic #architecture{width:100%;min-width:0;margin:0}
+.topic-lesson #lesson-topic .control-area,.topic-lesson #lesson-topic .observation{margin:0;min-width:0}
+.topic-lesson #lesson-topic .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch}
+.topic-lesson #lesson-topic .controls>fieldset{flex:1 1 270px;min-width:0}
+.topic-lesson #lesson-topic .controls>div{flex:1 1 100%;min-width:0}
+.topic-lesson #lesson-topic .controls label,.topic-lesson #lesson-topic .controls legend{font-size:14px;line-height:1.65}
+.topic-lesson #lesson-topic .controls button,.topic-lesson #lesson-topic .controls select,.topic-lesson #lesson-topic .controls input:not([type=checkbox]){font-size:16px;min-height:48px;max-width:100%}
+.topic-lesson #lesson-topic .controls label:has(input[type=checkbox]){display:flex;align-items:center;gap:10px}
+.topic-lesson #lesson-topic input[type=checkbox]{width:18px;min-height:18px;height:18px;flex:0 0 18px}
+.topic-lesson #lesson-topic #outcome{font-size:16px;line-height:1.75;color:var(--topic-ink);background:var(--topic-surface)}
+.topic-lesson #lesson-topic #state-view{background:var(--topic-surface);color:var(--topic-ink);border:1px solid var(--topic-line);border-radius:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px}
+.topic-lesson #lesson-topic #state-view span{color:var(--topic-muted);font-size:14px;line-height:1.6}
+.topic-lesson #lesson-topic #state-view strong{color:var(--topic-ink);font-size:16px;line-height:1.6;overflow-wrap:anywhere}
+.topic-lesson #lesson-topic .lesson-topic-nav{display:flex;flex-wrap:wrap;gap:12px;margin:0}
+.topic-lesson #lesson-topic .lesson-topic-nav button{display:flex;align-items:center;justify-content:center;flex:1 1 180px;min-height:48px;padding:12px 16px;border:2px solid var(--topic-blue);border-radius:9px;background:var(--topic-surface);color:var(--topic-blue);font-size:16px;line-height:1.5;transition:none}
+.topic-lesson #lesson-topic #lesson-topic-back:not(:disabled){color:var(--topic-ink);border-color:var(--topic-line)}
+.topic-lesson #lesson-topic .lesson-topic-nav button:not(:disabled):active{transform:translateY(1px)}
+.topic-lesson #lesson-topic #lesson-topic-next{background:var(--topic-blue);color:#fff}
+.topic-lesson #lesson-topic .lesson-topic-nav button:disabled{background:var(--topic-surface)!important;color:var(--topic-muted)!important;border-color:var(--topic-line);border-style:dashed;opacity:1;cursor:not-allowed}
+.topic-lesson #lesson-topic .lesson-topic-nav button:not(:disabled):hover{filter:brightness(.9)}
+.topic-lesson #lesson-topic .lesson-topic-nav button:focus-visible,.topic-lesson #lesson-topic-settings:focus-visible{outline:3px solid #d98b13;outline-offset:3px}
+.topic-lesson #lesson-topic-settings{min-height:48px;font-size:14px;color:var(--topic-ink);background:var(--topic-surface);border:1px solid var(--topic-line);margin-top:12px;white-space:normal}
+.topic-lesson .lesson-topic-note{font-size:14px;line-height:1.7;color:var(--topic-muted);margin:0}
+.topic-lesson .lesson-topic-history{margin:18px 0}
+.topic-lesson #lesson-topic .observation h3,.topic-lesson #lesson-topic .control-area h3{font-size:16px;line-height:1.6;color:var(--topic-ink)}
+/* LAB02: a single workspace, paired resource inputs, brief result + disclosure. */
+.topic-lesson #lesson-topic[data-kind="workload"]{gap:12px;padding:20px}
+/* LAB02 alone: equal side tracks keep the live topic truly centered. */
+.topic-lesson #lesson-topic[data-kind="workload"] .lesson-topic-nav{display:grid;grid-template-columns:100px minmax(0,1fr) 100px;align-items:center;gap:16px;padding-bottom:16px;border-bottom:1px solid var(--topic-line)}
+.topic-lesson #lesson-topic[data-kind="workload"] .lesson-topic-nav button{min-width:0;padding:10px 8px;white-space:nowrap}
+.topic-lesson #lesson-topic[data-kind="workload"] #lesson-topic-title{margin:0;text-align:center;font-size:22px;line-height:1.6}
+.topic-lesson #lesson-topic[data-kind="workload"] #lesson-topic-title:focus-visible{outline:3px solid var(--topic-blue);outline-offset:4px;border-radius:4px}
+.topic-lesson #lesson-topic[data-kind="workload"] .experiment>strong{display:none}
+.topic-lesson #lesson-topic[data-kind="workload"] .experiment li{margin:0;padding:0}
+@media(max-width:600px){
+ .topic-lesson #lesson-topic[data-kind="workload"]{padding:14px}
+ .topic-lesson #lesson-topic[data-kind="workload"] .lesson-topic-nav{grid-template-columns:68px minmax(0,1fr) 68px;gap:8px;padding-bottom:12px}
+ .topic-lesson #lesson-topic[data-kind="workload"] .lesson-topic-nav button{padding:8px 2px}
+ .topic-lesson #lesson-topic[data-kind="workload"] #lesson-topic-title{font-size:18px}
+}
+.topic-lesson #lesson-topic[data-kind="workload"] .experiment{border:0;border-radius:0;padding:0;background:transparent}
+.topic-lesson #lesson-topic[data-kind="workload"] .experiment ol{list-style:none;padding:0}
+.topic-lesson #lesson-topic[data-kind="workload"] .control-area{padding:12px 16px;background:var(--topic-surface);border:1px solid var(--topic-line);border-radius:10px}
+.topic-lesson #lesson-topic[data-kind="workload"] .control-area>h3{display:none}
+.topic-lesson #lesson-topic[data-kind="workload"] .controls>fieldset{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border:0;padding:0;margin:0}
+.topic-lesson #lesson-topic[data-kind="workload"] .controls legend{padding:0;margin-bottom:8px;font-weight:650}
+.topic-lesson #lesson-topic[data-kind="workload"] .controls label{margin:0;min-width:0}
+.topic-lesson #lesson-topic[data-kind="workload"] .controls label:has(#db-layout),.topic-lesson #lesson-topic[data-kind="workload"] .controls label:has(#db-available){grid-column:1/-1}
+.topic-lesson #lesson-topic[data-kind="workload"] .observation{padding:0;background:transparent;border:0}
+.topic-lesson #lesson-topic[data-kind="workload"] .observation h3{margin:0 0 4px}
+.topic-lesson #lesson-topic[data-kind="workload"] #outcome{margin:0;padding:12px;border-left:3px solid var(--topic-blue)}
+.topic-lesson #lesson-topic[data-kind="workload"] #outcome details{margin-top:8px}
+.topic-lesson #lesson-topic[data-kind="workload"] #outcome summary{cursor:pointer;min-height:48px;display:flex;align-items:center;text-decoration:underline;text-underline-offset:4px}
+.topic-lesson #lesson-topic[data-kind="workload"] #outcome summary::before{content:'＋';margin-right:8px}
+.topic-lesson #lesson-topic[data-kind="workload"] #outcome details[open] summary::before{content:'−'}
+.topic-lesson #lesson-topic[data-kind="workload"] #outcome details p{font:inherit;color:inherit;margin:8px 0 0}
+.topic-lesson #lesson-topic[data-kind="workload"] #state-view{border:0;border-radius:0;padding:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.topic-lesson #lesson-topic[data-kind="workload"] #lesson-topic-settings{margin:0;justify-self:start;padding:8px 14px}
+.topic-lesson #workload-help{margin-top:16px;font-size:16px;line-height:1.75}
+.topic-lesson #workload-help summary{min-height:48px;cursor:pointer}
+@media(max-width:600px){.topic-lesson #lesson-topic[data-kind="workload"] .controls>fieldset:has(#db-scenario){grid-template-columns:minmax(0,1fr)}}
+/* Logs, metrics and pipeline are independent experiments; never mix results. */
+.topic-lesson #lesson-topic #lesson-topic-results>section{display:none;font-size:16px;line-height:1.7;color:var(--topic-ink);background:var(--topic-surface);border:1px solid var(--topic-line);border-radius:12px;padding:16px}
+.topic-lesson #lesson-topic[data-topic="0"] #logging-results,.topic-lesson #lesson-topic[data-topic="1"] #logging-results,.topic-lesson #lesson-topic[data-topic="2"] #metric-results,.topic-lesson #lesson-topic:is([data-topic="3"],[data-topic="4"],[data-topic="5"]) #lesson-topic-results>section:has(#pipeline-status){display:block}
+.topic-lesson #lesson-topic[data-kind="logging-operations"][data-topic="2"] #state-view,.topic-lesson #lesson-topic[data-kind="logging-operations"]:is([data-topic="0"],[data-topic="1"]) #state-view>div:nth-child(2),.topic-lesson #lesson-topic[data-kind="logging-operations"]:is([data-topic="3"],[data-topic="4"],[data-topic="5"]) #state-view>div:first-child{display:none}
+.topic-lesson #lesson-topic #lesson-topic-results :is(h3,p,dt,dd,li){color:var(--topic-ink);font-size:16px;line-height:1.7}
+@media(max-width:600px){.topic-lesson #lesson-topic{gap:14px}.topic-lesson #lesson-topic .experiment{padding:14px}.topic-lesson #lesson-topic .controls>fieldset{flex-basis:100%}}

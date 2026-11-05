@@ -122,7 +122,8 @@ test('invalid input never earns score',async({page})=>{
  await expect(page.locator('#outcome')).toContainText('กรุณากรอก');
  await page.waitForTimeout(100);expect(posts).toBe(0);
  await page.locator('[data-lesson="2"]').click();
- await page.locator('#web-size').fill('0');await page.locator('#estimate').click();
+ await expect(page.locator('#lesson-topic input,#lesson-topic select')).toHaveCount(0);
+ await page.locator('#lesson-topic-next').click();await page.locator('#lesson-topic-back').click();
  await page.waitForTimeout(100);expect(posts).toBe(0);
 });
 
