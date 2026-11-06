@@ -29,6 +29,11 @@ import {scalingScene,bindScalingPlayback,stopScalingPlayback} from './scaling-vi
 let scalingTopic=0,scalingResult=null,scalingPlay=false;
 function prepareScalingTopic(index){scalingTopic=index;scalingResult=null;scalingPlay=false;state.scaling=scalingPreset(index);renderState();}
 import './balance.css';
+import './balance-view.css';
+import {balanceScene,bindBalancePlayback,stopBalancePlayback} from './balance-view.js';
+import {balancePreset} from './balance.js';
+let balanceTopic=0,balanceResult=undefined,balancePlay=false;
+function prepareBalanceTopic(index){balanceTopic=index;balanceResult=undefined;balancePlay=false;state.balance=balancePreset(index);renderState();}
 import './replication.css';
 import {replicationInitial,replicationAction,dbName} from './replication.js';
 import {replicationControls,replicationDiagram,replicationNotes} from './replication-view.js';
@@ -110,7 +115,7 @@ case 'data-centers':return dataCentersControls();
 case 'region':return '<label>Region หลักติดต่อไม่ได้<select id="choice"><option value="dns">สลับ DNS แล้วเปิด writer ทันที</option><option value="fence">Fence writer เดิม ตรวจ lag แล้ว promote</option></select></label>'+button('decision','ทดลองการตัดสินใจ');
 }}
 function mount(){
-stopFlowPlayback();stopWorkloadPlayback();stopScalingPlayback();
+stopFlowPlayback();stopWorkloadPlayback();stopScalingPlayback();stopBalancePlayback();
 const l=lessons[selected-1];
 feedback=quizSelections.has(l.kind) ? (quizSelections.get(l.kind)===1?'ถูกต้อง — ':'ยังไม่ถูก — ')+l.why : '';
 $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a class="skip" href="#main">ข้ามไปห้องทดลอง</a><div class="layout"><aside class="sidebar"><div class="brand"><span class="brand-mark">S<span>↗</span></span><div>Scale Lab<small>SYSTEM DESIGN / TH</small></div></div><div class="course-label">ORDER SYSTEM · ${lessons.length} LABS</div><nav aria-label="บทเรียน">${lessons.map(x=>`<button data-lesson-kind="${x.kind}" data-lesson="${x.id}" aria-current="${x.id===selected?'page':'false'}"><span class="nav-num">${String(x.id).padStart(2,'0')}</span><span>${x.title}</span><span class="done">${progress.includes(x.id)?'✓':''}</span></button>`).join('')}</nav><div class="sidebar-bottom"><p id="progress-status" role="status"></p><button id="retry-progress" hidden>ลองโหลดอีกครั้ง</button><span id="progress">${progress.length} / ${lessons.length} บทเรียนจบ</span><progress max="${lessons.length}" value="${progress.length}" aria-label="ความคืบหน้าบทเรียน"></progress></div></aside><div class="workspace"><div class="simulation"><span class="dot"></span><strong>EDUCATIONAL SIMULATION</strong><span>โครงสร้างและค่าทั้งหมดเป็นแบบจำลองเพื่อการเรียนรู้ ไม่ใช่ benchmark จริง</span></div><header class="topbar"><span>ห้องทดลอง / ระบบสั่งซื้อสินค้า</span><span class="source-ref">คู่มือต้นฉบับ §${l.chapter}</span></header><main id="main"><div class="lesson-heading"><div><p class="eyebrow">LAB ${String(l.id).padStart(2,'0')} / ${l.en}</p><h1>${l.title}</h1><p class="objective">${l.objective}</p></div><span class="manual-tag">MANUAL STEP</span></div><div id="participation-notice" hidden><p id="participation-status" role="status"></p><button id="retry-participation" hidden>ลองบันทึกคะแนนอีกครั้ง</button></div><div class="learning-grid"><section class="lab" aria-label="ห้องทดลองแบบจำลอง"><div class="panel-title"><h2>ทดลองกับระบบ</h2><button id="reset">เริ่มการทดลองใหม่</button></div><div class="architecture" id="architecture" aria-label="แผนภาพสถาปัตยกรรม"></div><div class="state-grid" id="state-view" aria-label="สถานะแบบจำลอง"></div><div class="control-area"><h3>01 / ตั้งสถานการณ์และลงมือ</h3><div class="controls">${controls(l.kind)}</div></div>${l.kind==='workload'?'':`<div class="observation"><h3>02 / สิ่งที่เกิดขึ้น</h3><p id="outcome" role="status" aria-live="polite"></p></div><div class="event-area"><div class="event-heading"><h3>บันทึกเหตุการณ์</h3><span>เรียงตามขั้น · ไม่ใช่เวลาจริง</span></div><ol id="event-log"></ol></div>`}</section><aside class="teaching" aria-label="คำอธิบายประกอบ"><section><p class="eyebrow">WHY IT WORKS</p><h2>เข้าใจเหตุผล ก่อนเพิ่มเครื่องมือ</h2><p>${l.explain}</p><div class="experiment"><strong>ลองตามนี้</strong><p>${l.try}</p></div></section><section class="quiz"><p class="eyebrow">CHECK YOUR THINKING</p><h2>${l.question}</h2><div class="answers">${quizOrder.get(l.kind).map((choice,i)=>`<button data-answer="${choice}"><span>${i===0?'A':'B'}</span>${l.answers[choice]}</button>`).join('')}</div><p id="feedback" role="status">${feedback||'เลือกคำตอบเพื่อดูเหตุผล — ตอบใหม่ได้เสมอ'}</p></section></aside></div><footer><span>${storageOK?'บันทึกเฉพาะความคืบหน้าใน browser นี้':'บันทึกไม่ได้ — ใช้งานต่อได้ แต่ความคืบหน้าอยู่ในหน่วยความจำ'}</span><section class="lesson-completion" aria-label="สถานะการเรียนบทนี้"><button type="button" id="complete-lesson" aria-describedby="completion-status">ทำเครื่องหมายว่าเรียนจบ</button><p id="completion-status" role="status"></p><button type="button" id="retry-completion-load" hidden>ลองโหลดอีกครั้ง</button></section></footer></main></div></div><dialog id="help-dialog"><div class="dialog-header"><h2 id="dialog-title"></h2><button id="close-dialog" autofocus>ปิด</button></div><div id="dialog-content"></div></dialog>`;
@@ -185,7 +190,7 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
   document.querySelector('.source-ref').textContent='Data centers · เส้นทางและข้อมูล';
  }
  mountLessonLayout($('#main'),l.kind);
- mountLessonTopics($('#main'),l.kind,l.kind==='stock'?prepareScalingTopic:prepareWorkloadTopic);
+ mountLessonTopics($('#main'),l.kind,l.kind==='balance'?prepareBalanceTopic:l.kind==='stock'?prepareScalingTopic:prepareWorkloadTopic);
  document.querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>navigate(Number(b.dataset.lesson)));
  document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>act(b.dataset.action));
  document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>answer(Number(b.dataset.answer)));
@@ -202,7 +207,11 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
  $('#complete-lesson').onclick=()=>completeLesson(lessons[selected-1]);
 }
 function navigate(id){selected=id;state=initial();events=[];feedback='';message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';mount();$('#main').setAttribute('tabindex','-1');$('#main').focus({preventScroll:true});}
-function renderState(){const flowActions=$('.flow-actions'),flowFocus=flowActions?.contains(document.activeElement)?document.activeElement:null;const scalingAction=$('#order'),scalingFocused=scalingAction===document.activeElement;const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?loggingDiagram(state.loggingLab):l.kind==='message-queue'?queueDiagram(state.queueLab):l.kind==='data-centers'?dataCentersDiagram(state.dataCenters):l.kind==='stateless-web'?webDiagram(state.webLab):l.kind==='cdn'?cdnDiagram(state.cdnLab):l.kind==='cache'?cacheDiagram(state.cacheLab):l.kind==='replica'?replicationDiagram(state.replication):l.kind==='balance'?balanceDiagram(state.balance):l.kind==='stock'?scalingScene(state.scaling,scalingResult):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?flowDiagram(state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+function renderState(){const balanceAction=$('#route'),balanceFocused=balanceAction===document.activeElement;const flowActions=$('.flow-actions'),flowFocus=flowActions?.contains(document.activeElement)?document.activeElement:null;const scalingAction=$('#order'),scalingFocused=scalingAction===document.activeElement;const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?loggingDiagram(state.loggingLab):l.kind==='message-queue'?queueDiagram(state.queueLab):l.kind==='data-centers'?dataCentersDiagram(state.dataCenters):l.kind==='stateless-web'?webDiagram(state.webLab):l.kind==='cdn'?cdnDiagram(state.cdnLab):l.kind==='cache'?cacheDiagram(state.cacheLab):l.kind==='replica'?replicationDiagram(state.replication):l.kind==='balance'?balanceScene(state.balance,balanceResult):l.kind==='stock'?scalingScene(state.scaling,scalingResult):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?flowDiagram(state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+if(l.kind==='balance'){
+ $('.balance-playback').prepend(balanceAction);if(balanceFocused)balanceAction.focus({preventScroll:true});
+ bindBalancePlayback($('#main'),balancePlay);balancePlay=false;return;
+}
 if(l.kind==='stock'){
  $('.scaling-playback').prepend(scalingAction);if(scalingFocused)scalingAction.focus({preventScroll:true});
  bindScalingPlayback($('#main'),scalingPlay);scalingPlay=false;return;
@@ -261,7 +270,7 @@ case 'estimate':{
  message=`${r.ready?'Database พร้อมรับงาน':'อ่านข้อมูลไม่ได้: Database ไม่พร้อม แม้ Web tier ยังทำงาน'} · ${r.independent?'ปรับ Web / Data แยกกันได้':'เครื่องเดียว: ปรับทรัพยากรร่วมกัน'} · ${r.fit?'เหมาะเป็นจุดเริ่มต้น':'ทบทวนตัวเลือก ไม่ใช่ว่าทำไม่ได้'}: ${r.reason} ข้อควรระวัง: ${r.caveat}`;
  break;}
 case 'order':{const config=scalingPreset(scalingTopic);const r=evaluateScaling(config);state.scaling=config;scalingResult=r;scalingPlay=true;message=`${{offline:'เข้าใช้งานไม่ได้: ไม่มีเครื่องที่พร้อมบนเส้นทางนี้',overloaded:'โหลดเกินกำลังที่เข้าถึงได้: อาจตอบช้าหรือเชื่อมต่อไม่สำเร็จ',ready:'รับโหลดได้ตามสมมติฐานนี้ ไม่ใช่ผล benchmark'}[r.status]} · โหลด ${config.traffic} / กำลัง ${r.capacity} หน่วย · ${config.balanced?'LB ส่งเฉพาะเครื่องที่พร้อม (สมมติรู้ health แล้ว)':'ต่อเครื่อง 1 โดยตรง เครื่องอื่นไม่รับ traffic'}${config.power===4?' · ถึงเพดานกำลังในแบบจำลองแล้ว':''}`;break;}
-case 'route':{const n=routeBalance(state.balance,[$('#up-a').checked,$('#up-b').checked,$('#up-c').checked]);message=n===null?'503 · ไม่มี backend พร้อมรับงาน — ห้าม route ไปเครื่องที่ล้ม':`200 · ส่ง request ไป App ${'ABC'[n]} ตาม round-robin เฉพาะเครื่องพร้อม`;break;}
+case 'route':{const n=routeBalance(state.balance,state.balance.up);balanceResult=n;balancePlay=true;message=n===null?'503 · ไม่มี backend พร้อมรับงาน — ห้าม route ไปเครื่องที่ล้ม':`200 · ส่ง request ไป App ${'ABC'[n]} ตาม round-robin เฉพาะเครื่องพร้อม`;break;}
 case 'write':case 'read-primary':case 'read-replica':case 'sync':case 'promote':{const result=replicationAction(state.replication,action);message=result.message;meaningful=result.meaningful;break;}
 case 'read-cache':case 'update':case 'invalidate':case 'tick':case 'outage':case 'restart':{const result=cacheAction(state.cacheLab,action,action==='update'?val('price'):undefined);message=result.message;meaningful=result.meaningful;break;}
 case 'shard':{const id=val('customer'),n=val('shards');message=`customer ${id} % ${n} → Shard ${m.shard(id,n)} (เริ่มนับ 0) — เปลี่ยนจำนวน shard ไม่ได้ย้ายข้อมูลจริง`;state.active=1;break;}
@@ -280,6 +289,8 @@ function renderParticipation(){
   if(flowAction){const saving=participation?.status==='saving';setFlowIcon(flowAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');flowAction.setAttribute('aria-busy',String(saving));}
   const workloadAction=document.querySelector('#lesson-topic[data-kind=workload] #estimate');
   if(workloadAction){const saving=participation?.status==='saving';setWorkloadIcon(workloadAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');workloadAction.setAttribute('aria-busy',String(saving));}
+  const balanceAction=document.querySelector('#lesson-topic[data-kind=balance] #route');
+  if(balanceAction){const saving=participation?.status==='saving';setWorkloadIcon(balanceAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');balanceAction.setAttribute('aria-busy',String(saving));}
   const scalingAction=document.querySelector('#lesson-topic[data-kind=stock] #order');
   if(scalingAction){const saving=participation?.status==='saving';setWorkloadIcon(scalingAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');scalingAction.setAttribute('aria-busy',String(saving));}
   renderProgress();
@@ -287,11 +298,13 @@ function renderParticipation(){
 async function participationOperation(operation,...args){
   const workloadFocus=document.activeElement?.id==='estimate'&&lessons[selected-1].kind==='workload'?document.activeElement:null;
   const focusedWorkloadTopic=workloadTopic;
+  const balanceFocus=document.activeElement?.id==='route'?document.activeElement:null,focusedBalanceTopic=balanceTopic;
   const scalingFocus=document.activeElement?.id==='order'?document.activeElement:null,focusedScalingTopic=scalingTopic;
   const flowFocus=document.activeElement?.id==='step'?document.activeElement:null;
   const focusedTopic=flowTopic;
   const pending=participation[operation](...args); renderParticipation();
   await pending; renderParticipation();
+  if(balanceFocus?.isConnected&&!balanceFocus.disabled&&focusedBalanceTopic===balanceTopic&&document.activeElement===document.body)balanceFocus.focus({preventScroll:true});
   if(scalingFocus?.isConnected&&!scalingFocus.disabled&&focusedScalingTopic===scalingTopic&&document.activeElement===document.body)scalingFocus.focus({preventScroll:true});
   if(workloadFocus?.isConnected && !workloadFocus.disabled && focusedWorkloadTopic===workloadTopic && document.activeElement===document.body)workloadFocus.focus({preventScroll:true});
   if(flowFocus?.isConnected && !flowFocus.disabled && focusedTopic===flowTopic && document.activeElement===document.body)flowFocus.focus({preventScroll:true});

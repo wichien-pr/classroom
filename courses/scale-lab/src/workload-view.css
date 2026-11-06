@@ -84,6 +84,8 @@
 .topic-lesson #reset.workload-icon-button::after{top:calc(100% + 8px);bottom:auto}
 .topic-lesson .workload-icon-button:focus-visible{outline:3px solid var(--theme-text,#253431);outline-offset:3px}
 .topic-lesson .workload-actions{display:flex;align-items:center;gap:20px;padding:12px;border:1px solid var(--border,#d7ded8);border-radius:8px;background:var(--theme-soft,#edf3ec)}
+/* Match LAB01's divider without changing other consumers of this toolbar. */
+.topic-lesson .workload-scene .workload-actions{margin-top:16px;padding:16px 0 0;border:0;border-top:1px solid var(--wl-line);border-radius:0;box-shadow:none;background:transparent}
 .topic-lesson .workload-playback{flex:none;flex-wrap:nowrap}
 .topic-lesson .workload-feedback{flex:1;min-width:0}
 .topic-lesson .workload-scene #workload-result{border:0;padding:0;font-size:17px;color:var(--theme-text,#253431)}

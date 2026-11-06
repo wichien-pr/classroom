@@ -1,5 +1,10 @@
 import {route} from './models.js';
 export const balanceInitial=()=>({up:[true,true,false],cursor:0,counts:[0,0,0]});
+// Topic preparation is unscored; counts and cursor always start independently.
+export function balancePreset(topic){
+ if(!Number.isInteger(topic)||topic<0||topic>3)throw Error('Unknown balance topic');
+ return {...balanceInitial(),up:[[true,true,false],[false,true,false],[false,false,false],[false,true,true]][topic]};
+}
 export function routeBalance(state,up){
  state.up=[...up];
  const n=route(up,state.cursor);
