@@ -1,4 +1,12 @@
 import {test,expect} from '@playwright/test';
+// Observe server-confirmed scores; the learner-facing numeric panel is removed.
+test.beforeEach(async({page})=>{
+ page.on('response',async response=>{
+  if(response.url().endsWith('/api/courses/scale-lab/participation') && response.ok()){
+   try {page.confirmedParticipationScore=(await response.json()).score;} catch {}
+  }
+ });
+});
 
 test('wrong quiz answer earns one separately identified point without completing lesson',async({page})=>{
  const events=[],completions=[];
@@ -10,13 +18,13 @@ test('wrong quiz answer earns one separately identified point without completing
   if(r.request().method()==='POST') events.push(r.request().postDataJSON());
   return r.fulfill({json:{score:new Set(events.map(e=>[e.lesson_id,e.simulation_id,e.action].join('/'))).size,csrf_token:'test'}});
  });
- await page.goto('/');await expect(page.locator('#participation-score')).toHaveText('0');
+ await page.goto('/');await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('0'));
  await page.locator('[data-answer="0"]').click();
- await expect(page.locator('#participation-score')).toHaveText('1');
+ await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('1'));
  expect(events[0]).toMatchObject({lesson_id:'flow',simulation_id:'check-your-thinking',action:'quiz-answer-a'});
  expect(completions).toEqual([]);
  await expect(page.locator('#feedback')).toContainText('ยังไม่ถูก');
- await expect(page.locator('.participation')).toContainText('แต่ละปุ่มครั้งแรก');
+ await expect(page.locator('.participation,#participation-score')).toHaveCount(0);
 });
 
 test('all lessons award each distinct button once including reset and navigation',async({page})=>{
@@ -30,13 +38,15 @@ test('all lessons award each distinct button once including reset and navigation
   if(r.request().method()==='POST') events.push(r.request().postDataJSON());
   return r.fulfill({json:{score:new Set(events.map(e=>[e.lesson_id,e.simulation_id,e.action].join('/'))).size,csrf_token:'test'}});
  });
- await page.goto('/');await expect(page.locator('#participation-score')).toHaveText('0');
+ await page.goto('/');await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('0'));
  for(const l of lessons){
   await page.locator(`[data-lesson="${l.id}"]`).click();
+  await expect(page.locator('.participation,#participation-score')).toHaveCount(0);
+  await expect(page.getByText('คะแนนและเงื่อนไขการเรียนจบ',{exact:true})).toHaveCount(0);
   const before=events.length, beforeScore=new Set(events.map(e=>[e.lesson_id,e.simulation_id,e.action].join('/'))).size;
   for(const [choice,count] of [[0,1],[0,1],[1,2],[1,2],[0,2]]){
    await page.locator(`[data-answer="${choice}"]`).click();
-   await expect(page.locator('#participation-score')).toHaveText(String(beforeScore+count));
+   await expect.poll(()=>page.confirmedParticipationScore).toBe(Number(String(beforeScore+count)));
   }
   expect(events.slice(before).map(e=>[e.lesson_id,e.simulation_id,e.action])).toEqual([0,0,1,1,0].map(a=>[l.kind,'check-your-thinking',a===0?'quiz-answer-a':'quiz-answer-b']));
  }
@@ -46,7 +56,7 @@ test('all lessons award each distinct button once including reset and navigation
  await expect(page.locator('[data-answer="0"]')).toHaveAttribute('aria-pressed','true');
  await expect(page.locator('#feedback')).toContainText('ยังไม่ถูก');
  await page.locator('[data-answer="0"]').click();
- await expect(page.locator('#participation-score')).toHaveText(String(lessons.length*2));
+ await expect.poll(()=>page.confirmedParticipationScore).toBe(Number(String(lessons.length*2)));
  expect(events).toHaveLength(lessons.length*5+1);
 });
 
@@ -65,11 +75,11 @@ test('quiz load and lost-response retry lock choices across progress renders and
   }
   return r.fulfill({json:{score:seen.size,csrf_token:'test'}});
  });
- await page.goto('/');await expect(page.locator('#participation-status')).toContainText('โหลดคะแนนไม่ได้');
+ await page.goto('/');await expect(page.locator('#participation-status')).toContainText('โหลดคะแนนไม่ได้');await expect(page.locator('#participation-status')).toBeVisible();
  await expect(page.locator('[data-answer="0"]')).toBeDisabled();
- await page.locator('#retry-participation').click();await expect(page.locator('#participation-score')).toHaveText('0');
+ await page.locator('#retry-participation').click();await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('0'));
  await page.locator('[data-answer="1"]').click();
- await expect(page.locator('#participation-status')).toContainText('บันทึกไม่ได้');
+ await expect(page.locator('#participation-status')).toContainText('บันทึกไม่ได้');await expect(page.locator('#participation-status')).toBeVisible();
    await expect(page.locator('#complete-lesson')).toHaveText('ทำเครื่องหมายว่าเรียนจบ');
  await expect(page.locator('[data-answer="0"]')).toBeDisabled();
  await page.locator('[data-lesson="2"]').click();await page.locator('#complete-lesson').click();
@@ -79,17 +89,17 @@ test('quiz load and lost-response retry lock choices across progress renders and
  await page.locator('[data-answer="0"]').evaluate(b=>b.onclick());
  await expect(page.locator('[data-answer="0"]')).toHaveAttribute('aria-pressed','false');
  await page.locator('#retry-participation').click();
- await expect(page.locator('#participation-status')).toContainText('กำลังบันทึก');
- await expect(page.locator('#participation-score')).toHaveText('0');
+ await expect(page.locator('#participation-status')).toContainText('กำลังบันทึก');await expect(page.locator('#participation-status')).toBeVisible();
+ await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('0'));
  await expect(page.locator('[data-answer="0"]')).toBeDisabled();
  await expect.poll(()=>events.length).toBe(2);release();
- await expect(page.locator('#participation-score')).toHaveText('1');
+ await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('1'));
  expect(events[1]).toEqual(events[0]);expect(events[0]).toMatchObject({lesson_id:'flow',simulation_id:'check-your-thinking',action:'quiz-answer-b'});
  await page.locator('[data-lesson="1"]').click();await page.locator('[data-answer="1"]').click();
- await expect(page.locator('#participation-score')).toHaveText('1');
+ await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('1'));
  expect(events).toHaveLength(3);expect(events[2].event_id).not.toBe(events[0].event_id);
  expect(completed).toEqual(['workload']);
- await page.reload();await expect(page.locator('#participation-score')).toHaveText('1');
+ await page.reload();await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('1'));
 });
 
 test('completed flow is not a new action and stateless setup is unscored',async({page})=>{
@@ -100,13 +110,14 @@ test('completed flow is not a new action and stateless setup is unscored',async(
    return r.fulfill({json:{score,csrf_token:'test'}});
  });
  await page.goto('/');
- for(let i=1;i<=6;i++){await page.locator('#step').click();await expect(page.locator('#participation-score')).toHaveText('1');}
+ for(let i=1;i<=6;i++){await page.locator('#step').click();await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('1'));}
  await page.locator('#step').click();
  await page.waitForTimeout(100); expect(score).toBe(1);
  await page.getByRole('button',{name:/Stateless web tier/}).click();
+ await page.locator('#lesson-topic-settings').click();
  await page.locator('#web-mode').selectOption('shared');await page.locator('#web-up-2').check();
  await page.waitForTimeout(100);expect(score).toBe(1);
- await page.locator('#web-request').click();await expect(page.locator('#participation-score')).toHaveText('2');
+ await page.locator('#web-request').click();await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('2'));
  await page.locator('#web-request').click();await page.waitForTimeout(100);expect(score).toBe(2);
 });
 
@@ -135,13 +146,13 @@ test('load retry and delayed save show honest status and block duplicate actions
    if(r.request().method()==='POST'){posts++;await new Promise(resolve=>{release=resolve;});return r.fulfill({json:{score:1,csrf_token:'test'}});}
    return r.fulfill({json:{score:0,csrf_token:'test'}});
  });
- await page.goto('/');await expect(page.locator('#participation-status')).toContainText('โหลดคะแนนไม่ได้');
+ await page.goto('/');await expect(page.locator('#participation-status')).toContainText('โหลดคะแนนไม่ได้');await expect(page.locator('#participation-status')).toBeVisible();
  await expect(page.locator('#step')).toBeDisabled();await page.locator('#retry-participation').click();
- await expect(page.locator('#participation-score')).toHaveText('0');await page.locator('#step').click();
- await expect(page.locator('#participation-status')).toContainText('กำลังบันทึก');
- await expect(page.locator('#participation-score')).toHaveText('0');await expect(page.locator('#step')).toBeDisabled();
+ await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('0'));await page.locator('#step').click();
+ await expect(page.locator('#participation-status')).toContainText('กำลังบันทึก');await expect(page.locator('#participation-status')).toBeVisible();
+ await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('0'));await expect(page.locator('#step')).toBeDisabled();
  await page.locator('[data-lesson="2"]').click();await expect(page.locator('#estimate')).toBeDisabled();
- release();await expect(page.locator('#participation-score')).toHaveText('1');expect(posts).toBe(1);
+ release();await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('1'));expect(posts).toBe(1);
 });
 
 test('simulation click saves only confirmed score; lost response retry keeps ID through navigation',async({page})=>{
@@ -156,15 +167,15 @@ test('simulation click saves only confirmed score; lost response retry keeps ID 
    await r.fulfill({json:{score,csrf_token:'test'}});
  });
  await page.goto('/');
- await expect(page.locator('#participation-score')).toHaveText('0');
+ await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('0'));
  await page.locator('#step').click();
- await expect(page.locator('#participation-status')).toContainText('บันทึกไม่ได้');
- await expect(page.locator('#participation-score')).toHaveText('0');
+ await expect(page.locator('#participation-status')).toContainText('บันทึกไม่ได้');await expect(page.locator('#participation-status')).toBeVisible();
+ await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('0'));
  await page.locator('[data-lesson="2"]').click();
  await page.locator('#retry-participation').click();
- await expect(page.locator('#participation-score')).toHaveText('1');
+ await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('1'));
  expect(events[0]).toEqual(events[1]); expect(events[1].lesson_id).toBe('flow');
  await page.locator('#reset').click();
- await expect(page.locator('#participation-score')).toHaveText('1');
+ await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('1'));
  expect(events).toHaveLength(2);
 });

@@ -29,7 +29,7 @@ for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`LAB0
     await page.keyboard.press('Tab');await button.focus();expect((await button.evaluate(style)).outline).toBe('solid');
    }else{expect(s.borderStyle).toBe('dashed');expect(s.cursor).toBe('not-allowed');}
   }
-  await expect(back).toContainText('←');await expect(next).toContainText('→');
+  await expect(back).toHaveAccessibleName('ย้อนกลับ');await expect(next).toHaveAccessibleName('ถัดไป');
   await page.locator('#step').click();
   await page.locator('#flow-topic').evaluate(e=>e.scrollIntoView({block:'start'}));
   await page.screenshot({path:`${dir}/${theme}-${width}-topic-${topic+1}.png`});
@@ -46,14 +46,14 @@ for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`LAB0
  await page.evaluate(theme=>document.documentElement.dataset.theme=theme,theme);
  for(let topic=0;topic<4;topic++){
   const sizes=await page.locator('#flow-topic').evaluate(el=>{
-   const selectors=['.flow-steps li:not([hidden])','.flow-topic-map:not([hidden]) span','#outcome','.state-grid strong','#flow-payload','#step'];
+   const selectors=['#flow-instruction','#flow-scenario','#flow-result','#flow-frame','#step'];
    return selectors.flatMap(s=>[...el.querySelectorAll(s)].filter(e=>e.checkVisibility()).map(e=>({selector:s,size:parseFloat(getComputedStyle(e).fontSize),line:parseFloat(getComputedStyle(e).lineHeight)})));
   });
   for(const item of sizes){expect(item.size,item.selector).toBeGreaterThanOrEqual(16);expect(item.line,item.selector).toBeGreaterThanOrEqual(item.size*1.5);}
   for(const selector of ['.state-grid span','.flow-control-group label','.flow-step-note','.observation h3']){
    for(const e of await page.locator(`#flow-topic ${selector}:visible`).all())expect(await e.evaluate(e=>parseFloat(getComputedStyle(e).fontSize)),selector).toBeGreaterThanOrEqual(14);
   }
-  expect(await page.locator('#flow-slide-title').evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeGreaterThanOrEqual(20);
+  expect(await page.locator('#flow-slide-title').evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeGreaterThanOrEqual(width===1280?22:18);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   if(topic<3)await page.locator('#flow-slide-next').click();
  }

@@ -1,16 +1,17 @@
 import {test,expect} from '@playwright/test';
+import {lessons} from '../../src/lessons.js';
 
 test('each lesson draws its own order once before rendering, not on first navigation',async({page})=>{
  await page.addInitScript(()=>{window.quizDraws=0;Math.random=()=>window.quizDraws++%2?0.75:0.25;});
  await page.goto('/');
  await expect(page.locator('[data-answer]')).toHaveCount(2);
- expect(await page.evaluate(()=>window.quizDraws)).toBe(11);
- for(let id=1;id<=11;id++){
+ expect(await page.evaluate(()=>window.quizDraws)).toBe(lessons.length);
+ for(let id=1;id<=lessons.length;id++){
   await page.locator(`[data-lesson="${id}"]`).click();
   expect(await page.locator('[data-answer]').evaluateAll(nodes=>nodes.map(n=>n.dataset.answer))).toEqual(id%2?['1','0']:['0','1']);
   await page.locator('#reset').click();
  }
- expect(await page.evaluate(()=>window.quizDraws)).toBe(11);
+ expect(await page.evaluate(()=>window.quizDraws)).toBe(lessons.length);
 });
 
 for(const random of [0,0.999999]) test(`thinking presentation uses RNG ${random} without changing choice identity`,async({page})=>{
@@ -21,7 +22,7 @@ for(const random of [0,0.999999]) test(`thinking presentation uses RNG ${random}
  await expect(answers).toHaveCount(2);
  expect(await answers.evaluateAll(nodes=>nodes.map(n=>n.dataset.answer))).toEqual(order);
  await expect(answers.locator('span')).toHaveText(['A','B']);
- await expect(page.locator('.participation small')).toContainText('นับตามตัวเลือกเดิม ไม่ใช่ตำแหน่ง A/B');
+ await expect(page.locator('.participation')).toHaveCount(0);
  await page.locator('[data-answer="0"]').click();
  await expect(page.locator('#feedback')).toContainText('ยังไม่ถูก');
  await page.locator('[data-answer="1"]').click();
@@ -33,5 +34,5 @@ for(const random of [0,0.999999]) test(`thinking presentation uses RNG ${random}
  expect(await answers.evaluateAll(nodes=>nodes.map(n=>n.dataset.answer))).toEqual(order);
  await expect(page.locator('[data-answer="1"]')).toHaveAttribute('aria-pressed','true');
  await expect(page.locator('#feedback')).toContainText('ถูกต้อง —');
- await expect(page.locator('#participation-score')).toHaveText('—');
+ await expect(page.locator('#participation-score')).toHaveCount(0);
 });

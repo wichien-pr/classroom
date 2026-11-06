@@ -18,5 +18,5 @@ export function mountLessonLayout(main,kind){
  const submit=document.createElement('div');submit.className='lesson-submit';submit.setAttribute('role','group');submit.setAttribute('aria-label','ลงมือทดลอง');submit.append(...actions);controls.append(submit);
  const extra=controls.querySelector('.cache-extras')||controls.querySelector('#promote')?.closest('fieldset');if(extra){extra.classList.add('lesson-extra-controls');controls.append(extra);}
  for(const label of controls.querySelectorAll('label:has(input[type=checkbox])'))label.classList.add('check');
- const scoring=document.createElement('details');scoring.className='lesson-score-help';scoring.innerHTML='<summary>คะแนนและเงื่อนไขการเรียนจบ</summary>';scoring.append(find('.participation small'));find('.participation').append(scoring);
+
 }

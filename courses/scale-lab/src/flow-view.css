@@ -1,0 +1,80 @@
+/* LAB01 guided workspace. Semantic HTML keeps labels at actual CSS size. */
+.flow-lesson #flow-topic :is(#flow-scene,#step){scroll-margin-top:100px}
+.flow-lesson #flow-topic .flow-slide-nav{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px;margin:0 0 16px}
+.flow-lesson #flow-topic #flow-slide-title{text-align:center;margin:0;font-size:22px;line-height:1.6}
+.flow-lesson #flow-instruction,.flow-lesson #flow-scenario{font-size:16px;line-height:1.7;margin:8px 0}
+.flow-lesson #flow-scenario{padding:10px 14px;border-radius:8px;background:var(--theme-soft,#edf3ec);color:var(--theme-text,#253431)}
+.flow-lesson #flow-topic #architecture{display:block;padding:0;margin:16px 0;background:transparent;border:0}
+.flow-lesson #flow-scene{margin:0;padding:20px;border-radius:14px;background:#101e30;color:#ecf3ff;line-height:1.6}
+.flow-lesson #flow-scene :is(strong,span){font-size:16px;color:inherit;line-height:1.6;overflow-wrap:anywhere}
+.flow-map{position:relative;display:grid;grid-template-columns:200px minmax(150px,1fr) 220px;column-gap:24px;row-gap:40px;max-width:720px;margin-inline:auto;padding:0}
+.flow-lesson #flow-scene{container-type:inline-size}
+.flow-connectors{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.flow-wire{fill:none;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:0 7;vector-effect:non-scaling-stroke;stroke:#526d88;stroke-width:2}
+.flow-travel{fill:#60d5ed;stroke:none;visibility:hidden;offset-distance:0%;offset-anchor:0px 0px;offset-position:0px 0px;offset-rotate:0deg}
+.flow-lesson #flow-scene .flow-wire.active{stroke:#668ca9;stroke-width:2}
+.flow-lesson #flow-scene[data-playback=finished] .flow-wire.active{stroke:#60d5ed;stroke-width:2}
+.flow-lesson #flow-scene .flow-travel.active{visibility:visible;animation:flow-travel 1.1s linear infinite;animation-play-state:paused}
+.flow-lesson #flow-scene[data-playback=running] .flow-travel.active{animation-play-state:running}
+.flow-lesson #flow-scene:not([data-playback=running]):not([data-playback=paused]) .flow-travel{visibility:hidden}
+@keyframes flow-travel{to{offset-distance:100%}}
+.flow-network{display:contents}
+.flow-network [data-node=client]{grid-column:1;grid-row:1}
+.flow-network [data-node=dns]{grid-column:3;grid-row:1}
+.flow-network .flow-machine{height:160px;box-sizing:border-box;justify-content:center}
+.flow-network .flow-machine,.flow-server{position:relative}
+.flow-machine{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:12px;border:1px solid #7187a1;border-radius:6px;background:#192c44;min-width:0}
+.flow-machine svg{width:48px;height:36px;fill:none;stroke:#a6cbef;stroke-width:2}
+.flow-dns-route{display:grid;grid-column:2;grid-row:1;grid-template-rows:48px 48px;text-align:center}
+.flow-dns-route span{padding:6px 0 0}
+.flow-http-routes span{padding:0;border:0}
+.flow-http-routes{display:grid;grid-column:1;grid-row:2;align-content:start;gap:20px;text-align:left}
+.flow-server{grid-column:3;grid-row:2;border:1px solid #7187a1;border-radius:8px;padding:10px;display:grid;gap:10px;text-align:center}
+.flow-storage{display:grid;grid-template-columns:1fr;gap:6px}
+.flow-storage span{border:1px solid #7187a1;border-radius:4px;padding:6px;background:#192c44}
+.flow-lesson #flow-scene [data-node].active{border-color:#7de3c6}
+.flow-lesson #flow-scene span.active{color:#7de3c6;font-weight:700}
+.flow-lesson #flow-frame{font-size:16px;line-height:1.65;color:#e1ecfa;margin:14px 0 0;min-height:3.3em}
+.flow-lesson .flow-actions{display:flex;align-items:center;gap:20px;padding:12px;border:1px solid var(--border,#d7ded8);border-radius:8px;background:var(--theme-soft,#edf3ec)}
+.flow-lesson .flow-player-controls{display:flex;align-items:center;gap:8px;flex:none}
+.flow-lesson .flow-player-feedback{flex:1;min-width:0}
+.flow-lesson .flow-playback-note{margin:4px 0 0;font-size:14px;line-height:1.65;color:var(--theme-muted,#53645d)}
+.flow-lesson #flow-result{margin:0;font-size:17px;line-height:1.7;color:var(--theme-text,#253431)}
+.flow-lesson #step{flex:none;font-size:16px;min-height:48px;padding:10px 24px}
+.flow-lesson #flow-topic .flow-icon-button,.flow-lesson #reset.flow-icon-button{position:relative;display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;min-width:48px;min-height:48px;padding:10px;flex:none}
+.flow-icon-button svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.flow-icon-button::after{content:attr(aria-label);position:absolute;bottom:calc(100% + 8px);left:0;padding:4px 10px;border-radius:5px;background:#152333;color:#fff;font-size:14px;line-height:1.6;white-space:nowrap;visibility:hidden;pointer-events:none;z-index:2}
+.flow-icon-button:focus-visible::after,.flow-icon-button:hover::after{visibility:visible}
+.flow-lesson :is(#flow-slide-next,#reset).flow-icon-button::after{left:auto;right:0}
+.flow-lesson #reset.flow-icon-button::after{top:calc(100% + 8px);bottom:auto}
+.flow-lesson #reset.flow-icon-button:focus-visible{outline:3px solid var(--theme-text,#253431);outline-offset:3px}
+.flow-playback{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.flow-playback button{min-height:48px;font-size:16px}
+.flow-playback span{font-size:14px;color:var(--theme-text,#253431)}
+@media(max-width:650px){
+ .flow-lesson #flow-topic .flow-slide-nav{grid-template-columns:48px minmax(0,1fr) 48px;gap:8px}
+ .flow-lesson #flow-topic #flow-slide-title{font-size:18px}
+ .flow-lesson #flow-topic .flow-slide-nav button{padding:8px 2px;white-space:nowrap}
+ .flow-lesson #flow-scene{padding:12px}
+ .flow-lesson .flow-actions{align-items:stretch;flex-direction:column;gap:12px}
+ .flow-lesson #flow-topic #architecture{margin-inline:0}
+}
+@container(max-width:620px){
+ .flow-map{grid-template-columns:48px minmax(0,220px);justify-content:center;column-gap:0;row-gap:0;max-width:268px}
+ .flow-network [data-node=client]{grid-column:2;grid-row:1}
+ .flow-network [data-node=dns]{grid-column:2;grid-row:3}
+ .flow-dns-route{grid-column:2;grid-row:2;height:112px;padding-right:60px;grid-template-rows:1fr 1fr;align-items:center;text-align:left}
+ .flow-dns-route span{padding:0}
+ .flow-http-routes{grid-column:2;grid-row:4;gap:12px;padding:20px 0}
+ .flow-server{grid-column:2;grid-row:5;padding:8px}
+}
+.flow-lesson #flow-topic #step{background:#176652;color:#fff;border:2px solid #176652;transition:none}
+.flow-lesson #flow-topic #step:hover{background:#104b3c}
+.flow-lesson #flow-topic .flow-playback button{background:#e5edf4;color:#214f79;border:1px solid #698299;transition:none}
+.flow-lesson #flow-topic :is(#step,.flow-playback button):disabled{background:#dce2e8;color:#4b5967;border-color:#7c8995;opacity:1;cursor:not-allowed}
+.flow-lesson #flow-topic :is(#step,.flow-playback button):focus-visible{outline:3px solid #318cce;outline-offset:3px}
+:root[data-theme=dark] .flow-lesson #flow-topic #step{background:#7de3c6;color:#102e27;border-color:#7de3c6}
+:root[data-theme=dark] .flow-lesson #flow-topic #step:hover{background:#a2edd8}
+:root[data-theme=dark] .flow-lesson #flow-topic .flow-playback button{background:#263347;color:#d9eafa;border-color:#8197af}
+:root[data-theme=dark] .flow-lesson #flow-topic :is(#step,.flow-playback button):disabled{background:#303b49;color:#b4becb;border-color:#7c8995}
+@media(prefers-reduced-motion:reduce){.flow-lesson #flow-scene .active{animation:none!important}}

@@ -1,4 +1,12 @@
 import {test,expect} from '@playwright/test';
+// Observe server-confirmed scores; the learner-facing numeric panel is removed.
+test.beforeEach(async({page})=>{
+ page.on('response',async response=>{
+  if(response.url().endsWith('/api/courses/scale-lab/participation') && response.ok()){
+   try {page.confirmedParticipationScore=(await response.json()).score;} catch {}
+  }
+ });
+});
 // Quiz now depends on both services. Keep this suite focused on progress failures.
 test.beforeEach(async({page})=>{
  let score=0;
@@ -51,5 +59,5 @@ test('load/save failures are visible, block premature completion and support ret
   await page.locator('#complete-lesson').click();
   await expect(page.locator('#progress')).toContainText('1 / 11');
   await expect(page.locator('#progress-status')).toContainText('บัญชีแล้ว');
-  await expect(page.locator('#participation-score')).toHaveText('0'); // Manual marking does not award participation.
+  await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('0')); // Manual marking does not award participation.
 });

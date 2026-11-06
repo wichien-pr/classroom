@@ -38,9 +38,19 @@ import './terms.css';
 import {installTermHints} from './terms.js';
 installTermHints(document.querySelector('#app'));
 import * as m from './models.js';
-import {flowView,singleServerDiagram} from './single-server.js';
+import {flowView} from './single-server.js';
+import {flowPreset,runFlowTopic} from './flow-presets.js';
+import {flowDiagram,bindFlowPlayback,stopFlowPlayback,setFlowIcon} from './flow-view.js';
+
+let flowTopic=0,flowResult=null,flowPlay=false;
+function prepareFlowTopic(topic){
+ flowTopic=topic;flowResult=null;flowPlay=false;
+ const preset=flowPreset(topic);state.step=preset.step;state.client=preset.client;events=[];
+ renderState();
+}
 import {mountSingleServerLayout} from './single-server-layout.js';
 import './single-server-layout.css';
+import './flow-view.css';
 import {mountLessonLayout} from './lesson-layout.js';
 import {mountLessonTopics,refreshLessonTopicResults} from './lesson-topics.js';
 import './lesson-topics.css';
@@ -75,7 +85,7 @@ function initial(){return {dataTier:{config:dataTierInitial(),result:null},loggi
 const button=(id,text)=>`<button type="button" id="${id}" data-action="${id}">${text}</button>`;
 const number=(id,label,value,min=0,max=1000000)=>`<label>${label}<input id="${id}" type="number" value="${value}" min="${min}" max="${max}" step="1"></label>`;
 function controls(kind){switch(kind){
-case 'flow':return '<label>แหล่งคำขอ (เปลี่ยนแล้วเริ่มใหม่ ไม่เพิ่มคะแนน)<select id="flow-client"><option value="browser">Browser · HTML ตัวอย่าง</option><option value="mobile">Mobile app · JSON ตัวอย่าง</option></select></label>'+button('step','เดิน request 1 ขั้น');
+case 'flow':return button('step','ทดลอง');
 case 'workload':return databaseControls();
 case 'stock':return scalingControls();
 case 'balance':return balanceControls();
@@ -91,11 +101,12 @@ case 'data-centers':return dataCentersControls();
 case 'region':return '<label>Region หลักติดต่อไม่ได้<select id="choice"><option value="dns">สลับ DNS แล้วเปิด writer ทันที</option><option value="fence">Fence writer เดิม ตรวจ lag แล้ว promote</option></select></label>'+button('decision','ทดลองการตัดสินใจ');
 }}
 function mount(){
+stopFlowPlayback();
 const l=lessons[selected-1];
 feedback=quizSelections.has(l.kind) ? (quizSelections.get(l.kind)===1?'ถูกต้อง — ':'ยังไม่ถูก — ')+l.why : '';
-$('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a class="skip" href="#main">ข้ามไปห้องทดลอง</a><div class="layout"><aside class="sidebar"><div class="brand"><span class="brand-mark">S<span>↗</span></span><div>Scale Lab<small>SYSTEM DESIGN / TH</small></div></div><div class="course-label">ORDER SYSTEM · ${lessons.length} LABS</div><nav aria-label="บทเรียน">${lessons.map(x=>`<button data-lesson-kind="${x.kind}" data-lesson="${x.id}" aria-current="${x.id===selected?'page':'false'}"><span class="nav-num">${String(x.id).padStart(2,'0')}</span><span>${x.title}</span><span class="done">${progress.includes(x.id)?'✓':''}</span></button>`).join('')}</nav><div class="sidebar-bottom"><p id="progress-status" role="status"></p><button id="retry-progress" hidden>ลองโหลดอีกครั้ง</button><span id="progress">${progress.length} / ${lessons.length} บทเรียนจบ</span><progress max="${lessons.length}" value="${progress.length}" aria-label="ความคืบหน้าบทเรียน"></progress></div></aside><div class="workspace"><div class="simulation"><span class="dot"></span><strong>EDUCATIONAL SIMULATION</strong><span>โครงสร้างและค่าทั้งหมดเป็นแบบจำลองเพื่อการเรียนรู้ ไม่ใช่ benchmark จริง</span></div><header class="topbar"><span>ห้องทดลอง / ระบบสั่งซื้อสินค้า</span><span class="source-ref">คู่มือต้นฉบับ §${l.chapter}</span></header><main id="main"><div class="lesson-heading"><div><p class="eyebrow">LAB ${String(l.id).padStart(2,'0')} / ${l.en}</p><h1>${l.title}</h1><p class="objective">${l.objective}</p></div><span class="manual-tag">MANUAL STEP</span></div><section class="participation" aria-label="Participation Score"><strong>Participation Score · <span id="participation-score">—</span></strong><p id="participation-status" role="status"></p><button id="retry-participation" hidden>ลองบันทึกคะแนนอีกครั้ง</button><small>ทดลองหรือกดตอบ quiz แต่ละปุ่มครั้งแรกได้ 1 คะแนนต่อบัญชี ไม่ว่าถูกหรือผิด · นับตามตัวเลือกเดิม ไม่ใช่ตำแหน่ง A/B · สุ่มลำดับเมื่อเปิดหน้าใหม่ · กดซ้ำ โหลดใหม่ หรือเข้าสู่ระบบใหม่ไม่เพิ่มคะแนน · ระหว่างบันทึกปุ่มจะปิดชั่วคราว รอให้พร้อมก่อนกดครั้งถัดไป · คะแนนไม่ใช่ Level · ในบัญชีต้องครบ 3 เงื่อนไขทุกบท: กดเรียนจบ + ทดลองหลัก + ตอบ A หรือ B จึงนับคลาสสำหรับ Level · ไม่รวมเปิดหน้า/เปลี่ยนบท/รีเซ็ต</small></section><section class="lesson-completion" aria-label="สถานะการเรียนบทนี้"><button type="button" id="complete-lesson" aria-describedby="completion-status">ทำเครื่องหมายว่าเรียนจบ</button><p id="completion-status" role="status"></p><button type="button" id="retry-completion-load" hidden>ลองโหลดอีกครั้ง</button></section><div class="learning-grid"><section class="lab" aria-label="ห้องทดลองแบบจำลอง"><div class="panel-title"><h2>ทดลองกับระบบ</h2><button id="reset">เริ่มการทดลองใหม่</button></div><div class="architecture" id="architecture" aria-label="แผนภาพสถาปัตยกรรม"></div><div class="state-grid" id="state-view" aria-label="สถานะแบบจำลอง"></div><div class="control-area"><h3>01 / ตั้งสถานการณ์และลงมือ</h3><div class="controls">${controls(l.kind)}</div></div>${l.kind==='workload'?'':`<div class="observation"><h3>02 / สิ่งที่เกิดขึ้น</h3><p id="outcome" role="status" aria-live="polite"></p></div><div class="event-area"><div class="event-heading"><h3>บันทึกเหตุการณ์</h3><span>เรียงตามขั้น · ไม่ใช่เวลาจริง</span></div><ol id="event-log"></ol></div>`}</section><aside class="teaching" aria-label="คำอธิบายประกอบ"><section><p class="eyebrow">WHY IT WORKS</p><h2>เข้าใจเหตุผล ก่อนเพิ่มเครื่องมือ</h2><p>${l.explain}</p><div class="experiment"><strong>ลองตามนี้</strong><p>${l.try}</p></div></section><section class="quiz"><p class="eyebrow">CHECK YOUR THINKING</p><h2>${l.question}</h2><div class="answers">${quizOrder.get(l.kind).map((choice,i)=>`<button data-answer="${choice}"><span>${i===0?'A':'B'}</span>${l.answers[choice]}</button>`).join('')}</div><p id="feedback" role="status">${feedback||'เลือกคำตอบเพื่อดูเหตุผล — ตอบใหม่ได้เสมอ'}</p></section></aside></div><footer><span>${storageOK?'บันทึกเฉพาะความคืบหน้าใน browser นี้':'บันทึกไม่ได้ — ใช้งานต่อได้ แต่ความคืบหน้าอยู่ในหน่วยความจำ'}</span><button id="next">${selected===12?'กลับบทแรก':'บทถัดไป →'}</button></footer></main></div></div><dialog id="help-dialog"><div class="dialog-header"><h2 id="dialog-title"></h2><button id="close-dialog" autofocus>ปิด</button></div><div id="dialog-content"></div></dialog>`;
+$('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a class="skip" href="#main">ข้ามไปห้องทดลอง</a><div class="layout"><aside class="sidebar"><div class="brand"><span class="brand-mark">S<span>↗</span></span><div>Scale Lab<small>SYSTEM DESIGN / TH</small></div></div><div class="course-label">ORDER SYSTEM · ${lessons.length} LABS</div><nav aria-label="บทเรียน">${lessons.map(x=>`<button data-lesson-kind="${x.kind}" data-lesson="${x.id}" aria-current="${x.id===selected?'page':'false'}"><span class="nav-num">${String(x.id).padStart(2,'0')}</span><span>${x.title}</span><span class="done">${progress.includes(x.id)?'✓':''}</span></button>`).join('')}</nav><div class="sidebar-bottom"><p id="progress-status" role="status"></p><button id="retry-progress" hidden>ลองโหลดอีกครั้ง</button><span id="progress">${progress.length} / ${lessons.length} บทเรียนจบ</span><progress max="${lessons.length}" value="${progress.length}" aria-label="ความคืบหน้าบทเรียน"></progress></div></aside><div class="workspace"><div class="simulation"><span class="dot"></span><strong>EDUCATIONAL SIMULATION</strong><span>โครงสร้างและค่าทั้งหมดเป็นแบบจำลองเพื่อการเรียนรู้ ไม่ใช่ benchmark จริง</span></div><header class="topbar"><span>ห้องทดลอง / ระบบสั่งซื้อสินค้า</span><span class="source-ref">คู่มือต้นฉบับ §${l.chapter}</span></header><main id="main"><div class="lesson-heading"><div><p class="eyebrow">LAB ${String(l.id).padStart(2,'0')} / ${l.en}</p><h1>${l.title}</h1><p class="objective">${l.objective}</p></div><span class="manual-tag">MANUAL STEP</span></div><div id="participation-notice" hidden><p id="participation-status" role="status"></p><button id="retry-participation" hidden>ลองบันทึกคะแนนอีกครั้ง</button></div><section class="lesson-completion" aria-label="สถานะการเรียนบทนี้"><button type="button" id="complete-lesson" aria-describedby="completion-status">ทำเครื่องหมายว่าเรียนจบ</button><p id="completion-status" role="status"></p><button type="button" id="retry-completion-load" hidden>ลองโหลดอีกครั้ง</button></section><div class="learning-grid"><section class="lab" aria-label="ห้องทดลองแบบจำลอง"><div class="panel-title"><h2>ทดลองกับระบบ</h2><button id="reset">เริ่มการทดลองใหม่</button></div><div class="architecture" id="architecture" aria-label="แผนภาพสถาปัตยกรรม"></div><div class="state-grid" id="state-view" aria-label="สถานะแบบจำลอง"></div><div class="control-area"><h3>01 / ตั้งสถานการณ์และลงมือ</h3><div class="controls">${controls(l.kind)}</div></div>${l.kind==='workload'?'':`<div class="observation"><h3>02 / สิ่งที่เกิดขึ้น</h3><p id="outcome" role="status" aria-live="polite"></p></div><div class="event-area"><div class="event-heading"><h3>บันทึกเหตุการณ์</h3><span>เรียงตามขั้น · ไม่ใช่เวลาจริง</span></div><ol id="event-log"></ol></div>`}</section><aside class="teaching" aria-label="คำอธิบายประกอบ"><section><p class="eyebrow">WHY IT WORKS</p><h2>เข้าใจเหตุผล ก่อนเพิ่มเครื่องมือ</h2><p>${l.explain}</p><div class="experiment"><strong>ลองตามนี้</strong><p>${l.try}</p></div></section><section class="quiz"><p class="eyebrow">CHECK YOUR THINKING</p><h2>${l.question}</h2><div class="answers">${quizOrder.get(l.kind).map((choice,i)=>`<button data-answer="${choice}"><span>${i===0?'A':'B'}</span>${l.answers[choice]}</button>`).join('')}</div><p id="feedback" role="status">${feedback||'เลือกคำตอบเพื่อดูเหตุผล — ตอบใหม่ได้เสมอ'}</p></section></aside></div><footer><span>${storageOK?'บันทึกเฉพาะความคืบหน้าใน browser นี้':'บันทึกไม่ได้ — ใช้งานต่อได้ แต่ความคืบหน้าอยู่ในหน่วยความจำ'}</span><button id="next">${selected===12?'กลับบทแรก':'บทถัดไป →'}</button></footer></main></div></div><dialog id="help-dialog"><div class="dialog-header"><h2 id="dialog-title"></h2><button id="close-dialog" autofocus>ปิด</button></div><div id="dialog-content"></div></dialog>`;
  if(l.kind==='flow'){
-  mountSingleServerLayout($('#main'));
+  mountSingleServerLayout($('#main'),prepareFlowTopic);
   document.querySelector('.source-ref').textContent='Single-server setup';
  }
  if(l.kind==='stateless-web'){
@@ -108,8 +119,7 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
   const details=document.createElement('details');details.id='web-details';
   details.innerHTML='<summary>อ่านเพิ่มเติม · การขยายระบบและข้อจำกัดของแบบจำลอง</summary>';details.append(extra);
   grid.replaceChildren(intro,comparison,lab,details,quiz);
-  const scoring=document.createElement('details');scoring.className='web-score-help';scoring.innerHTML='<summary>คะแนนและเงื่อนไขการเรียนจบ</summary>';
-  scoring.append($('.participation small'));$('.participation').append(scoring);
+
   document.querySelector('.source-ref').textContent='Stateless web tier';
   $('#web-mode').onchange=e=>{state.webLab=webInitial(e.target.value);for(let i=0;i<3;i++)$('#web-up-'+i).checked=state.webLab.up[i];$('#web-store').checked=true;message='เริ่มสถานการณ์ใหม่แล้ว ไม่ใช่การย้าย session จริง';events=[];renderState();};
   for(let i=0;i<3;i++)$('#web-up-'+i).onchange=e=>{state.webLab.up[i]=e.target.checked;renderState();};
@@ -173,7 +183,7 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
  $('#reset').onclick=()=>{state=initial();events=[];message='พร้อมทดลอง — เริ่มสถานะใหม่แล้ว';mount();$('#reset').focus();};
  $('#next').onclick=()=>navigate(selected===lessons.length?1:selected+1);
  $('#close-dialog').onclick=()=>$('#help-dialog').close();
- if(l.kind==='flow'){$('#flow-client').value=state.client;$('#flow-client').onchange=e=>{state.client=e.target.value;state.step=0;events=[];message=flowView(0,state.client).message;renderState();};}
+
  renderState();
  renderProgress();
  renderParticipation();
@@ -183,7 +193,11 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
  $('#complete-lesson').onclick=()=>completeLesson(lessons[selected-1]);
 }
 function navigate(id){selected=id;state=initial();events=[];feedback='';message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';mount();$('#main').setAttribute('tabindex','-1');$('#main').focus({preventScroll:true});}
-function renderState(){const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?loggingDiagram(state.loggingLab):l.kind==='message-queue'?queueDiagram(state.queueLab):l.kind==='data-centers'?dataCentersDiagram(state.dataCenters):l.kind==='stateless-web'?webDiagram(state.webLab):l.kind==='cdn'?cdnDiagram(state.cdnLab):l.kind==='cache'?cacheDiagram(state.cacheLab):l.kind==='replica'?replicationDiagram(state.replication):l.kind==='balance'?balanceDiagram(state.balance):l.kind==='stock'?scalingDiagram(state.scaling):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?singleServerDiagram(state.step,state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+function renderState(){const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?loggingDiagram(state.loggingLab):l.kind==='message-queue'?queueDiagram(state.queueLab):l.kind==='data-centers'?dataCentersDiagram(state.dataCenters):l.kind==='stateless-web'?webDiagram(state.webLab):l.kind==='cdn'?cdnDiagram(state.cdnLab):l.kind==='cache'?cacheDiagram(state.cacheLab):l.kind==='replica'?replicationDiagram(state.replication):l.kind==='balance'?balanceDiagram(state.balance):l.kind==='stock'?scalingDiagram(state.scaling):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?flowDiagram(state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+if(l.kind==='flow'){
+ $('#flow-result').textContent=flowResult ? (flowTopic===0?'DNS คืน IP 192.0.2.10 ให้ Browser · ยังไม่ส่ง HTTP':flowTopic===1?'GET /users/12 → 192.0.2.10 · HTTP ไม่ผ่าน DNS':`200 · ${flowResult.client==='mobile'?'JSON':'HTML'} → John Smith`) : 'ยังไม่ได้ทดลอง';
+ bindFlowPlayback($('#main'),flowResult,flowPlay);flowPlay=false;return;
+}
 let entries=[];
 switch(l.kind){case 'flow':{const v=flowView(state.step,state.client);entries=[['ขั้นที่เดินแล้ว',`${state.step} / ${m.FLOW_STEPS}`],['Domain',v.domain],['IP ที่ client ได้รับ',v.ip],['HTTP request',v.request],['HTTP response',v.response]];break;}
 case 'database-scaling':entries=[['ผลล่าสุด',state.dataTier.result?tierStatus(state.dataTier.result.status):'ยังไม่ได้ประเมิน']];break;
@@ -212,8 +226,7 @@ workloadPlay=false;
 function val(id){const el=$('#'+id);if(!el.checkValidity()||el.value.trim()==='')throw new Error('กรุณากรอกตัวเลขในช่วงที่กำหนด');return Number(el.value);}
 function act(action){if(participation && participation.status!=='saved') return;
 const lesson=lessons[selected-1].kind;
-let meaningful=!(action==='step' && state.step>=m.FLOW_STEPS) && !(action==='work' && !state.pending);
-if(action==='step' && !meaningful)return;
+let meaningful=!(action==='work' && !state.pending);
 try{switch(action){
 case 'evaluate-data-tier':{const config={mode:$('#tier-mode').value,power:val('tier-power'),shards:val('tier-shards'),key:$('#tier-key').value,traffic:$('#tier-traffic').value,user:val('tier-user'),up:$('#tier-up').checked};const result=evaluateDataTier(config);state.dataTier={config,result};message=tierStatus(result.status)+' · ผลจำลอง ไม่ได้ย้ายข้อมูลจริง';break;}
 case 'inspect-logs':{const s=state.loggingLab;s.logs=inspectLogs($('#log-scope').value,$('#log-level').value);s.logScope=$('#log-scope').selectedOptions[0].textContent;message=`ค้นพบ ${s.logs.length} เหตุการณ์ · การค้นหาไม่ได้แก้ไขบริการ`;break;}
@@ -226,7 +239,7 @@ case 'dc-request':{
  for(const [key,id] of [['eastUp','dc-east-up'],['westUp','dc-west-up'],['redirect','dc-redirect'],['freshDNS','dc-fresh-dns'],['synced','dc-synced'],['sameRelease','dc-same-release']])c[key]=$('#'+id).checked;
  const r=evaluateDataCenters(c);state.dataCenters=c;message=dataCentersMessage(r);break;
 }
-case 'step':state.step=m.flowStep(state.step);message=flowView(state.step,state.client).message;break;
+case 'step':flowResult=runFlowTopic(flowTopic);state.step=flowResult.step;state.client=flowResult.client;flowPlay=true;message=flowView(state.step,state.client).message;break;
 case 'estimate':{
  const config=workloadPreset(workloadTopic,workloadRun).config;
  const r=evaluateDatabase(config);state.database=config;workloadPlay=true;workloadHasResult=true;workloadRun++;
@@ -241,16 +254,22 @@ case 'decision':{const kind=lessons[selected-1].kind;if(kind==='cdn'){const r=cd
 }if(participation && meaningful) participationOperation('record',lesson,action);
 events.push(message);if(events.length>30)events.shift();renderState();}catch(e){message=e.message;renderState();}}
 function renderParticipation(){
-  $('#participation-score').textContent=participation?.score ?? '—';
-  $('#participation-status').textContent=participation ? ({loading:'กำลังโหลดคะแนนบัญชี…',saved:participation.reason==='already_counted'?'ปุ่มนี้นับคะแนนแล้ว · กดซ้ำไม่เพิ่มคะแนน':'คะแนนที่บันทึกในบัญชีแล้ว',saving:'กำลังบันทึกคะแนน…','load-error':'โหลดคะแนนไม่ได้ — ลองใหม่ หรือเข้าสู่ระบบอีกครั้ง','save-error':'บันทึกไม่ได้ — ลองอีกครั้งด้วยเหตุการณ์เดิม ก่อนทดลองต่อ'}[participation.status]) : 'Standalone · ไม่บันทึกคะแนนบัญชี ทดลองได้ตามปกติ';
+  // Keep blocking/error feedback accessible without rendering a score panel.
+  $('#participation-notice').hidden=!participation || participation.status==='saved';
+  $('#participation-status').textContent=participation ? ({loading:'กำลังโหลดคะแนนบัญชี…',saved:'',saving:'กำลังบันทึกคะแนน…','load-error':'โหลดคะแนนไม่ได้ — ลองใหม่ หรือเข้าสู่ระบบอีกครั้ง','save-error':'บันทึกไม่ได้ — ลองอีกครั้งด้วยเหตุการณ์เดิม ก่อนทดลองต่อ'}[participation.status]) : '';
   $('#retry-participation').hidden=!participation || !['load-error','save-error'].includes(participation.status);
   $('#retry-participation').textContent=participation?.status==='load-error'?'ลองโหลดคะแนนอีกครั้ง':'ลองบันทึกคะแนนอีกครั้ง';
   document.querySelectorAll('[data-action]').forEach(b=>b.disabled=!!participation && participation.status!=='saved');
+  const flowAction=document.querySelector('.flow-lesson #step');
+  if(flowAction){const saving=participation?.status==='saving';setFlowIcon(flowAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');flowAction.setAttribute('aria-busy',String(saving));}
   renderQuizControls();
 }
 async function participationOperation(operation,...args){
+  const flowFocus=document.activeElement?.id==='step'?document.activeElement:null;
+  const focusedTopic=flowTopic;
   const pending=participation[operation](...args); renderParticipation();
   await pending; renderParticipation();
+  if(flowFocus?.isConnected && !flowFocus.disabled && focusedTopic===flowTopic && document.activeElement===document.body)flowFocus.focus({preventScroll:true});
   if(account && operation!=='load' && participation.status==='saved') {
     const refresh=account.refresh();
     await Promise.resolve(); renderProgress();

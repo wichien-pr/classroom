@@ -18,7 +18,7 @@ test('technical terms open Thai hints with example and warning; keyboard and out
   await page.locator('.brand').click();
   await expect(hint).not.toBeVisible();
   await page.locator('#step').click();
-  await expect(page.locator('#event-log')).toContainText('DNS');
+  await expect(page.locator('#flow-result')).toContainText('DNS');
 });
 
 test('hints cover lessons without nesting in action controls; mobile stays within viewport', async ({page}) => {
