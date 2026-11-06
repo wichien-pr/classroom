@@ -20,7 +20,12 @@ try{
  const read=()=>page.evaluate(async()=>({participation:await fetch('/api/courses/scale-lab/participation').then(r=>r.json()),progress:await fetch('/api/courses/scale-lab/progress').then(r=>r.json())}));
  for(let i=0;i<3;i++)await page.locator('#lesson-topic-next').click();for(let i=0;i<3;i++)await page.locator('#lesson-topic-back').click();expect(posts).toHaveLength(0);expect((await read()).participation.score).toBe(0);await expect(page.locator('#lesson-topic input,#lesson-topic select,#lesson-topic-settings')).toHaveCount(0);
  async function run(){const response=page.waitForResponse(r=>r.url().endsWith('/participation')&&r.request().method()==='POST');await page.locator('#estimate').click();expect((await response).status()).toBe(200);await expect(page.locator('#estimate')).toBeEnabled();}
- await run();expect(posts[0]).toMatchObject({lesson_id:'workload',simulation_id:'workload',action:'estimate'});
+ let releaseSave;const heldSave=new Promise(resolve=>releaseSave=resolve);
+ await page.route('**/participation',async route=>{if(route.request().method()==='POST')await heldSave;await route.continue();});
+ await page.locator('#estimate').focus();await page.keyboard.press('Enter');
+ await expect(page.locator('#estimate')).toBeDisabled();await expect(page.locator('#estimate')).toHaveAccessibleName('กำลังบันทึก');await expect(page.locator('#estimate svg')).toHaveAttribute('data-icon','saving');
+ releaseSave();await expect(page.locator('#estimate')).toBeEnabled();await expect(page.locator('#estimate')).toBeFocused();await expect(page.locator('#estimate')).toHaveAccessibleName('ทดลอง');await page.unroute('**/participation');
+ expect(posts[0]).toMatchObject({lesson_id:'workload',simulation_id:'workload',action:'estimate'});
  let saved=await read();expect(saved.participation.score).toBe(1);expect(saved.progress.criteria.workload).toEqual({manual:false,simulation:true,thinking:false});
  const before=posts.length;await page.locator('#workload-pause').click();await page.locator('#workload-replay').click();await page.locator('#lesson-topic-next').click();await page.locator('#lesson-topic-back').click();expect(posts).toHaveLength(before);
  await expect(page.locator('#workload-scenario')).toContainText('Web 3');expect((await read()).participation.score).toBe(1);
@@ -28,6 +33,6 @@ try{
  await page.locator('#lesson-topic-next').click();await run();await expect(page.locator('#workload-result')).toContainText('อ่านข้อมูลไม่ได้');expect((await read()).participation.score).toBe(1);
  await page.locator('#lesson-topic-next').click();
  for(const [frame,verdict] of [[1,'เหมาะเป็นจุดเริ่มต้น'],[2,'ทบทวนตัวเลือก'],[3,'เหมาะเป็นจุดเริ่มต้น']]){await run();await expect(page.locator('#workload-scenario')).toContainText(`กรณี ${frame}/3`);await expect(page.locator('#workload-result')).toContainText(verdict);expect((await read()).participation.score).toBe(1);}
- await page.reload();await expect(page.locator('#participation-score')).toHaveText('1');saved=await read();expect(saved.progress.completed).not.toContain('workload');expect(errors).toEqual([]);
+ await page.reload();await expect(page.locator('#participation-score')).toHaveCount(0);saved=await read();expect(saved.participation.score).toBe(1);expect(saved.progress.completed).not.toContain('workload');expect(errors).toEqual([]);
  const report={realBackend:true,seededAccount:true,score:saved.participation.score,criteria:saved.progress.criteria.workload,mainActionPosts:posts.length,visualAndNavigationPosts:0,reload:true,errors};await writeFile(out+'/report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
 }finally{if(browser)await browser.close();server.kill('SIGTERM');await new Promise(resolve=>server.exitCode!==null?resolve():server.once('exit',resolve));}

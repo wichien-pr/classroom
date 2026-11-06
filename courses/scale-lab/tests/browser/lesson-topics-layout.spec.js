@@ -9,7 +9,7 @@ for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`LAB0
   const geometry=await page.locator('#lesson-topic').evaluate(el=>{
    const rect=n=>{const r=n.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom}};
    const nav=el.querySelector('nav'),title=el.querySelector('h3'),buttons=[...nav.querySelectorAll('button')];
-   return {box:rect(el),nav:rect(nav),title:rect(title),buttons:buttons.map(rect),padding:parseFloat(getComputedStyle(el).paddingLeft),font:parseFloat(getComputedStyle(title).fontSize),overflow:document.documentElement.scrollWidth>innerWidth,order:rect(nav).bottom<=rect(el.querySelector('.experiment')).y,clipped:[title,...buttons].some(n=>n.scrollWidth>n.clientWidth+1)};
+   return {box:rect(el),nav:rect(nav),title:rect(title),buttons:buttons.map(rect),padding:parseFloat(getComputedStyle(el).paddingLeft),font:parseFloat(getComputedStyle(title).fontSize),overflow:document.documentElement.scrollWidth>innerWidth,order:rect(nav).bottom<=rect(el.querySelector('.experiment')).y,clipped:title.scrollWidth>title.clientWidth+1||buttons.some(b=>{const icon=b.querySelector('svg'),r=icon.getBoundingClientRect(),p=b.getBoundingClientRect();return r.left<p.left||r.right>p.right})};
   });
   expect(geometry.padding).toBeGreaterThanOrEqual(14);expect(geometry.overflow).toBe(false);expect(geometry.clipped).toBe(false);expect(geometry.order).toBe(true);expect(geometry.font).toBeGreaterThanOrEqual(16);
   expect(Math.abs(geometry.title.x+geometry.title.width/2-geometry.nav.x-geometry.nav.width/2)).toBeLessThan(1);
@@ -24,7 +24,7 @@ test('LAB02 has a single top navigation with its live heading between Back and N
  await expect(page.locator('#lesson-topic > :first-child')).toHaveClass('lesson-topic-nav');
  expect(await page.locator('.lesson-topic-nav > *').evaluateAll(nodes=>nodes.map(n=>n.id))).toEqual(['lesson-topic-back','lesson-topic-title','lesson-topic-next']);
  await expect(page.locator('#lesson-topic-title')).toHaveCount(1);
- await expect(page.locator('#lesson-topic-back')).toHaveText('« Back');await expect(page.locator('#lesson-topic-next')).toHaveText('Next »');
+ await expect(page.locator('#lesson-topic-back')).toHaveAccessibleName('ย้อนกลับ');await expect(page.locator('#lesson-topic-next')).toHaveAccessibleName('ถัดไป');
  for(let i=0;i<4;i++){
   await expect(page.locator('#lesson-topic-title')).toHaveText(`${i+1} / 4 · ${titles[i]}`);
   if(i===0)await expect(page.locator('#lesson-topic-back')).toBeDisabled();

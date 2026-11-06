@@ -15,7 +15,7 @@ test('model result drives the illustration; playback never runs another experime
  await expect(page.locator('#workload-result')).toContainText('กดทดลอง');
  await page.locator('#estimate').click();await expect(page.locator('.workload-scene')).toHaveAttribute('data-layout','single');await expect(page.locator('[data-resource="data"]')).toContainText('3');
  await page.locator('#lesson-topic-next').click();await page.locator('#estimate').click();await expect(page.locator('.workload-scene')).toHaveAttribute('data-ready','false');await expect(page.locator('#workload-result')).toContainText('อ่านข้อมูลไม่ได้');
- await expect(page.locator('.workload-query i')).toHaveCSS('animation-name','workload-blocked-flight');
+ await expect(page.locator('.workload-travel[data-route=query]')).toHaveCSS('animation-name','workload-blocked-flight');
  await expect(page.locator('.workload-scene')).toHaveAttribute('data-playback','finished',{timeout:7000});
 
  await page.locator('#reset').click();await expect(page.locator('#workload-replay')).toBeDisabled();

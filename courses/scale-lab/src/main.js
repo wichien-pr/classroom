@@ -56,7 +56,7 @@ import {mountLessonTopics,refreshLessonTopicResults} from './lesson-topics.js';
 import './lesson-topics.css';
 import './lesson-layout.css';
 import './workload-view.css';
-import {workloadDiagram,bindWorkloadPlayback} from './workload-view.js';
+import {workloadDiagram,bindWorkloadPlayback,setWorkloadIcon,stopWorkloadPlayback} from './workload-view.js';
 import {workloadPreset} from './workload-presets.js';
 let workloadPlay=false,workloadTopic=0,workloadRun=0,workloadHasResult=false;
 function prepareWorkloadTopic(index){
@@ -101,7 +101,7 @@ case 'data-centers':return dataCentersControls();
 case 'region':return '<label>Region หลักติดต่อไม่ได้<select id="choice"><option value="dns">สลับ DNS แล้วเปิด writer ทันที</option><option value="fence">Fence writer เดิม ตรวจ lag แล้ว promote</option></select></label>'+button('decision','ทดลองการตัดสินใจ');
 }}
 function mount(){
-stopFlowPlayback();
+stopFlowPlayback();stopWorkloadPlayback();
 const l=lessons[selected-1];
 feedback=quizSelections.has(l.kind) ? (quizSelections.get(l.kind)===1?'ถูกต้อง — ':'ยังไม่ถูก — ')+l.why : '';
 $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a class="skip" href="#main">ข้ามไปห้องทดลอง</a><div class="layout"><aside class="sidebar"><div class="brand"><span class="brand-mark">S<span>↗</span></span><div>Scale Lab<small>SYSTEM DESIGN / TH</small></div></div><div class="course-label">ORDER SYSTEM · ${lessons.length} LABS</div><nav aria-label="บทเรียน">${lessons.map(x=>`<button data-lesson-kind="${x.kind}" data-lesson="${x.id}" aria-current="${x.id===selected?'page':'false'}"><span class="nav-num">${String(x.id).padStart(2,'0')}</span><span>${x.title}</span><span class="done">${progress.includes(x.id)?'✓':''}</span></button>`).join('')}</nav><div class="sidebar-bottom"><p id="progress-status" role="status"></p><button id="retry-progress" hidden>ลองโหลดอีกครั้ง</button><span id="progress">${progress.length} / ${lessons.length} บทเรียนจบ</span><progress max="${lessons.length}" value="${progress.length}" aria-label="ความคืบหน้าบทเรียน"></progress></div></aside><div class="workspace"><div class="simulation"><span class="dot"></span><strong>EDUCATIONAL SIMULATION</strong><span>โครงสร้างและค่าทั้งหมดเป็นแบบจำลองเพื่อการเรียนรู้ ไม่ใช่ benchmark จริง</span></div><header class="topbar"><span>ห้องทดลอง / ระบบสั่งซื้อสินค้า</span><span class="source-ref">คู่มือต้นฉบับ §${l.chapter}</span></header><main id="main"><div class="lesson-heading"><div><p class="eyebrow">LAB ${String(l.id).padStart(2,'0')} / ${l.en}</p><h1>${l.title}</h1><p class="objective">${l.objective}</p></div><span class="manual-tag">MANUAL STEP</span></div><div id="participation-notice" hidden><p id="participation-status" role="status"></p><button id="retry-participation" hidden>ลองบันทึกคะแนนอีกครั้ง</button></div><section class="lesson-completion" aria-label="สถานะการเรียนบทนี้"><button type="button" id="complete-lesson" aria-describedby="completion-status">ทำเครื่องหมายว่าเรียนจบ</button><p id="completion-status" role="status"></p><button type="button" id="retry-completion-load" hidden>ลองโหลดอีกครั้ง</button></section><div class="learning-grid"><section class="lab" aria-label="ห้องทดลองแบบจำลอง"><div class="panel-title"><h2>ทดลองกับระบบ</h2><button id="reset">เริ่มการทดลองใหม่</button></div><div class="architecture" id="architecture" aria-label="แผนภาพสถาปัตยกรรม"></div><div class="state-grid" id="state-view" aria-label="สถานะแบบจำลอง"></div><div class="control-area"><h3>01 / ตั้งสถานการณ์และลงมือ</h3><div class="controls">${controls(l.kind)}</div></div>${l.kind==='workload'?'':`<div class="observation"><h3>02 / สิ่งที่เกิดขึ้น</h3><p id="outcome" role="status" aria-live="polite"></p></div><div class="event-area"><div class="event-heading"><h3>บันทึกเหตุการณ์</h3><span>เรียงตามขั้น · ไม่ใช่เวลาจริง</span></div><ol id="event-log"></ol></div>`}</section><aside class="teaching" aria-label="คำอธิบายประกอบ"><section><p class="eyebrow">WHY IT WORKS</p><h2>เข้าใจเหตุผล ก่อนเพิ่มเครื่องมือ</h2><p>${l.explain}</p><div class="experiment"><strong>ลองตามนี้</strong><p>${l.try}</p></div></section><section class="quiz"><p class="eyebrow">CHECK YOUR THINKING</p><h2>${l.question}</h2><div class="answers">${quizOrder.get(l.kind).map((choice,i)=>`<button data-answer="${choice}"><span>${i===0?'A':'B'}</span>${l.answers[choice]}</button>`).join('')}</div><p id="feedback" role="status">${feedback||'เลือกคำตอบเพื่อดูเหตุผล — ตอบใหม่ได้เสมอ'}</p></section></aside></div><footer><span>${storageOK?'บันทึกเฉพาะความคืบหน้าใน browser นี้':'บันทึกไม่ได้ — ใช้งานต่อได้ แต่ความคืบหน้าอยู่ในหน่วยความจำ'}</span><button id="next">${selected===12?'กลับบทแรก':'บทถัดไป →'}</button></footer></main></div></div><dialog id="help-dialog"><div class="dialog-header"><h2 id="dialog-title"></h2><button id="close-dialog" autofocus>ปิด</button></div><div id="dialog-content"></div></dialog>`;
@@ -262,13 +262,18 @@ function renderParticipation(){
   document.querySelectorAll('[data-action]').forEach(b=>b.disabled=!!participation && participation.status!=='saved');
   const flowAction=document.querySelector('.flow-lesson #step');
   if(flowAction){const saving=participation?.status==='saving';setFlowIcon(flowAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');flowAction.setAttribute('aria-busy',String(saving));}
+  const workloadAction=document.querySelector('#lesson-topic[data-kind=workload] #estimate');
+  if(workloadAction){const saving=participation?.status==='saving';setWorkloadIcon(workloadAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');workloadAction.setAttribute('aria-busy',String(saving));}
   renderQuizControls();
 }
 async function participationOperation(operation,...args){
+  const workloadFocus=document.activeElement?.id==='estimate'&&lessons[selected-1].kind==='workload'?document.activeElement:null;
+  const focusedWorkloadTopic=workloadTopic;
   const flowFocus=document.activeElement?.id==='step'?document.activeElement:null;
   const focusedTopic=flowTopic;
   const pending=participation[operation](...args); renderParticipation();
   await pending; renderParticipation();
+  if(workloadFocus?.isConnected && !workloadFocus.disabled && focusedWorkloadTopic===workloadTopic && document.activeElement===document.body)workloadFocus.focus({preventScroll:true});
   if(flowFocus?.isConnected && !flowFocus.disabled && focusedTopic===flowTopic && document.activeElement===document.body)flowFocus.focus({preventScroll:true});
   if(account && operation!=='load' && participation.status==='saved') {
     const refresh=account.refresh();

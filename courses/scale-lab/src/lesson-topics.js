@@ -1,3 +1,4 @@
+import {setWorkloadIcon} from './workload-view.js';
 // Course-owned presentation layer. Navigation never calls simulator actions.
 // LAB02 explicitly prepares fixed scenarios; other labs retain their inputs.
 export const lessonTopics={
@@ -120,8 +121,9 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
  }else steps.querySelectorAll('.lesson-step-note,.web-step-note').forEach(node=>node.remove());
  if(kind==='workload'){
   // Move the existing controls and heading, preserving their listeners and ID.
-  navigation.querySelector('#lesson-topic-back').textContent='« Back';
-  navigation.querySelector('#lesson-topic-next').textContent='Next »';
+  setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');
+  setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');
+  setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
   navigation.firstElementChild.after(heading);
   topic.prepend(navigation);
   find('#architecture').before(controls);
@@ -135,7 +137,7 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   more.remove();
   controls.querySelectorAll('label,fieldset').forEach(node=>node.remove());
   const scenario=document.createElement('p');scenario.id='workload-scenario';scenario.setAttribute('aria-label','สถานการณ์ที่กำหนด');controls.append(scenario);
-  find('#estimate').textContent='ทดลอง';
+  setWorkloadIcon(find('#estimate'),'play','ทดลอง');
   controls.querySelector('h3').textContent='สถานการณ์ของหัวข้อนี้';
 
  }

@@ -26,7 +26,7 @@ for(const width of [1280,390,320])for(const theme of ['light','dark'])test(`LAB0
 });
 test('LAB02 keeps a brief action and adjacent concise feedback',async({page})=>{
  await page.goto('/');await page.locator('[data-lesson-kind=workload]').click();
- await expect(page.locator('#estimate')).toHaveText('ทดลอง');await page.locator('#estimate').click();
+ await expect(page.locator('#estimate')).toHaveAccessibleName('ทดลอง');await page.locator('#estimate').click();
  await expect(page.locator('#workload-result')).toContainText('เหมาะเป็นจุดเริ่มต้น');
  expect((await page.locator('#workload-result').innerText()).length).toBeLessThan(200);
  await expect(page.locator('#outcome,#workload-help')).toHaveCount(0);
