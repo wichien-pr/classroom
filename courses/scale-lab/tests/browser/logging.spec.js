@@ -11,7 +11,7 @@ test('LAB11 compares evidence and gates deployment without changing other lesson
  await page.locator('#run-pipeline').click();await expect(page.locator('#pipeline-status')).toHaveText('Tests ไม่ผ่าน · หยุดก่อน deploy');
  await page.locator('#code-version').selectOption('fixed');for(let i=0;i<3;i++)await page.locator('#run-pipeline').click();await expect(page.locator('#pipeline-status')).toHaveText('Deploy จำลองแล้ว');
  await page.locator('[data-answer="1"]').click();await page.locator('#reset').click();await expect(page.locator('#pipeline-status')).toHaveText('รอ Build');await expect(page.locator('[data-answer="1"]')).toHaveAttribute('aria-pressed','true');
- await expect(page.locator('#main')).not.toContainText('.pdf');await page.locator('#next').click();await expect(page.locator('[data-lesson="1"]')).toHaveAttribute('aria-current','page');expect(errors).toEqual([]);
+ await expect(page.locator('#main')).not.toContainText('.pdf');await expect(page.locator('#next')).toHaveCount(0);await page.locator('[data-lesson="1"]').click();await expect(page.locator('[data-lesson="1"]')).toHaveAttribute('aria-current','page');expect(errors).toEqual([]);
 });
 for(const width of [320,390,1440])test(`LAB11 readable and accessible ${width}`,async({page})=>{
  await page.setViewportSize({width,height:1100});await page.goto('/');await page.locator('[data-lesson="11"]').click();

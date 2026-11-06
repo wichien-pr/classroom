@@ -8,6 +8,8 @@ test('standalone simulation makes no participation API calls and claims no saved
  await expect(page.locator('#feedback')).toContainText('ยังไม่ถูก');
  await expect(page.locator('#progress')).toContainText('0 / 12');
  await page.locator('[data-answer="1"]').click();
+ await expect(page.locator('#progress')).toContainText('0 / 12');
+ await page.locator('#complete-lesson').click();
  await expect(page.locator('#progress')).toContainText('1 / 12');
  await page.locator('[data-answer="1"]').click();
  await page.locator('[data-answer="0"]').click();

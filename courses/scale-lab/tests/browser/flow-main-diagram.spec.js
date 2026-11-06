@@ -10,6 +10,8 @@ for(const theme of ['dark','light'])for(const width of [1280,390,320])test(`full
  await expect(page.locator('#flow-scene')).toHaveAttribute('data-stage','dns-return');
  await page.locator('#flow-slide-next').click();await page.locator('#flow-slide-back').click();expect(await original.evaluate(e=>e===document.querySelector('#architecture'))).toBe(true);
  await expect(page.locator('#flow-scene')).toHaveAttribute('data-stage','ready');
- const d=await diagram.boundingBox(),a=await page.locator('#step').boundingBox();expect(d.y+d.height).toBeLessThanOrEqual(a.y);expect(a.y-d.y-d.height).toBeLessThan(50);
+ // The diagram caption precedes the action inside the same blue scene.
+ const d=await page.locator('#flow-frame').boundingBox(),a=await page.locator('#step').boundingBox();expect(d.y+d.height).toBeLessThanOrEqual(a.y);expect(a.y-d.y-d.height).toBeLessThan(50);
+ await expect(page.locator('#flow-scene > .flow-actions #step')).toHaveCount(1);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });

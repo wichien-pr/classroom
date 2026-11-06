@@ -12,7 +12,8 @@ export const lessonTopics={
   ['โหลดเกินกำลังเริ่มต้น','scale-power scale-servers scale-traffic order'],
   ['Scale up เครื่องเดิม','scale-power scale-traffic order'],
   ['หลายเครื่อง แต่ยังต่อเครื่องเดิม','scale-down scale-servers scale-balanced order'],
-  ['กระจายงานและทดสอบเพดาน','scale-balanced scale-traffic scale-power scale-servers order'],
+  ['กระจายไปเครื่องที่พร้อม','order'],
+  ['โหลดเกินกำลังรวม','order'],
  ],
  balance:[
   ['Round-robin ระหว่างสองเครื่อง','up-a up-b up-c route'],
@@ -113,7 +114,7 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
  const navigation=document.createElement('nav');navigation.className='lesson-topic-nav';navigation.setAttribute('aria-label','หัวข้อการทดลอง');
  navigation.innerHTML='<button type="button" id="lesson-topic-back" aria-controls="lesson-topic">← ย้อนกลับ · Back</button><button type="button" id="lesson-topic-next" aria-controls="lesson-topic">ถัดไป · Next →</button>';
  topic.append(navigation);
- if(kind!=='workload'){
+ if(!['workload','stock'].includes(kind)){
  const note=document.createElement('p');note.className='lesson-topic-note';note.textContent='ข้ามด้วย Next ได้ · ไม่เพิ่มคะแนนหรือทำให้เรียนจบ · สถานะเดิมยังอยู่ หากข้ามขั้น ให้ปรับเงื่อนไขหรือทำขั้นก่อนหน้าด้วยตนเอง';topic.append(note);
  const history=document.createElement('details');history.className='lesson-topic-history';history.innerHTML='<summary>บันทึกเหตุการณ์และข้อจำกัด</summary>';history.append(find('.event-area'));
  for(const p of steps.querySelectorAll('.lesson-step-note,.web-step-note'))history.append(p);
@@ -141,6 +142,12 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   controls.querySelector('h3').textContent='สถานการณ์ของหัวข้อนี้';
 
  }
+ if(kind==='stock'){
+  setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
+  navigation.firstElementChild.after(heading);topic.prepend(navigation);
+  const action=find('#order');setWorkloadIcon(action,'play','ทดลอง');topic.append(action);
+  controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
+ }
  const leaves=[...controls.querySelectorAll('.controls input,.controls select,.controls button')].map(el=>({el,node:el.closest('label')||el}));
  const containers=[...controls.querySelectorAll('fieldset,.lesson-submit,.web-submit,.web-scenario')];
  let index=0,expanded=false;
@@ -153,7 +160,7 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   containers.forEach(node=>node.hidden=![...node.querySelectorAll('input,select,button')].some(el=>!el.hidden&&!el.closest('label')?.hidden));
   more.textContent=kind==='workload'?(expanded?'ซ่อนการตั้งค่าเพิ่มเติม':'ตั้งค่าเพิ่มเติม'):(expanded?'ซ่อนตัวตั้งค่าอื่น':'ปรับเงื่อนไขอื่น / เตรียมขั้นที่ข้าม');more.setAttribute('aria-expanded',String(expanded));
   find('#lesson-topic-back').disabled=index===0;find('#lesson-topic-next').disabled=index===topics.length-1;
-  if(kind==='workload')onWorkloadTopic(index);
+  if(['workload','stock'].includes(kind))onWorkloadTopic(index);
   if(focus){heading.focus({preventScroll:true});topic.scrollIntoView({block:'start',behavior:'instant'});}
  }
  find('#lesson-topic-back').onclick=()=>{if(index>0){index--;expanded=false;show(true);}};

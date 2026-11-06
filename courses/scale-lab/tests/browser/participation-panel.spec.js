@@ -10,6 +10,8 @@ test('score panel is absent on every lesson while manual completion remains usab
   await expect(page.getByText('คะแนนและเงื่อนไขการเรียนจบ',{exact:true})).toHaveCount(0);
   await expect(page.getByText(/Standalone · ไม่บันทึกคะแนนบัญชี/)).toHaveCount(0);
   await expect(page.locator('#participation-status')).toBeHidden();
+  await page.locator('[data-action]:visible').first().click();
+  await page.locator('[data-answer="0"]').click();
   await page.locator('#complete-lesson').click();
   await expect(page.locator('#complete-lesson')).toHaveText('✓ เรียนจบแล้ว');
  }

@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+test.beforeEach(async({page})=>{await page.route('**/api/courses/scale-lab/participation',r=>r.fulfill({json:{score:0,csrf_token:'token'}}));});
 test('manual save pending, failure and retry stay with captured lesson',async({page})=>{
  let fail=true, release; const completed=[],posts=[];
  await page.route('**/api/courses/scale-lab/progress',async route=>{
@@ -8,7 +9,7 @@ test('manual save pending, failure and retry stay with captured lesson',async({p
    if(fail)return route.fulfill({status:503,json:{error:'unavailable'}});
    completed.push(posts.at(-1));
   }
-  await route.fulfill({json:{completed,total:11,csrf_token:'token'}});
+  await route.fulfill({json:{completed,total:11,csrf_token:'token',criteria:{flow:{manual:false,simulation:true,thinking:true}}}});
  });
  await page.goto('/');
  const button=page.locator('#complete-lesson');
@@ -37,7 +38,7 @@ test('manual save pending, failure and retry stay with captured lesson',async({p
 
 test('load error has retry next to completion, and blocks manual writes',async({page})=>{
  let fail=true;
- await page.route('**/api/courses/scale-lab/progress',route=>route.fulfill(fail?{status:503,json:{}}:{json:{completed:[],total:11,csrf_token:'token'}}));
+ await page.route('**/api/courses/scale-lab/progress',route=>route.fulfill(fail?{status:503,json:{}}:{json:{completed:[],total:11,csrf_token:'token',criteria:{flow:{manual:false,simulation:true,thinking:true}}}}));
  await page.goto('/');
  await expect(page.locator('#complete-lesson')).toBeDisabled();
  await expect(page.locator('#completion-status')).toContainText('โหลดความคืบหน้าไม่ได้');

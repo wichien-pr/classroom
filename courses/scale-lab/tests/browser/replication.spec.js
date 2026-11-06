@@ -23,7 +23,7 @@ test('LAB05 source topology, manual lag/failure/recovery and LAB06 Cache',async(
 test('legacy standalone completion follows identity through swap and reload',async({page})=>{
  await page.addInitScript(()=>{if(!localStorage.getItem('seeded')){localStorage.setItem('scale-lab-progress','[5]');localStorage.setItem('seeded','1');}});
  await page.goto('/');await expect(page.locator('[data-lesson="6"] .done')).toBeEmpty();await expect(page.locator('[data-lesson="5"] .done')).toBeEmpty();
- await page.locator('[data-lesson="5"]').click();await page.locator('#complete-lesson').click();await page.reload();
+ await page.locator('[data-lesson="5"]').click();await page.locator('#write').click();await page.locator('[data-answer="0"]').click();await page.locator('#complete-lesson').click();await page.reload();
  await expect(page.locator('[data-lesson="5"] .done')).toHaveText('✓');await expect(page.locator('[data-lesson="6"] .done')).toBeEmpty();
  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('scale-lab-progress-v2')))).toEqual({version:2,completed:['session','replica']});
  expect(await page.evaluate(()=>localStorage.getItem('scale-lab-progress'))).toBe('[5]');

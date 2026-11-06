@@ -82,8 +82,8 @@ test('quiz load and lost-response retry lock choices across progress renders and
  await expect(page.locator('#participation-status')).toContainText('บันทึกไม่ได้');await expect(page.locator('#participation-status')).toBeVisible();
    await expect(page.locator('#complete-lesson')).toHaveText('ทำเครื่องหมายว่าเรียนจบ');
  await expect(page.locator('[data-answer="0"]')).toBeDisabled();
- await page.locator('[data-lesson="2"]').click();await page.locator('#complete-lesson').click();
- await expect(page.locator('#complete-lesson')).toHaveText('✓ เรียนจบแล้ว');
+ await page.locator('[data-lesson="2"]').click();
+ await expect(page.locator('#complete-lesson')).toBeDisabled();
  await expect(page.locator('[data-answer="1"]')).toBeDisabled();
  // Even synthetic direct handler calls cannot replace the captured pending selection.
  await page.locator('[data-answer="0"]').evaluate(b=>b.onclick());
@@ -98,7 +98,7 @@ test('quiz load and lost-response retry lock choices across progress renders and
  await page.locator('[data-lesson="1"]').click();await page.locator('[data-answer="1"]').click();
  await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('1'));
  expect(events).toHaveLength(3);expect(events[2].event_id).not.toBe(events[0].event_id);
- expect(completed).toEqual(['workload']);
+ expect(completed).toEqual([]);
  await page.reload();await expect.poll(()=>page.confirmedParticipationScore).toBe(Number('1'));
 });
 
@@ -128,9 +128,13 @@ test('invalid input never earns score',async({page})=>{
    if(r.request().method()==='POST') posts++;
    return r.fulfill({json:{score:posts,csrf_token:'test'}});
  });
- await page.goto('/');await page.locator('[data-lesson="3"]').click();
- await page.locator('#scale-power').fill('0');await page.locator('#order').click();
+ await page.goto('/');await page.locator('[data-lesson="12"]').click();
+ await page.locator('#tier-power').fill('0');await page.locator('#evaluate-data-tier').click();
  await expect(page.locator('#outcome')).toContainText('กรุณากรอก');
+ await page.waitForTimeout(100);expect(posts).toBe(0);
+ await page.locator('[data-lesson="3"]').click();
+ await expect(page.locator('#lesson-topic input,#lesson-topic select')).toHaveCount(0);
+ await page.locator('#lesson-topic-next').click();await page.locator('#lesson-topic-back').click();
  await page.waitForTimeout(100);expect(posts).toBe(0);
  await page.locator('[data-lesson="2"]').click();
  await expect(page.locator('#lesson-topic input,#lesson-topic select')).toHaveCount(0);

@@ -68,3 +68,17 @@ html #theme-toggle[hidden]{display:none}
 :root[data-theme=dark] :is(.cdn-figure,.cache-box,.cache-selected,.cache-notes pre) .term-trigger{color:#09675e}
 :root[data-theme=dark] .web-figure .term-trigger{color:#bce8fc}
 :root[data-theme=dark] .web-figure .term-trigger:hover{background:#29435e;color:#fff}
+
+/* Light simulation canvases only; leave reading panels and Dark palettes intact. */
+:root:not([data-theme=dark]) #architecture{background:#f3f7fa}
+:root:not([data-theme=dark]) .topic-lesson .scaling-scene{background:#f3f7fa}
+:root:not([data-theme=dark]) .flow-lesson #flow-scene{background:#f3f7fa;color:#193b50}
+:root:not([data-theme=dark]) .flow-lesson #flow-scene :is(.flow-machine,.flow-storage span){background:#fff;border-color:#7187a1}
+:root:not([data-theme=dark]) .flow-lesson #flow-scene .flow-machine svg{stroke:#32678b}
+:root:not([data-theme=dark]) .flow-lesson #flow-scene :is(#flow-frame,#flow-result){color:#193b50}
+:root:not([data-theme=dark]) .flow-lesson #flow-scene .flow-playback-note{color:#466170}
+:root:not([data-theme=dark]) .flow-lesson #flow-scene .flow-actions{border-top-color:#a7b7c8}
+:root:not([data-theme=dark]) .flow-lesson #flow-scene [data-node].active{border-color:#176652}
+:root:not([data-theme=dark]) .flow-lesson #flow-scene span.active{color:#176652}
+:root:not([data-theme=dark]) .flow-lesson #flow-scene .flow-travel{fill:#087bc1}
+:root:not([data-theme=dark]) .flow-lesson #flow-scene[data-playback=finished] .flow-wire.active{stroke:#087bc1}

@@ -12,7 +12,7 @@ test.beforeEach(async({page})=>{
  let score=0;
  await page.route('**/api/courses/scale-lab/participation',r=>{
   if(r.request().method()==='POST') score++;
-  return r.fulfill({json:{score,csrf_token:'token'}});
+  return r.fulfill({json:{score,csrf_token:'token',criteria:{flow:{manual:false,simulation:true,thinking:true}}}});
  });
 });
 test('account load ignores legacy local state; manual saves stable ID without navigation race',async({page})=>{
@@ -24,7 +24,7 @@ test('account load ignores legacy local state; manual saves stable ID without na
       expect(route.request().headers()['x-csrf-token']).toBe('token');
       await new Promise(r=>setTimeout(r,150)); completed.push('flow');
     }
-    await route.fulfill({json:{completed,total:11,csrf_token:'token'}});
+    await route.fulfill({json:{completed,total:11,csrf_token:'token',criteria:{flow:{manual:false,simulation:true,thinking:true}}}});
   });
   await page.goto('/');
   await expect(page.locator('#progress-status')).toContainText('บัญชี');
@@ -44,7 +44,7 @@ test('load/save failures are visible, block premature completion and support ret
   await page.route('**/api/courses/scale-lab/progress',async route=>{
     const post=route.request().method()==='POST';
     if((post&&failSave)||(!post&&failLoad)) return route.fulfill({status:503,json:{error:'unavailable'}});
-    await route.fulfill({json:{completed:post?['flow']:[],total:11,csrf_token:'token'}});
+    await route.fulfill({json:{completed:post?['flow']:[],total:11,csrf_token:'token',criteria:{flow:{manual:false,simulation:true,thinking:true}}}});
   });
   await page.goto('/');
   await expect(page.locator('#progress-status')).toContainText('โหลดความคืบหน้าไม่ได้');

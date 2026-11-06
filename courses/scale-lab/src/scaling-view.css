@@ -1,0 +1,40 @@
+/* LAB03 only. Existing teaching notes and other lesson diagrams stay intact. */
+.topic-lesson #lesson-topic[data-kind=stock]{padding:20px;gap:12px}
+.topic-lesson #lesson-topic[data-kind=stock] .lesson-topic-nav{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--topic-line)}
+.topic-lesson #lesson-topic[data-kind=stock] #lesson-topic-title{text-align:center;margin:0;font-size:22px;line-height:1.6}
+.topic-lesson #lesson-topic[data-kind=stock] .experiment{border:0;background:none;padding:0}
+.topic-lesson #lesson-topic[data-kind=stock] .experiment>strong{display:none}
+.topic-lesson #lesson-topic[data-kind=stock] ol{padding:0;list-style:none}
+.topic-lesson #lesson-topic[data-kind=stock] #architecture{display:block;padding:0;min-height:0;background:none}
+.scaling-scene{--wl-accent:var(--topic-blue);margin:0;padding:18px;border:1px solid var(--topic-line);border-radius:14px;background:var(--topic-surface);color:var(--topic-ink)}
+.scaling-premise{font-size:16px;margin:0;line-height:1.7}
+.scaling-map{position:relative;display:grid;justify-items:center;gap:48px;padding:20px 0}
+.scaling-node{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:1px solid var(--topic-line);border-radius:10px;padding:10px 12px;background:var(--topic-surface);min-width:0;z-index:1}
+.scaling-node strong{font-size:18px;color:var(--topic-ink);line-height:1.6}
+.scaling-node span{font-size:14px;color:var(--topic-muted);line-height:1.7}
+.scaling-client,.scaling-router{width:200px;max-width:100%}
+.scaling-pool{display:flex;justify-content:center;gap:24px;width:100%}
+.scaling-pool .scaling-node{flex:1;max-width:210px}
+/* Only model-backed down nodes: preserve the original outer footprint. */
+.scaling-scene .scaling-node.scaling-offline{--scaling-failure:#b42332;border:3px solid var(--scaling-failure);padding:8px 10px;box-sizing:border-box;color:var(--scaling-failure);opacity:1}
+[data-theme=dark] .scaling-scene .scaling-node.scaling-offline{--scaling-failure:#ff8e98}
+.scaling-scene .scaling-node.scaling-offline *{color:inherit;opacity:1}
+.scaling-scene .scaling-wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.scaling-wire{fill:none;stroke:var(--topic-line);stroke-width:2;stroke-dasharray:0 7;stroke-linecap:round;stroke-linejoin:round}
+.scaling-particle{fill:#087bc1;stroke:none;opacity:0;offset-distance:100%;offset-anchor:0px 0px;offset-position:0px 0px;offset-rotate:0deg}
+[data-theme=dark] .scaling-particle{fill:#49c5ff}
+.scaling-scene:not([data-playback=idle]) .scaling-particle[data-active=true]{opacity:1}
+.topic-lesson #scaling-result{font-size:17px;line-height:1.7;margin:0;color:var(--topic-ink);font-weight:650}
+.scaling-scene figcaption{font-size:14px;line-height:1.7;color:var(--topic-muted);margin-top:12px}
+.topic-lesson .scaling-playback #order{background:#176652;border:2px solid #176652;color:white}
+[data-theme=dark] .topic-lesson .scaling-playback #order{background:#7de3c6;border-color:#7de3c6;color:#102e27}
+@media(max-width:650px){
+ .topic-lesson #lesson-topic[data-kind=stock]{padding:14px}
+ .topic-lesson #lesson-topic[data-kind=stock] .lesson-topic-nav{gap:8px}
+ .topic-lesson #lesson-topic[data-kind=stock] #lesson-topic-title{font-size:18px}
+ .scaling-scene{padding:12px}
+ .scaling-map{gap:32px;padding-left:32px}
+ .scaling-pool{flex-direction:column;gap:16px;align-items:stretch}
+ .scaling-pool .scaling-node{max-width:none;align-items:flex-start;text-align:left}
+ .scaling-client,.scaling-router{width:100%}
+}

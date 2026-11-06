@@ -2,8 +2,9 @@ import {test,expect} from '@playwright/test';
 test('Cache LAB06 teaches tier/TTL/eviction/failure without attribution and preserves retired local history',async({page})=>{
  await page.addInitScript(()=>localStorage.setItem('scale-lab-progress','[5]'));
  await page.goto('/');await page.locator('[data-lesson="6"]').click();
- await expect(page.locator('.course-label')).toContainText('11 LABS');
- await expect(page.locator('#progress')).toContainText('0 / 11');
+ await expect(page.locator('.course-label')).toContainText('12 LABS');
+ await expect(page.locator('#progress')).toContainText('0 / 12');
+ await page.locator('#lesson-topic-settings').click();
  await expect(page.locator('#cache-notes')).toContainText('LRU');
  await expect(page.locator('#cache-notes')).toContainText('read-through');
  await expect(page.locator('#cache-diagram')).toBeVisible();
@@ -13,9 +14,9 @@ test('Cache LAB06 teaches tier/TTL/eviction/failure without attribution and pres
  await page.locator('#read-cache').click();await expect(page.locator('#outcome')).toContainText('220 / DB 220');
  await page.locator('#cache-outage').click();await page.locator('#read-cache').click();await expect(page.locator('#outcome')).toContainText('BYPASS');
  await page.locator('#cache-restart').click();await page.locator('#read-cache').click();await expect(page.locator('#outcome')).toContainText('MISS');
- await page.locator('#complete-lesson').click();expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('scale-lab-progress-v2')).completed)).toEqual(['session','cache']);
- await page.reload();await expect(page.locator('#progress')).toContainText('1 / 11');
- await page.locator('[data-lesson="11"]').click();await page.locator('#next').click();await expect(page.locator('.lesson-heading .eyebrow')).toContainText('LAB 01');
+ await page.locator('[data-answer="0"]').click();await page.locator('#complete-lesson').click();expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('scale-lab-progress-v2')).completed)).toEqual(['session','cache']);
+ await page.reload();await expect(page.locator('#progress')).toContainText('1 / 12');
+ await page.locator('[data-lesson="12"]').click();await expect(page.locator('#next')).toHaveCount(0);await page.locator('[data-lesson="1"]').click();await expect(page.locator('.lesson-heading .eyebrow')).toContainText('LAB 01');
 });
 
 test('cache diagram text has readable contrast on boxes, links and code',async({page})=>{
