@@ -18,7 +18,7 @@ export function workloadDiagram(config,hasResult=false){
  <section class="workload-machine db-tier ${r.ready?'':'unavailable'}" data-tier="data">${disk}<strong>Database</strong><span>${databaseEngines[config.engine]}</span>${meter('data',r.data)}<b class="workload-health">${r.ready?'● พร้อม':'× ไม่พร้อม'}</b></section>
  </div></div>
  <div class="workload-actions"><div class="workload-playback"><button type="button" id="workload-replay" ${hasResult?'':'disabled'}>↻ เล่นภาพซ้ำ</button><button type="button" id="workload-pause" disabled aria-pressed="false">พักภาพ</button></div><div class="workload-feedback"><p id="workload-result" role="status">${hasResult?(!r.ready?'อ่านข้อมูลไม่ได้ · Web ยังทำงาน แต่ DB ไม่พร้อม':r.independent?`Web ${r.web} / Data ${r.data} · เพิ่มทรัพยากรแยกกันได้`:`Web และ Data ใช้ทรัพยากร ${r.web} หน่วยร่วมกัน`)+(r.fit?' · เหมาะเป็นจุดเริ่มต้น':' · ทบทวนตัวเลือก ไม่ใช่ว่าทำไม่ได้'):'กดทดลองเพื่อดูเส้นทางคำขอของสถานการณ์นี้'}</p>
- <p class="workload-playback-note">ภาพอธิบาย ไม่ใช่เวลาจริง · เล่นซ้ำไม่เพิ่มคะแนน</p></div></div>
+ </div></div>
  </figure>`;
 }
 

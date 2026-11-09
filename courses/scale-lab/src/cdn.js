@@ -1,4 +1,5 @@
 export function cdnInitial(){return {now:0,ttl:3,up:true,originUp:true,fallback:false,origin:1,cache:null,expires:null,objects:{},urlVersion:null,includeQuery:true,originReads:0,hits:0,misses:0,delivered:null,path:'idle'};}
+export function cdnPreset(){return cdnInitial();}
 const key=s=>'image.png'+(s.includeQuery&&s.urlVersion!==null?'?v='+s.urlVersion:'');
 export function cdnAction(s,action){
  if(action==='tick'){s.now++;return {meaningful:false,message:`เวลา ${s.now} · สำเนาหมดอายุแล้วจะโหลดใหม่เมื่อขอรูป`};}

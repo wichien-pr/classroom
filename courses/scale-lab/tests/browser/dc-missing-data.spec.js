@@ -1,0 +1,22 @@
+import {test,expect} from '@playwright/test';
+import {mkdir} from 'node:fs/promises';
+const out=process.env.LAB09_EVIDENCE||new URL('../../../../evidence/lab09-missing-data-animation/',import.meta.url).pathname;
+for(const width of [1280,390,320])for(const theme of ['light','dark'])test(`missing-data stages ${width} ${theme}`,async({page})=>{
+ await mkdir(out,{recursive:true});await page.setViewportSize({width,height:1000});await page.goto('/');await page.locator('[data-lesson="9"]').click();await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
+ for(let i=0;i<4;i++)await page.locator('#lesson-topic-next').click();
+ const posts=[];page.on('request',r=>{if(r.method()==='POST')posts.push(r.url());});
+ await page.locator('#dc-run').click();const scene=page.locator('.dc-scene');
+ await expect(scene).toHaveAttribute('data-stage','route');
+ const duration=await page.locator('.dc-particle').evaluate(async e=>{const a=e.getAnimations()[0];await a.ready;return a.effect.getTiming().duration;});expect(duration).toBe(2000);
+ const geometry=await scene.evaluate(s=>{const map=s.querySelector('.dc-map').getBoundingClientRect(),nodes=[...s.querySelectorAll('.dc-node')].map(n=>n.getBoundingClientRect()),issues=[];for(const p of s.querySelectorAll('.dc-wire'))for(let i=1;i<50;i++){const q=p.getPointAtLength(p.getTotalLength()*i/50),x=q.x+map.x,y=q.y+map.y;if(q.x<0||q.x>map.width||q.y<0||q.y>map.height)issues.push('bounds');if(nodes.some(n=>x>n.left+1&&x<n.right-1&&y>n.top+1&&y<n.bottom-1))issues.push('intersection');}return issues;});expect(geometry).toEqual([]);
+ await expect(page.locator('.dc-data-blocked')).not.toBeVisible();
+ await expect(scene).toHaveAttribute('data-stage','data-check');
+ await page.locator('#dc-pause').click();await page.evaluate(async()=>Promise.all(document.getAnimations().map(a=>a.ready)));
+ await scene.screenshot({path:out+`check-${width}-${theme}.png`});await page.waitForTimeout(1300);await expect(scene).toHaveAttribute('data-stage','data-check');await expect(page.locator('#dc-run')).toBeDisabled();
+ await page.locator('#dc-pause').click();await expect(scene).toHaveAttribute('data-stage','blocked');await expect(page.locator('.dc-data-blocked')).toBeVisible();await expect(page.locator('#dc-run')).toBeEnabled();
+ await expect(page.locator('.dc-data-panel')).toHaveAttribute('data-data-count','40');await expect(page.locator('.dc-data-original')).toContainText('60 ราย');await expect(page.locator('[data-node=east]')).toContainText('เครื่องพร้อม');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await scene.screenshot({path:out+`final-${width}-${theme}.png`});
+ await page.locator('#dc-replay').click();await expect(scene).toHaveAttribute('data-stage','route');await expect(page.locator('.dc-data-blocked')).not.toBeVisible();await expect(scene).toHaveAttribute('data-stage','data-check');await page.locator('#lesson-topic-next').click();await page.waitForTimeout(1600);await expect(page.locator('.dc-data-panel')).toHaveCount(0);await expect(page.locator('#dc-result')).toContainText('ยังไม่ได้ทดลอง');
+ await page.locator('#lesson-topic-back').click();await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#dc-run').click();await expect(scene).toHaveAttribute('data-stage','blocked');await expect(page.locator('#dc-run')).toBeEnabled();await expect(page.locator('.dc-data-blocked')).toBeVisible();expect(posts).toEqual([]);
+});

@@ -1,12 +1,11 @@
 import {test,expect} from '@playwright/test';
-for(const width of [320,390,1440])test(`LAB08 grouped controls and compact checkboxes ${width}`,async({page})=>{
- await page.setViewportSize({width,height:1000});await page.goto('/');await page.locator('[data-lesson-kind="stateless-web"]').click();
- await page.locator('#lesson-topic-settings').click();
- const box=await page.locator('#web-sticky').boundingBox();expect(box.width).toBeLessThanOrEqual(24);expect(box.height).toBeLessThanOrEqual(24);
- await expect(page.getByRole('group',{name:'เส้นทางคำขอ'})).toBeVisible();
- await expect(page.getByRole('group',{name:'ความพร้อมของระบบ'})).toBeVisible();
+for(const width of [320,390,1440])test(`LAB08 independent presets replace settings ${width}`,async({page})=>{
+ await page.setViewportSize({width,height:1000});await page.goto('/');await page.locator('[data-lesson-kind="stateless-web"]').click();await page.emulateMedia({reducedMotion:'reduce'});
+ await expect(page.locator('#lesson-topic-settings,#web-sticky,#web-mode')).toHaveCount(0);
+ await page.evaluate(()=>window.retainedWeb=document.querySelector('#web-run'));
+ await page.locator('#lesson-topic-next').click();await page.locator('#web-run').click();await expect(page.locator('#web-run')).toBeEnabled();await expect(page.locator('#web-result')).toContainText('OK');
+ expect(await page.evaluate(()=>window.retainedWeb===document.querySelector('#web-run'))).toBe(true);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
- await page.locator('#web-sticky').check();await page.locator('#web-request').click();await expect(page.locator('#outcome')).toContainText('OK');
 });
 
 for(const width of [320,390,1440])test(`LAB08 reading order and full-width lesson ${width}`,async({page})=>{
@@ -20,14 +19,14 @@ for(const width of [320,390,1440])test(`LAB08 reading order and full-width lesso
  await page.evaluate(()=>scrollTo(0,0));
  await page.screenshot({path:`../../evidence/lab08/layout/after-${width}.png`,fullPage:true});
  await page.setViewportSize({width,height:2400});
- await page.locator('.control-area').evaluate(el=>scrollTo(0,scrollY+el.getBoundingClientRect().top-140));
- await page.locator('.control-area').screenshot({path:`../../evidence/lab08/layout/controls-${width}.png`});
+ await page.locator('.workload-actions').evaluate(el=>scrollTo(0,scrollY+el.getBoundingClientRect().top-140));
+ await page.locator('.workload-actions').screenshot({path:`../../evidence/lab08/layout/controls-${width}.png`});
  await page.locator('[data-lesson-kind="cdn"]').click();await expect(page.locator('#main')).not.toHaveClass(/web-lesson/);
 });
 
-test('LAB08 experiment instructions are ordered steps with separate note',async({page})=>{
+test('LAB08 preserves six original scenarios plus no-Web model outcome',async({page})=>{
  await page.goto('/');await page.locator('[data-lesson-kind="stateless-web"]').click();
- await expect(page.locator('.experiment ol > li')).toHaveCount(6);
+ await expect(page.locator('.experiment ol > li')).toHaveCount(7);
  await expect(page.locator('.experiment ol > li').first()).toContainText('Web 2');
- await expect(page.locator('.lesson-topic-history .web-step-note')).toContainText('ปุ่มส่งคำขอเท่านั้น');
+ await expect(page.locator('.web-scene figcaption')).toContainText('ไม่ส่งคำขอใหม่');
 });

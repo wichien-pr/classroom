@@ -14,7 +14,7 @@
 .flow-travel{fill:#60d5ed;stroke:none;visibility:hidden;offset-distance:0%;offset-anchor:0px 0px;offset-position:0px 0px;offset-rotate:0deg}
 .flow-lesson #flow-scene .flow-wire.active{stroke:#668ca9;stroke-width:2}
 .flow-lesson #flow-scene[data-playback=finished] .flow-wire.active{stroke:#60d5ed;stroke-width:2}
-.flow-lesson #flow-scene .flow-travel.active{visibility:visible;animation:flow-travel 1.1s linear infinite;animation-play-state:paused}
+.flow-lesson #flow-scene .flow-travel.active{visibility:visible;animation:flow-travel .8s linear both;animation-play-state:paused}
 .flow-lesson #flow-scene[data-playback=running] .flow-travel.active{animation-play-state:running}
 .flow-lesson #flow-scene:not([data-playback=running]):not([data-playback=paused]) .flow-travel{visibility:hidden}
 @keyframes flow-travel{to{offset-distance:100%}}
@@ -37,10 +37,8 @@
 .flow-lesson #flow-frame{font-size:16px;line-height:1.65;color:#e1ecfa;margin:14px 0 0;min-height:3.3em}
 .flow-lesson .flow-actions{display:flex;align-items:center;gap:20px;margin-top:16px;padding:16px 0 0;border:0;border-top:1px solid #526d88;border-radius:0;background:transparent}
 .flow-lesson #flow-scene #flow-result{color:#ecf3ff}
-.flow-lesson #flow-scene .flow-playback-note{color:#bdcde0}
 .flow-lesson .flow-player-controls{display:flex;align-items:center;gap:8px;flex:none}
 .flow-lesson .flow-player-feedback{flex:1;min-width:0}
-.flow-lesson .flow-playback-note{margin:4px 0 0;font-size:14px;line-height:1.65;color:var(--theme-muted,#53645d)}
 .flow-lesson #flow-result{margin:0;font-size:17px;line-height:1.7;color:var(--theme-text,#253431)}
 .flow-lesson #step{flex:none;font-size:16px;min-height:48px;padding:10px 24px}
 .flow-lesson #flow-topic .flow-icon-button,.flow-lesson #reset.flow-icon-button{position:relative;display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;min-width:48px;min-height:48px;padding:10px;flex:none}

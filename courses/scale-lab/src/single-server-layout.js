@@ -19,7 +19,6 @@ export function mountSingleServerLayout(main,onTopic=()=>{}) {
  controls.insertAdjacentHTML('beforeend','<div class="flow-playback"><button type="button" id="flow-replay" disabled>↻ เล่นภาพซ้ำ</button><button type="button" id="flow-pause" disabled aria-pressed="false">พักภาพ</button></div>');
  const feedback=document.createElement('div');feedback.className='flow-player-feedback';
  const result=document.createElement('p');result.id='flow-result';result.setAttribute('role','status');feedback.append(result);
- feedback.insertAdjacentHTML('beforeend','<p class="flow-playback-note">ภาพอธิบาย ไม่ใช่เวลาจริง · เล่นซ้ำไม่เพิ่มคะแนน</p>');
  actions.append(controls,feedback);topic.append(actions);
  for(const selector of ['.control-area','.observation','#state-view','.event-area'])find(selector)?.remove();
  const titles=['ค้นหา IP ก่อนส่งคำขอ','ส่งคำขอเข้าเครื่องเดียว','รับคำตอบและแสดงหน้าเว็บ','เปลี่ยนเป็นแอป แล้วเทียบคำตอบ'];

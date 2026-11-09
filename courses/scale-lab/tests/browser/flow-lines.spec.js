@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {mkdir} from 'node:fs/promises';
 test('record actual connector playback and response frame',async({browser,baseURL})=>{
- const dir='../../evidence/flow-dotted';await mkdir(dir,{recursive:true});
+ const dir=process.env.PARTICLE_REGRESSION ? '../../evidence/particle-speed-correction/flow' : '../../evidence/flow-dotted';await mkdir(dir,{recursive:true});
  const context=await browser.newContext({viewport:{width:1280,height:1100},recordVideo:{dir,size:{width:1280,height:1100}}});
  const page=await context.newPage();
  try{
@@ -43,7 +43,7 @@ test('model stages drive real directed paths, round blue particles follow static
  const paused=await offset();await page.waitForTimeout(220);expect(await offset()).toBe(paused);
  await page.locator('#flow-pause').click();await page.waitForTimeout(160);expect(await offset()).not.toBe(paused);
  for(const stage of ['dns-return','http-request','process','http-response','display']){
-  await expect(page.locator('#flow-scene')).toHaveAttribute('data-stage',stage,{timeout:2000});
+  await expect(page.locator('#flow-scene')).toHaveAttribute('data-stage',stage,{timeout:3500});
   await expect(active).toHaveCount(['process','display'].includes(stage)?0:1);
   if(!['process','display'].includes(stage))await expect(active).toHaveAttribute('data-stage',stage);
  }
@@ -63,7 +63,7 @@ test('model stages drive real directed paths, round blue particles follow static
 });
 for(const theme of ['dark','light'])for(const width of [1280,390,320])test(`connector matrix ${theme} ${width}`,async({page})=>{
  await page.setViewportSize({width,height:900});await page.goto('/');await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
- const out='../../evidence/flow-dotted';await mkdir(out,{recursive:true});
+ const out=process.env.PARTICLE_REGRESSION ? '../../evidence/particle-speed-correction/flow' : '../../evidence/flow-dotted';await mkdir(out,{recursive:true});
  for(let topic=0;topic<4;topic++){
   await page.locator('#step').click();await page.locator('#flow-pause').click();
   expect(await page.locator('.flow-wire').evaluateAll(es=>es.every(e=>e.getTotalLength()>30))).toBe(true);
@@ -97,7 +97,7 @@ for(const theme of ['dark','light'])for(const width of [1280,390,320])test(`conn
     const animation=dot.getAnimations()[0];await animation.ready;
     const path=scene.querySelector(`.flow-wire[data-stage="${dot.dataset.stage}"]`);
     for(const fraction of [.2,.65]){
-     animation.currentTime=1100*fraction;
+     animation.currentTime=800*fraction;
      const r=dot.getBoundingClientRect(),p=path.getPointAtLength(path.getTotalLength()*fraction),q=new DOMPoint(p.x,p.y).matrixTransform(path.getScreenCTM());
      samples.push({stage:dot.dataset.stage,fraction,error:Math.hypot(r.x+r.width/2-q.x,r.y+r.height/2-q.y),width:r.width,height:r.height});
     }

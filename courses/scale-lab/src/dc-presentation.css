@@ -1,0 +1,92 @@
+.topic-lesson #lesson-topic[data-kind=data-centers]{padding:20px;gap:12px}
+.topic-lesson #lesson-topic[data-kind=data-centers] .lesson-topic-nav{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--topic-line)}
+.topic-lesson #lesson-topic[data-kind=data-centers] #lesson-topic-title{text-align:center;margin:0;font-size:22px;line-height:1.6}
+.topic-lesson #lesson-topic[data-kind=data-centers] .experiment{border:0;background:none;padding:0}
+.topic-lesson #lesson-topic[data-kind=data-centers] .experiment>strong{display:none}
+.topic-lesson #lesson-topic[data-kind=data-centers] ol{padding:0;list-style:none}
+.topic-lesson #lesson-topic[data-kind=data-centers] #architecture{display:block;padding:0;min-height:0;background:none}
+.dc-scene{--wl-accent:var(--topic-blue);margin:0;padding:18px;border:1px solid var(--topic-line);border-radius:14px;background:var(--topic-surface);color:var(--topic-ink)}
+html:not([data-theme=dark]):not([data-classroom-theme=dark]) .dc-scene,html:not([data-theme=dark]):not([data-classroom-theme=dark]) .topic-lesson #lesson-topic[data-kind=data-centers] #architecture{background:#f3f7fa}
+.dc-premise{font-size:16px;margin:0;line-height:1.7}
+.dc-map{position:relative;display:grid;justify-items:center;gap:48px;padding:20px 0}
+.dc-node{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:1px solid var(--topic-line);border-radius:10px;padding:10px 12px;background:var(--topic-surface);min-width:0;z-index:1}
+.dc-node strong{font-size:18px;color:var(--topic-ink);line-height:1.6}
+.dc-node span{font-size:14px;color:var(--topic-muted);line-height:1.7}
+/* Match offline geometry without recoloring readable labels. */
+.dc-scene .dc-node.dc-ready{border:3px solid #176652;padding:8px 10px;box-sizing:border-box}
+[data-theme=dark] .dc-scene .dc-node.dc-ready{border-color:#7de3c6}
+.dc-scene .dc-node.dc-offline{background:var(--topic-surface);--dc-failure:#b42332;border:3px solid var(--dc-failure);padding:8px 10px;box-sizing:border-box;color:var(--dc-failure);opacity:1}
+[data-theme=dark] .dc-scene .dc-node.dc-offline{--dc-failure:#ff8e98}
+.dc-scene .dc-node.dc-offline *{color:inherit;opacity:1}
+.dc-scene .dc-wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.dc-wire{fill:none;stroke:var(--topic-line);stroke-width:2;stroke-dasharray:0 7;stroke-linecap:round;stroke-linejoin:round}
+.dc-particle{fill:#087bc1;stroke:none;opacity:0;offset-distance:100%;offset-anchor:0px 0px;offset-position:0px 0px;offset-rotate:0deg}
+[data-theme=dark] .dc-particle{fill:#49c5ff}
+.dc-scene[data-playback=finished] .dc-particle{opacity:1}
+.topic-lesson #dc-result{font-size:17px;line-height:1.7;margin:0;color:var(--topic-ink);font-weight:650}
+.dc-scene figcaption{font-size:14px;line-height:1.7;color:var(--topic-muted);margin-top:12px}
+.topic-lesson .dc-scene .workload-actions{background:transparent;border:0;border-top:1px solid var(--topic-line);border-radius:0;padding:16px 0 0}
+@media(max-width:650px){
+ .topic-lesson #lesson-topic[data-kind=data-centers]{padding:14px}
+ .topic-lesson #lesson-topic[data-kind=data-centers] .lesson-topic-nav{gap:8px}
+ .topic-lesson #lesson-topic[data-kind=data-centers] #lesson-topic-title{font-size:18px}
+ .dc-scene{padding:12px}
+ .dc-map{gap:32px;padding-left:32px}
+}
+
+.dc-map{padding-bottom:48px;grid-template-columns:minmax(0,1fr)}
+.dc-retained{display:flex;flex-wrap:wrap;gap:12px}
+.dc-experiments{flex:0 0 auto}
+.topic-lesson .dc-scene .workload-actions{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;margin-top:16px}
+@media(max-width:650px){.topic-lesson .dc-scene .workload-feedback{flex:1 1 100%}}
+.dc-scene [data-dc-label]{background:#176652;border:2px solid #176652;color:white}
+[data-theme=dark] .dc-scene [data-dc-label]{background:#7de3c6;border-color:#7de3c6;color:#102e27}
+@media(max-width:650px){.dc-map{padding-inline:26px;padding-bottom:24px}.dc-retained{gap:10px}}
+
+/* Independent client/site pairs keep direct HTTP routes unambiguous. */
+.dc-scene{container-type:inline-size}
+.dc-map{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;padding:16px 0;gap:20px 32px}
+.dc-map>.dc-node{width:100%;max-width:360px;box-sizing:border-box;min-height:80px}
+.dc-node span{overflow-wrap:anywhere}
+.dc-map-label{margin:0;font-size:16px;line-height:1.7;font-weight:650}
+.dc-map-label span{display:block;font-size:14px;font-weight:400;color:var(--topic-muted)}
+@media(max-width:650px){.dc-node{padding:8px 4px}.dc-node strong{font-size:16px}.dc-scene .dc-node.dc-ready,.dc-scene .dc-node.dc-offline{padding:6px 2px}}
+.dc-scene .workload-feedback{min-width:0;flex:1 1 300px}
+/* Override the legacy light-diagram glossary palette only inside LAB09. */
+:root[data-theme=dark] #architecture .dc-scene .term-trigger{color:#9ce8d3}
+:root[data-theme=dark] #architecture .dc-scene .term-trigger:hover{color:#d4f3e9;background:#254c43}
+#architecture .dc-scene .dc-node.dc-offline .term-trigger,
+:root[data-theme=dark] #architecture .dc-scene .dc-node.dc-offline .term-trigger{color:inherit;background:transparent}
+:root[data-theme=dark] #architecture .dc-scene .term-trigger:focus-visible{outline-color:#9ce8d3}
+/* Capacity is separate from machine/data readiness and successful responses. */
+.dc-capacity-panel{border-top:1px solid var(--topic-line);padding-top:12px;font-size:16px;line-height:1.7;--dc-overflow:#924c00}
+[data-theme=dark] .dc-capacity-panel{--dc-overflow:#ffd18a}
+.dc-capacity-heading{margin:0 0 10px;font-weight:650}
+.dc-capacity-heading span{font-size:14px;color:var(--topic-muted);margin-left:8px}
+.dc-capacity-groups{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:12px}
+.dc-capacity-groups>div{min-width:0;padding:12px;border:1px solid var(--topic-line);border-radius:10px;background:var(--topic-surface)}
+.dc-capacity-groups strong{display:block;font-size:16px}
+.dc-capacity-groups span{display:block;font-size:14px}
+.dc-capacity-track{height:18px;border:1px solid var(--topic-line);border-radius:4px;overflow:hidden;margin:10px 0}
+.dc-capacity-track i{display:block;height:100%;background:#176652;transform-origin:left}
+[data-theme=dark] .dc-capacity-track i{background:#7de3c6}
+.dc-capacity-groups .dc-capacity-excess{border:2px dashed var(--dc-overflow);color:var(--dc-overflow)}
+.dc-scene:not([data-stage=capacity-excess]) .dc-capacity-excess{visibility:hidden}
+.dc-scene[data-stage=route] .dc-capacity-groups{visibility:hidden}
+@media(max-width:650px){.dc-capacity-groups{grid-template-columns:minmax(0,1fr)}.dc-capacity-heading span{display:block;margin:0}}
+/* Data readiness is independent of the green server boundary. No copy route. */
+.dc-data-panel{border-top:1px solid var(--topic-line);padding-top:12px;font-size:16px;line-height:1.7;--dc-data-error:#b42332}
+[data-theme=dark] .dc-data-panel{--dc-data-error:#ff8e98}
+.dc-data-heading{margin:0 0 10px;font-weight:650}
+.dc-data-arrival{font-size:14px;color:var(--topic-muted);margin-left:8px}
+.dc-data-groups{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dc-data-groups>div{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px;border:1px solid var(--topic-line);border-radius:10px;min-width:0;background:var(--topic-surface)}
+.dc-data-groups b{font-size:30px;line-height:1.2}
+.dc-data-groups strong{font-size:16px;overflow-wrap:anywhere}
+.dc-data-groups span{font-size:14px}
+.dc-data-groups .dc-data-missing{border:2px dashed var(--dc-data-error);color:var(--dc-data-error)}
+.dc-data-blocked{font-style:normal;font-weight:650;border-top:2px solid currentColor;margin-top:8px;padding-top:6px}
+.dc-scene:not([data-stage=blocked]) .dc-data-blocked{visibility:hidden}
+.dc-scene[data-stage=route] .dc-data-arrival,.dc-scene[data-stage=route] .dc-data-groups{visibility:hidden}
+.dc-scene[data-stage=blocked] .dc-data-missing{border-style:solid}
+@media(max-width:650px){.dc-data-groups{grid-template-columns:minmax(0,1fr)}.dc-data-arrival{display:block;margin:0}}

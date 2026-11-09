@@ -1,4 +1,16 @@
 export const replicationInitial=()=>({versions:[0,0,0],histories:[0,0,0],up:[true,true,true],writer:0,cursor:0,fenced:false,acceptLoss:false,lost:0});
+// Prepared conditions only: navigation never executes or scores an action.
+export function replicationPreset(index){
+ const s=replicationInitial();
+ if(index>0)s.versions=[2,1,1];
+ if(index===2)s.up[1]=false;
+ if(index===3)s.up=[true,false,false];
+ if(index>=4)s.up[0]=false;
+ if(index>=5)s.versions=[2,1,2];
+ if(index>=6)s.fenced=true;
+ if(index===7)s.acceptLoss=true;
+ return s;
+}
 export const dbName=i=>['Primary เดิม','Replica 1','Replica 2'][i];
 export function replicationAction(s,action){
  const writer=s.writer;

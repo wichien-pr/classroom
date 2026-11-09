@@ -1,3 +1,8 @@
+import {dcTopics} from './dc-presentation.js';
+import {webTopics} from './web-presentation.js';
+import {cdnTopics} from './cdn-presentation.js';
+import {cacheTopics} from './cache-presentation.js';
+import {replicationTopics} from './replication-presentation.js';
 import {setWorkloadIcon} from './workload-view.js';
 // Course-owned presentation layer. Navigation never calls simulator actions.
 // LAB02 explicitly prepares fixed scenarios; other labs retain their inputs.
@@ -21,45 +26,11 @@ export const lessonTopics={
   ['เมื่อไม่มีเครื่องพร้อม','up-a up-b up-c route'],
   ['เพิ่มเครื่องเข้ารับงาน','up-a up-b up-c route'],
  ],
- replica:[
-  ['เขียนแล้วสำเนายังตามไม่ทัน','write read-replica'],
-  ['เทียบ Primary แล้วเดิน replication','read-primary sync read-replica'],
-  ['Replica ล่มและเส้นทางสำรอง','db-up-1 db-up-2 read-replica'],
-  ['Primary ล่ม ต้องหยุดเขียน','db-up-0 db-up-1 db-up-2 sync write'],
-  ['เงื่อนไขก่อน Promote','db-up-0 db-up-1 db-up-2 fenced accept-loss promote write read-primary'],
- ],
- cache:[
-  ['อ่านครั้งแรกและอ่านซ้ำ','read-cache'],
-  ['ต้นทางเปลี่ยน แต่สำเนายังเก่า','price update read-cache'],
-  ['ลบสำเนาแล้วโหลดใหม่','invalidate read-cache'],
-  ['เวลาและอายุสำเนา','cache-tick read-cache'],
-  ['Cache ล่มและกลับมาใหม่','cache-outage cache-restart read-cache'],
- ],
- cdn:[
-  ['MISS แล้ว HIT','decision'],
-  ['เปลี่ยน Origin ไม่ได้เปลี่ยนสำเนาทันที','cdn-publish decision'],
-  ['สำเนาหมดอายุตาม TTL','cdn-ttl cdn-tick decision'],
-  ['Invalidate key ปัจจุบัน','cdn-publish cdn-invalidate decision'],
-  ['URL รุ่นใหม่และ cache key','cdn-query cdn-publish cdn-version decision'],
-  ['CDN ล่มกับทางสำรอง','cdn-up cdn-origin-up cdn-fallback decision'],
- ],
- 'stateless-web':[
-  ['Session อยู่คนละเครื่อง','web-mode web-target web-request'],
-  ['Sticky กลับเครื่องเดิม','web-sticky web-target web-request'],
-  ['Shared store ใช้สถานะร่วมกัน','web-mode web-sticky web-target web-request'],
-  ['Web ล่ม แต่สถานะยังอยู่','web-up-0 web-up-1 web-target web-request'],
-  ['เพิ่ม Web เข้าสู่ pool','web-up-2 web-target web-request'],
-  ['Shared store ล่ม','web-store web-target web-request'],
- ],
- 'data-centers':[
-  ['แบ่งผู้ใช้ระหว่างสองศูนย์','dc-share dc-east-up dc-west-up dc-request'],
-  ['ศูนย์หนึ่งล่ม','dc-west-up dc-request'],
-  ['เปลี่ยนเส้นทาง แต่ DNS ยังเก่า','dc-redirect dc-fresh-dns dc-request'],
-  ['ผู้ใช้ได้รับปลายทางใหม่','dc-fresh-dns dc-request'],
-  ['ข้อมูลต้องพร้อมที่ปลายทาง','dc-synced dc-request'],
-  ['ตรวจความจุศูนย์สำรอง','dc-east-capacity dc-west-capacity dc-request'],
-  ['รุ่นบริการต้องสอดคล้อง','dc-same-release dc-request'],
- ],
+ replica:replicationTopics,
+ cache:cacheTopics,
+ cdn:cdnTopics,
+ 'stateless-web':webTopics,
+ 'data-centers':dcTopics,
  'message-queue':[
   ['ส่งเข้าคิว ยังไม่ใช่งานสำเร็จ','mq-type enqueue-jobs'],
   ['Worker หยุด แต่ยังรับงานได้','mq-consumer enqueue-jobs process-jobs'],
@@ -98,6 +69,7 @@ export function refreshLessonTopicResults(main){
 export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
  const topics=lessonTopics[kind];if(!topics)return;
  const find=s=>main.querySelector(s),lab=find('.lab'),steps=lab.querySelector('.experiment');
+ if(kind==='stateless-web'){const item=document.createElement('li');item.textContent=webTopics[6][2];steps.querySelector('ol').append(item);}
  const items=[...steps.querySelectorAll('ol > li')];
  if(items.length!==topics.length)throw new Error(`Topic/instruction mismatch: ${kind}`);
  main.classList.add('topic-lesson');
@@ -114,7 +86,7 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
  const navigation=document.createElement('nav');navigation.className='lesson-topic-nav';navigation.setAttribute('aria-label','หัวข้อการทดลอง');
  navigation.innerHTML='<button type="button" id="lesson-topic-back" aria-controls="lesson-topic">← ย้อนกลับ · Back</button><button type="button" id="lesson-topic-next" aria-controls="lesson-topic">ถัดไป · Next →</button>';
  topic.append(navigation);
- if(!['workload','stock','balance'].includes(kind)){
+ if(!['workload','stock','balance','replica','cache','cdn','stateless-web','data-centers'].includes(kind)){
  const note=document.createElement('p');note.className='lesson-topic-note';note.textContent='ข้ามด้วย Next ได้ · ไม่เพิ่มคะแนนหรือทำให้เรียนจบ · สถานะเดิมยังอยู่ หากข้ามขั้น ให้ปรับเงื่อนไขหรือทำขั้นก่อนหน้าด้วยตนเอง';topic.append(note);
  const history=document.createElement('details');history.className='lesson-topic-history';history.innerHTML='<summary>บันทึกเหตุการณ์และข้อจำกัด</summary>';history.append(find('.event-area'));
  for(const p of steps.querySelectorAll('.lesson-step-note,.web-step-note'))history.append(p);
@@ -148,6 +120,46 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   const action=find(kind==='stock'?'#order':'#route');setWorkloadIcon(action,'play','ทดลอง');topic.append(action);
   controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
  }
+ if(kind==='replica'){
+  setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
+  navigation.firstElementChild.after(heading);topic.prepend(navigation);
+  const retained=document.createElement('div');retained.className='replication-retained';
+  const action=document.createElement('button');action.id='replication-run';action.type='button';action.dataset.replicationLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
+  topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
+  items.forEach((item,i)=>item.textContent=replicationTopics[i][2]);
+ }
+ if(kind==='cache'){
+  setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
+  navigation.firstElementChild.after(heading);topic.prepend(navigation);
+  const retained=document.createElement('div');retained.className='cache-retained';
+  const action=document.createElement('button');action.id='cache-run';action.type='button';action.dataset.cacheLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
+  topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
+  items.forEach((item,i)=>item.textContent=cacheTopics[i][2]);
+ }
+ if(kind==='stateless-web'){
+  setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
+  navigation.firstElementChild.after(heading);topic.prepend(navigation);
+  const retained=document.createElement('div');retained.className='web-retained';
+  const action=document.createElement('button');action.id='web-run';action.type='button';action.dataset.webLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
+  topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
+  items.forEach((item,i)=>item.textContent=webTopics[i][2]);
+ }
+ if(kind==='data-centers'){
+  setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
+  navigation.firstElementChild.after(heading);topic.prepend(navigation);
+  const retained=document.createElement('div');retained.className='dc-retained';
+  const action=document.createElement('button');action.id='dc-run';action.type='button';action.dataset.dcLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
+  topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
+  items.forEach((item,i)=>item.textContent=dcTopics[i][2]);
+ }
+ if(kind==='cdn'){
+  setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
+  navigation.firstElementChild.after(heading);topic.prepend(navigation);
+  const retained=document.createElement('div');retained.className='cdn-retained';
+  const action=document.createElement('button');action.id='cdn-run';action.type='button';action.dataset.cdnLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
+  topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
+  items.forEach((item,i)=>item.textContent=cdnTopics[i][2]);
+ }
  if(kind==='balance'){
   const instructions=['กดทดลองหลายครั้ง ดูคำขอสลับระหว่าง App A และ B · App C ยังไม่ลงทะเบียน','กดทดลอง เมื่อ App A ล่ม คำขอใหม่ไป App B ที่ยังพร้อม','กดทดลอง เมื่อ A และ B ล่ม และ C ยังไม่ลงทะเบียน ดูผล 503 โดยไม่มี server รับคำขอ','กดทดลองหลายครั้ง เมื่อ App C ลงทะเบียนและผ่าน health check แล้ว คำขอสลับไป B และ C แทน A ที่ล่ม'];
   items.forEach((item,i)=>item.textContent=instructions[i]);
@@ -164,7 +176,7 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   containers.forEach(node=>node.hidden=![...node.querySelectorAll('input,select,button')].some(el=>!el.hidden&&!el.closest('label')?.hidden));
   more.textContent=kind==='workload'?(expanded?'ซ่อนการตั้งค่าเพิ่มเติม':'ตั้งค่าเพิ่มเติม'):(expanded?'ซ่อนตัวตั้งค่าอื่น':'ปรับเงื่อนไขอื่น / เตรียมขั้นที่ข้าม');more.setAttribute('aria-expanded',String(expanded));
   find('#lesson-topic-back').disabled=index===0;find('#lesson-topic-next').disabled=index===topics.length-1;
-  if(['workload','stock','balance'].includes(kind))onWorkloadTopic(index);
+  if(['workload','stock','balance','replica','cache','cdn','stateless-web','data-centers'].includes(kind))onWorkloadTopic(index);
   if(focus){heading.focus({preventScroll:true});topic.scrollIntoView({block:'start',behavior:'instant'});}
  }
  find('#lesson-topic-back').onclick=()=>{if(index>0){index--;expanded=false;show(true);}};

@@ -1,5 +1,7 @@
 // A serial, manual-clock teaching model. Never claims real latency or atomic writes.
 export const cacheInitial=()=>({db:100,cache:null,reads:0,hits:0,misses:0,now:0,ttl:3,expires:null,up:true,path:'ready'});
+// Every guided topic executes its own prerequisites after the explicit click.
+export const cachePreset=()=>cacheInitial();
 export function cacheAction(s,action,value){
  let message='',meaningful=false;
  switch(action){

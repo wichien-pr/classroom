@@ -9,7 +9,7 @@ export function scalingScene(config,result=null){
  <div class="scaling-node scaling-client" data-node="client"><strong>ผู้ใช้</strong><span>โหลด ${config.traffic} หน่วยสมมติ</span></div>
  ${config.balanced?'<div class="scaling-node scaling-router" data-node="router"><strong>Load balancer</strong><span>พร้อม · รู้ health แล้ว</span></div>':''}
  <div class="scaling-pool">${Array.from({length:config.servers},(_,i)=>`<div class="scaling-node ${i===0&&config.down?'scaling-offline':''}" data-node="server-${i}"><strong>Web ${i+1}</strong><span>กำลัง ${config.power} หน่วย</span><span>${i===0&&config.down?'ล่ม':config.balanced||i===0?'พร้อม · มีเส้นทาง':'พร้อม · ไม่มีเส้นทาง'}</span></div>`).join('')}</div></div>
- <div class="workload-actions"><div class="workload-playback scaling-playback"><button type="button" id="scaling-replay" ${result?'':'disabled'}></button><button type="button" id="scaling-pause" disabled aria-pressed="false"></button></div><div class="workload-feedback"><p id="scaling-result" role="status">${result?`${{ready:'รับโหลดได้ตามสมมติฐาน',overloaded:'โหลดเกินกำลังที่เข้าถึงได้',offline:'เข้าใช้งานไม่ได้ · ไม่มีเครื่องพร้อมบนเส้นทาง'}[result.status]} · โหลด ${config.traffic} / กำลัง ${result.capacity} หน่วย · พร้อม ${result.healthy} เครื่อง แต่รับโหลดได้ ${result.routed} เครื่อง`:'ยังไม่ได้ทดลอง · กดทดลองเพื่อประเมินกำลังและเส้นทาง'}</p><p class="workload-playback-note">จุดเคลื่อนที่แสดงเส้นทางที่พร้อม ไม่ใช่คำขอจริงหรือความเร็ว · เล่นซ้ำไม่เพิ่มคะแนน</p></div></div>
+ <div class="workload-actions"><div class="workload-playback scaling-playback"><button type="button" id="scaling-replay" ${result?'':'disabled'}></button><button type="button" id="scaling-pause" disabled aria-pressed="false"></button></div><div class="workload-feedback"><p id="scaling-result" role="status">${result?`${{ready:'รับโหลดได้ตามสมมติฐาน',overloaded:'โหลดเกินกำลังที่เข้าถึงได้',offline:'เข้าใช้งานไม่ได้ · ไม่มีเครื่องพร้อมบนเส้นทาง'}[result.status]} · โหลด ${config.traffic} / กำลัง ${result.capacity} หน่วย · พร้อม ${result.healthy} เครื่อง แต่รับโหลดได้ ${result.routed} เครื่อง`:'ยังไม่ได้ทดลอง · กดทดลองเพื่อประเมินกำลังและเส้นทาง'}</p></div></div>
  <figcaption>หน่วยสมมติ ไม่ใช่ benchmark · ไม่จำลองเวลา failover, DB หรือ network${config.balanced?' · LB พร้อมและรู้ health ทันที':' · ต่อ Web 1 โดยตรง'}</figcaption></figure>`;
 }
 let cleanup=()=>{};
@@ -39,7 +39,7 @@ export function bindScalingPlayback(main,play=false){
   setWorkloadIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');
   if(media.matches){settle();return;}
   scene.dataset.playback='running';pause.disabled=false;
-  animations=[...svg.querySelectorAll('circle[data-active=true]')].map(p=>p.animate([{offsetDistance:'0%'},{offsetDistance:'100%'}],{duration:3200,fill:'both',easing:'linear'}));
+  animations=[...svg.querySelectorAll('circle[data-active=true]')].map(p=>p.animate([{offsetDistance:'0%'},{offsetDistance:'100%'}],{duration:2000,fill:'both',easing:'linear'}));
   // Offline still has a finite explanatory pause, not a fabricated route.
   if(!animations.length)animations=[scene.animate([{opacity:1},{opacity:1}],{duration:3200})];
   const current=animations;Promise.all(current.map(a=>a.finished)).then(()=>{if(animations===current)settle();}).catch(()=>{});

@@ -9,7 +9,7 @@ export function balanceScene(state,target){
  <div class="balance-node balance-client" data-node="client"><strong>Browser / Mobile</strong><span>HTTP request ไป LB</span></div>
  <div class="balance-node balance-router" data-node="router"><strong>Load balancer</strong><span>Public IP · 192.0.2.20</span><span>Round-robin · รู้ health แล้ว</span></div>
  <div class="balance-pool">${state.up.map((up,i)=>`<div class="balance-node ${up?'balance-ready':i!==2?'balance-offline':''}" data-node="server-${i}" data-server="${i}"><strong>Server ${i+1} / App ${'ABC'[i]}</strong><span>Private IP · 10.0.0.${i+1}</span><span>${up?'พร้อม · ลงทะเบียนแล้ว':i===2?'ยังไม่ลงทะเบียน':'ล่ม · ไม่รับงาน'}</span><span>รับแล้ว ${state.counts[i]} request</span></div>`).join('')}</div></div>
- <div class="workload-actions"><div class="workload-playback balance-playback"><button type="button" id="balance-replay" ${ran?'':'disabled'}></button><button type="button" id="balance-pause" disabled aria-pressed="false"></button></div><div class="workload-feedback"><p id="balance-result" role="status">${!ran?'ยังไม่ได้ทดลอง · กดทดลองเพื่อส่งหนึ่งคำขอ':target===null?'503 · ไม่มี backend พร้อม · ไม่ส่งคำขอไป server และไม่นับเป็นงานรับแล้ว':`200 · ส่ง request ไป App ${'ABC'[target]} · รวมส่งถึง server ${state.counts.reduce((a,b)=>a+b,0)} request`}</p><p class="workload-playback-note">จุดแสดงเส้นทางคำขอล่าสุด ไม่ใช่ความเร็วจริง · เล่นซ้ำไม่ส่งคำขอหรือเพิ่มคะแนน</p></div></div>
+ <div class="workload-actions"><div class="workload-playback balance-playback"><button type="button" id="balance-replay" ${ran?'':'disabled'}></button><button type="button" id="balance-pause" disabled aria-pressed="false"></button></div><div class="workload-feedback"><p id="balance-result" role="status">${!ran?'ยังไม่ได้ทดลอง · กดทดลองเพื่อส่งหนึ่งคำขอ':target===null?'503 · ไม่มี backend พร้อม · ไม่ส่งคำขอไป server และไม่นับเป็นงานรับแล้ว':`200 · ส่ง request ไป App ${'ABC'[target]} · รวมส่งถึง server ${state.counts.reduce((a,b)=>a+b,0)} request`}</p></div></div>
  <figcaption>สมมติ LB พร้อม รู้ health ทันที และเครื่องมีกำลังพอ · ไม่จำลอง DNS, health-check latency, in-flight requests หรือ DB</figcaption></figure>`;
 }
 let cleanup=()=>{};
@@ -38,7 +38,7 @@ export function bindBalancePlayback(main,play=false){
   setWorkloadIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');
   if(media.matches){settle();return;}
   scene.dataset.playback='running';pause.disabled=false;
-  animations=[...svg.querySelectorAll('circle[data-active=true]')].map(p=>p.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:1600,delay:p.dataset.to==='router'?0:1600,fill:'forwards',easing:'linear'}));
+  animations=[...svg.querySelectorAll('circle[data-active=true]')].map(p=>p.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:1200,delay:p.dataset.to==='router'?0:1200,fill:'forwards',easing:'linear'}));
   const current=animations;Promise.all(current.map(a=>a.finished)).then(()=>{if(animations===current)settle();}).catch(()=>{});
  }
  replay.onclick=start;

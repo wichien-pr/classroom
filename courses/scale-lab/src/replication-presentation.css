@@ -1,0 +1,57 @@
+.topic-lesson #lesson-topic[data-kind=replica]{padding:20px;gap:12px}
+.topic-lesson #lesson-topic[data-kind=replica] .lesson-topic-nav{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--topic-line)}
+.topic-lesson #lesson-topic[data-kind=replica] #lesson-topic-title{text-align:center;margin:0;font-size:22px;line-height:1.6}
+.topic-lesson #lesson-topic[data-kind=replica] .experiment{border:0;background:none;padding:0}
+.topic-lesson #lesson-topic[data-kind=replica] .experiment>strong{display:none}
+.topic-lesson #lesson-topic[data-kind=replica] ol{padding:0;list-style:none}
+.topic-lesson #lesson-topic[data-kind=replica] #architecture{display:block;padding:0;min-height:0;background:none}
+.replication-scene{--wl-accent:var(--topic-blue);margin:0;padding:18px;border:1px solid var(--topic-line);border-radius:14px;background:var(--topic-surface);color:var(--topic-ink)}
+html:not([data-theme=dark]):not([data-classroom-theme=dark]) .replication-scene,html:not([data-theme=dark]):not([data-classroom-theme=dark]) .topic-lesson #lesson-topic[data-kind=replica] #architecture{background:#f3f7fa}
+.replication-premise{font-size:16px;margin:0;line-height:1.7}
+.replication-map{position:relative;display:grid;justify-items:center;gap:48px;padding:20px 0}
+.replication-node{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:1px solid var(--topic-line);border-radius:10px;padding:10px 12px;background:var(--topic-surface);min-width:0;z-index:1}
+.replication-node strong{font-size:18px;color:var(--topic-ink);line-height:1.6}
+.replication-node span{font-size:14px;color:var(--topic-muted);line-height:1.7}
+.replication-web{width:220px;max-width:100%}
+.replication-pool{display:flex;justify-content:center;gap:24px;width:100%}
+.replication-pool .replication-node{flex:1;max-width:240px}
+/* Match offline geometry without recoloring readable labels. */
+.replication-scene .replication-node.replication-ready{border:3px solid #176652;padding:8px 10px;box-sizing:border-box}
+[data-theme=dark] .replication-scene .replication-node.replication-ready{border-color:#7de3c6}
+.replication-scene .replication-node.replication-offline{--replication-failure:#b42332;border:3px solid var(--replication-failure);padding:8px 10px;box-sizing:border-box;color:var(--replication-failure);opacity:1}
+[data-theme=dark] .replication-scene .replication-node.replication-offline{--replication-failure:#ff8e98}
+.replication-scene .replication-node.replication-offline *{color:inherit;opacity:1}
+.replication-scene .replication-wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.replication-wire{fill:none;stroke:var(--topic-line);stroke-width:2;stroke-dasharray:0 7;stroke-linecap:round;stroke-linejoin:round}
+.replication-particle{fill:#087bc1;stroke:none;opacity:0;offset-distance:100%;offset-anchor:0px 0px;offset-position:0px 0px;offset-rotate:0deg}
+[data-theme=dark] .replication-particle{fill:#49c5ff}
+.replication-scene[data-playback=finished] .replication-particle{opacity:1}
+.topic-lesson #replication-result{font-size:17px;line-height:1.7;margin:0;color:var(--topic-ink);font-weight:650}
+.replication-scene figcaption{font-size:14px;line-height:1.7;color:var(--topic-muted);margin-top:12px}
+.topic-lesson .replication-playback #write{background:#176652;border:2px solid #176652;color:white}
+[data-theme=dark] .topic-lesson .replication-playback #write{background:#7de3c6;border-color:#7de3c6;color:#102e27}
+.topic-lesson .replication-scene .workload-actions{background:transparent;border:0;border-top:1px solid var(--topic-line);border-radius:0;padding:16px 0 0}
+@media(max-width:650px){
+ .topic-lesson #lesson-topic[data-kind=replica]{padding:14px}
+ .topic-lesson #lesson-topic[data-kind=replica] .lesson-topic-nav{gap:8px}
+ .topic-lesson #lesson-topic[data-kind=replica] #lesson-topic-title{font-size:18px}
+ .replication-scene{padding:12px}
+ .replication-map{gap:32px;padding-left:32px}
+ .replication-pool{flex-direction:column;gap:16px;align-items:stretch}
+ .replication-pool .replication-node{max-width:none;align-items:flex-start;text-align:left}
+ .replication-web{width:100%}
+}
+
+.replication-map{padding-bottom:48px;grid-template-columns:minmax(0,1fr)}
+.replication-web{width:300px;max-width:100%}
+.replication-retained{display:flex;flex-wrap:wrap;gap:12px}
+.replication-action{display:flex;align-items:center;gap:8px;min-width:0}
+.replication-action[hidden]{display:none}
+.replication-action>span{font-size:14px;line-height:1.6}
+.replication-experiments{flex:0 0 auto}
+#replication-stage{font-size:14px;line-height:1.6;margin:0 0 4px;color:var(--topic-muted)}
+.topic-lesson .replication-scene .workload-actions{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;margin-top:16px}
+@media(max-width:650px){.topic-lesson .replication-scene .workload-feedback{flex:1 1 100%}}
+.replication-scene [data-replication-label]{background:#176652;border:2px solid #176652;color:white}
+[data-theme=dark] .replication-scene [data-replication-label]{background:#7de3c6;border-color:#7de3c6;color:#102e27}
+@media(max-width:650px){.replication-map{padding-inline:26px;padding-bottom:24px}.replication-retained{gap:10px}.replication-action{flex:1 1 100%}}

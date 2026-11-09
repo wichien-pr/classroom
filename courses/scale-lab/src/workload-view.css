@@ -38,19 +38,20 @@
 .topic-lesson .workload-playback button:disabled{opacity:.55;cursor:default}
 .topic-lesson .workload-playback button:focus-visible{outline:3px solid var(--wl-accent);outline-offset:3px}
 .topic-lesson .workload-playback span{font-size:14px;color:var(--wl-muted)}
-.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=http]{animation:workload-http-flight 4.8s linear both}
-.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=query]{animation:workload-query-flight 4.8s linear both}
+.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=http]{animation:workload-http-flight 3.4s linear both}
+.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=query]{animation:workload-query-flight 3.4s linear both}
 .topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-machine{animation:workload-activation 1.2s 1s ease both}
 .topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-units{animation:workload-allocation 1.2s ease both;transform-origin:left}
 .topic-lesson .workload-scene[data-playback="paused"] *{animation-play-state:paused!important}
 .topic-lesson .workload-scene[data-ready="false"] .workload-query{color:var(--wl-error)}
-.topic-lesson .workload-scene[data-ready="false"]:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=query]{animation-name:workload-blocked-flight}
-.topic-lesson .workload-scene[data-ready="false"]:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=http]{animation-name:workload-http-stop}
+.topic-lesson .workload-scene[data-ready="false"]:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=query]{animation-name:workload-blocked-flight;animation-duration:4.1s}
+.topic-lesson .workload-scene[data-ready="false"]:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=http]{animation-name:workload-http-stop;animation-duration:4.1s}
 .topic-lesson .workload-link>span{display:block;margin-bottom:18px}
-@keyframes workload-http-stop{0%{offset-distance:0%;opacity:1}24%{offset-distance:100%;opacity:1}25%,100%{offset-distance:100%;opacity:0}}
-@keyframes workload-blocked-flight{0%,24%{offset-distance:0%;opacity:0}25%{offset-distance:0%;opacity:1}50%,90%{offset-distance:100%;opacity:1}100%{offset-distance:100%;opacity:0}}
-@keyframes workload-http-flight{0%{offset-distance:0%;opacity:1}24%{offset-distance:100%;opacity:1}25%,74%{offset-distance:100%;opacity:0}75%{offset-distance:100%;opacity:1}99%{offset-distance:0%;opacity:1}100%{offset-distance:0%;opacity:0}}
-@keyframes workload-query-flight{0%,24%{offset-distance:0%;opacity:0}25%{offset-distance:0%;opacity:1}50%{offset-distance:100%;opacity:1}74%{offset-distance:0%;opacity:1}75%,100%{offset-distance:0%;opacity:0}}
+@keyframes workload-http-stop{0%{offset-distance:0%}20.7317073171%,100%{offset-distance:100%}0%,19.5609756098%{opacity:1}20.7317073171%,100%{opacity:0}}
+/* Two .85s routes, then the original 1.92s endpoint hold + .48s fade. */
+@keyframes workload-blocked-flight{0%,20.7317073171%{offset-distance:0%}41.4634146341%,100%{offset-distance:100%}0%,19.5609756098%{opacity:0}20.7317073171%,88.2926829268%{opacity:1}100%{opacity:0}}
+@keyframes workload-http-flight{0%,100%{offset-distance:0%}25%,75%{offset-distance:100%}0%,24%,75%,99%{opacity:1}25%,74%,100%{opacity:0}}
+@keyframes workload-query-flight{0%,25%,75%,100%{offset-distance:0%}50%{offset-distance:100%}0%,24%,75%,100%{opacity:0}25%,50%,74%{opacity:1}}
 @keyframes workload-activation{50%{box-shadow:0 0 0 3px var(--wl-accent)}}
 @keyframes workload-allocation{50%{filter:brightness(1.4)}}
 .topic-lesson #lesson-topic[data-kind="workload"] #state-view{display:none}
@@ -89,7 +90,6 @@
 .topic-lesson .workload-playback{flex:none;flex-wrap:nowrap}
 .topic-lesson .workload-feedback{flex:1;min-width:0}
 .topic-lesson .workload-scene #workload-result{border:0;padding:0;font-size:17px;color:var(--theme-text,#253431)}
-.topic-lesson .workload-playback-note{margin:4px 0 0;font-size:14px;line-height:1.65;color:var(--theme-muted,#53645d)}
 .topic-lesson .workload-playback button{background:#e5edf4;color:#214f79;border-color:#698299;transition:none}
 .topic-lesson .workload-playback #estimate{background:#176652;color:#fff;border:2px solid #176652}
 .topic-lesson .workload-playback button:disabled{background:#dce2e8;color:#4b5967;border-color:#7c8995;opacity:1;cursor:not-allowed}

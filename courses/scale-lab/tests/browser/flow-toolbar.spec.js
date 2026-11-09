@@ -5,7 +5,7 @@ for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`LAB0
  for(let topic=0;topic<4;topic++){
   await expect(page.locator('#flow-scene > .flow-actions')).toHaveCount(1);
   await expect(page.locator('#flow-scene #flow-result')).toHaveText('ยังไม่ได้ทดลอง');
-  await expect(page.locator('#flow-scene .flow-playback-note')).toBeVisible();
+  await expect(page.locator('#flow-scene .flow-playback-note')).toHaveCount(0);
   await page.evaluate(()=>window.retainedToolbar=document.querySelector('.flow-actions'));
   await page.locator('#step').click();
   expect(await page.evaluate(()=>window.retainedToolbar===document.querySelector('#flow-scene > .flow-actions'))).toBe(true);await page.locator('#flow-pause').click();
@@ -16,7 +16,6 @@ for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`LAB0
   if(width===1280){expect(result.x).toBeGreaterThan(buttons[2].x+48);expect(Math.abs(result.y-buttons[0].y)).toBeLessThan(20);}
   else expect(result.y).toBeGreaterThanOrEqual(buttons[0].y+48);
   expect(await page.locator('#flow-result').evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBe(17);
-  expect(await page.locator('.flow-playback-note').evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBe(14);
   await page.keyboard.press('Tab'); // Switch to keyboard modality for :focus-visible.
   for(const id of ['step','flow-replay','flow-pause']){
    await page.locator('#'+id).focus();

@@ -1,0 +1,3 @@
+import {defineConfig} from '@playwright/test';
+process.env.PLAYWRIGHT_BROWSERS_PATH=new URL('./.browsers',import.meta.url).pathname;
+export default defineConfig({testDir:'./tests/browser',workers:1,timeout:60000,reporter:[['list'],['json',{outputFile:'../../evidence/lab09-presentation/regression-results.json'}]],outputDir:'../../evidence/lab09-presentation/regression-output',use:{channel:'chromium',baseURL:'http://127.0.0.1:4173',viewport:{width:1440,height:1000},screenshot:'only-on-failure'}});

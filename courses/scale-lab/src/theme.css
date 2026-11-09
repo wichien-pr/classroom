@@ -76,7 +76,6 @@ html #theme-toggle[hidden]{display:none}
 :root:not([data-theme=dark]) .flow-lesson #flow-scene :is(.flow-machine,.flow-storage span){background:#fff;border-color:#7187a1}
 :root:not([data-theme=dark]) .flow-lesson #flow-scene .flow-machine svg{stroke:#32678b}
 :root:not([data-theme=dark]) .flow-lesson #flow-scene :is(#flow-frame,#flow-result){color:#193b50}
-:root:not([data-theme=dark]) .flow-lesson #flow-scene .flow-playback-note{color:#466170}
 :root:not([data-theme=dark]) .flow-lesson #flow-scene .flow-actions{border-top-color:#a7b7c8}
 :root:not([data-theme=dark]) .flow-lesson #flow-scene [data-node].active{border-color:#176652}
 :root:not([data-theme=dark]) .flow-lesson #flow-scene span.active{color:#176652}

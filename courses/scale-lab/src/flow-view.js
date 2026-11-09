@@ -25,7 +25,7 @@ export function stopFlowPlayback(){cleanup();cleanup=()=>{};}
 export function bindFlowPlayback(main,result,play=false){
  stopFlowPlayback();const scene=main.querySelector('#flow-scene');if(!scene)return;
  const pause=main.querySelector('#flow-pause'),replay=main.querySelector('#flow-replay');
- let timer,index=0,disposed=false;
+ let timer,index=0,disposed=false,generation=0;
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  // Actual CSS-pixel anchors: labels never shrink with a viewBox. Route corridors
  // stay outside node text; HTTP connects only client and Web, never DNS/storage.
@@ -65,12 +65,12 @@ export function bindFlowPlayback(main,result,play=false){
   scene.querySelector('#flow-frame').textContent=frame.view.message;
  }
  function finish(){clearTimeout(timer);show(result.frames.at(-1));scene.dataset.playback='finished';pause.disabled=true;setFlowIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');}
- function advance(){if(disposed)return;if(index===result.frames.length){finish();return;}show(result.frames[index++]);timer=setTimeout(advance,1100);}
- function start(){if(!result)return;clearTimeout(timer);index=0;setFlowIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');if(reduced.matches){finish();return;}scene.dataset.playback='running';pause.disabled=false;advance();scene.querySelectorAll('.flow-travel').forEach(dot=>dot.getAnimations().forEach(animation=>{animation.currentTime=0;}));}
+ function advance(){if(disposed)return;if(index===result.frames.length){finish();return;}show(result.frames[index++]);const animation=scene.querySelector('.flow-travel.active')?.getAnimations()[0];if(animation){const current=generation;animation.currentTime=0;animation.finished.then(()=>{if(!disposed&&current===generation&&scene.dataset.playback==='running')advance();}).catch(()=>{});}else timer=setTimeout(advance,1100);}
+ function start(){if(!result)return;generation++;clearTimeout(timer);index=0;setFlowIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');if(reduced.matches){finish();return;}scene.dataset.playback='running';pause.disabled=false;advance();scene.querySelectorAll('.flow-travel').forEach(dot=>dot.getAnimations().forEach(animation=>{animation.currentTime=0;}));}
  setFlowIcon(replay,'replay','เล่นภาพซ้ำ');setFlowIcon(pause,'pause','พักภาพ');
  replay.disabled=!result;pause.disabled=true;
  replay.onclick=start;
- pause.onclick=()=>{if(scene.dataset.playback==='running'){clearTimeout(timer);scene.dataset.playback='paused';setFlowIcon(pause,'play','เล่นภาพต่อ');pause.setAttribute('aria-pressed','true');}else{scene.dataset.playback='running';setFlowIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');timer=setTimeout(advance,1100);}};
+ pause.onclick=()=>{if(scene.dataset.playback==='running'){clearTimeout(timer);scene.dataset.playback='paused';setFlowIcon(pause,'play','เล่นภาพต่อ');pause.setAttribute('aria-pressed','true');}else{scene.dataset.playback='running';setFlowIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');if(!scene.querySelector('.flow-travel.active')?.getAnimations().length)timer=setTimeout(advance,1100);}};
  const motion=()=>{if(result&&scene.dataset.playback!=='idle')finish();};reduced.addEventListener('change',motion);
  cleanup=()=>{disposed=true;clearTimeout(timer);resize.disconnect();scene.dataset.playback='idle';reduced.removeEventListener('change',motion);};
  if(play)start();
