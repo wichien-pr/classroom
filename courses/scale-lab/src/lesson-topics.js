@@ -1,3 +1,4 @@
+import {queueTopics} from './queue-presentation.js';
 import {dcTopics} from './dc-presentation.js';
 import {webTopics} from './web-presentation.js';
 import {cdnTopics} from './cdn-presentation.js';
@@ -31,14 +32,7 @@ export const lessonTopics={
  cdn:cdnTopics,
  'stateless-web':webTopics,
  'data-centers':dcTopics,
- 'message-queue':[
-  ['ส่งเข้าคิว ยังไม่ใช่งานสำเร็จ','mq-type enqueue-jobs'],
-  ['Worker หยุด แต่ยังรับงานได้','mq-consumer enqueue-jobs process-jobs'],
-  ['Producer หยุด แต่งานเก่ายังเดินต่อ','mq-consumer mq-producer process-jobs'],
-  ['งานเข้าเร็วกว่างานออก','mq-producer mq-type enqueue-jobs process-jobs'],
-  ['เพิ่ม Workers ลดงานค้าง','mq-workers process-jobs'],
-  ['ระบายคิวและเริ่มใหม่','mq-workers process-jobs'],
- ],
+ 'message-queue':queueTopics,
  'logging-operations':[
   ['Logs เครื่องเดียวบอกอะไร','log-scope log-level inspect-logs'],
   ['ค้นเหตุการณ์ข้ามบริการ','log-scope log-level inspect-logs'],
@@ -86,7 +80,7 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
  const navigation=document.createElement('nav');navigation.className='lesson-topic-nav';navigation.setAttribute('aria-label','หัวข้อการทดลอง');
  navigation.innerHTML='<button type="button" id="lesson-topic-back" aria-controls="lesson-topic">← ย้อนกลับ · Back</button><button type="button" id="lesson-topic-next" aria-controls="lesson-topic">ถัดไป · Next →</button>';
  topic.append(navigation);
- if(!['workload','stock','balance','replica','cache','cdn','stateless-web','data-centers'].includes(kind)){
+ if(!['workload','stock','balance','replica','cache','cdn','stateless-web','data-centers','message-queue'].includes(kind)){
  const note=document.createElement('p');note.className='lesson-topic-note';note.textContent='ข้ามด้วย Next ได้ · ไม่เพิ่มคะแนนหรือทำให้เรียนจบ · สถานะเดิมยังอยู่ หากข้ามขั้น ให้ปรับเงื่อนไขหรือทำขั้นก่อนหน้าด้วยตนเอง';topic.append(note);
  const history=document.createElement('details');history.className='lesson-topic-history';history.innerHTML='<summary>บันทึกเหตุการณ์และข้อจำกัด</summary>';history.append(find('.event-area'));
  for(const p of steps.querySelectorAll('.lesson-step-note,.web-step-note'))history.append(p);
@@ -127,6 +121,14 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   const action=document.createElement('button');action.id='replication-run';action.type='button';action.dataset.replicationLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
   topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
   items.forEach((item,i)=>item.textContent=replicationTopics[i][2]);
+ }
+ if(kind==='message-queue'){
+  setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
+  navigation.firstElementChild.after(heading);topic.prepend(navigation);
+  const retained=document.createElement('div');retained.className='queue-retained';
+  const action=document.createElement('button');action.id='queue-run';action.type='button';action.dataset.queueLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
+  topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
+  items.forEach((item,i)=>item.textContent=queueTopics[i][2]);
  }
  if(kind==='cache'){
   setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
@@ -176,7 +178,7 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   containers.forEach(node=>node.hidden=![...node.querySelectorAll('input,select,button')].some(el=>!el.hidden&&!el.closest('label')?.hidden));
   more.textContent=kind==='workload'?(expanded?'ซ่อนการตั้งค่าเพิ่มเติม':'ตั้งค่าเพิ่มเติม'):(expanded?'ซ่อนตัวตั้งค่าอื่น':'ปรับเงื่อนไขอื่น / เตรียมขั้นที่ข้าม');more.setAttribute('aria-expanded',String(expanded));
   find('#lesson-topic-back').disabled=index===0;find('#lesson-topic-next').disabled=index===topics.length-1;
-  if(['workload','stock','balance','replica','cache','cdn','stateless-web','data-centers'].includes(kind))onWorkloadTopic(index);
+  if(['workload','stock','balance','replica','cache','cdn','stateless-web','data-centers','message-queue'].includes(kind))onWorkloadTopic(index);
   if(focus){heading.focus({preventScroll:true});topic.scrollIntoView({block:'start',behavior:'instant'});}
  }
  find('#lesson-topic-back').onclick=()=>{if(index>0){index--;expanded=false;show(true);}};

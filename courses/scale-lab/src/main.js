@@ -44,6 +44,36 @@ function renderWebControls(){
  const replay=$('#web-replay');if(replay){replay.disabled=busy||blocked||!webFlow.completed;replay.onclick=()=>runWeb(true);}
  button.onclick=()=>runWeb();
 }
+import './queue-presentation.css';
+import {queueScene,bindQueuePlayback,stopQueuePlayback} from './queue-presentation.js';
+import {queuePreset,createQueueFlow} from './queue-flow.js';
+let queueTopic=0,queueResult=null,queuePlay=false,queueAnimation,queueEpoch=0;
+const queueFlow=createQueueFlow({
+ show:frame=>{queueResult=frame;queuePlay=true;renderState();return queueAnimation;},
+ record:async(action,retry)=>{
+  if(participation){
+   if(!retry)await participationOperation('record','message-queue',action);
+   else if(participation.status==='save-error')await participationOperation('retry');
+   if(participation.status!=='saved')throw Error('บันทึกไม่ได้ · ลองบันทึกกิจกรรมอีกครั้งที่ส่วนสถานะ แล้วกดทดลองเพื่อทำต่อ');
+  }else{localEligibility.record('message-queue',action);renderProgress();}
+ }
+});
+function cancelQueueFlow(){queueEpoch++;queueFlow.cancel();stopQueuePlayback();}
+function prepareQueueTopic(index){cancelQueueFlow();queueTopic=index;queueResult=null;queuePlay=false;state.queueLab=queuePreset(index);renderState();}
+async function runQueue(replay=false){
+ if(queueFlow.busy||quizBlocked()||pendingLesson!==null)return;
+ const epoch=queueEpoch,focus=$('#queue-run');
+ try{const pending=replay?queueFlow.replay():queueFlow.run(queueTopic);renderQueueControls();await pending;}
+ catch(error){if(epoch===queueEpoch)$('#queue-result').textContent=error.message;}
+ finally{if(epoch===queueEpoch){renderQueueControls();if(focus?.isConnected&&!focus.disabled&&document.activeElement===document.body)focus.focus({preventScroll:true});}}
+}
+function renderQueueControls(){
+ const button=$('#queue-run');if(!button)return;
+ const busy=queueFlow.busy,blocked=quizBlocked()||pendingLesson!==null;button.disabled=busy||blocked;button.setAttribute('aria-busy',String(busy||participation?.status==='saving'));
+ setWorkloadIcon(button,participation?.status==='saving'?'saving':'play',participation?.status==='saving'?'กำลังบันทึก':busy?'กำลังทดลอง':'ทดลอง');
+ const replay=$('#queue-replay');if(replay){replay.disabled=busy||blocked||!queueFlow.completed;replay.onclick=()=>runQueue(true);}
+ button.onclick=()=>runQueue();
+}
 import './dc-presentation.css';
 import {dcScene,bindDcPlayback,stopDcPlayback} from './dc-presentation.js';
 import {dcPreset} from './dc-flow.js';
@@ -276,7 +306,7 @@ case 'data-centers':return dataCentersControls();
 case 'region':return '<label>Region หลักติดต่อไม่ได้<select id="choice"><option value="dns">สลับ DNS แล้วเปิด writer ทันที</option><option value="fence">Fence writer เดิม ตรวจ lag แล้ว promote</option></select></label>'+button('decision','ทดลองการตัดสินใจ');
 }}
 function mount(){
-stopFlowPlayback();stopWorkloadPlayback();stopScalingPlayback();stopBalancePlayback();cancelReplicationFlow();cancelCacheFlow();cancelCdnFlow();cancelWebFlow();cancelDcFlow();
+stopFlowPlayback();stopWorkloadPlayback();stopScalingPlayback();stopBalancePlayback();cancelReplicationFlow();cancelCacheFlow();cancelCdnFlow();cancelWebFlow();cancelDcFlow();cancelQueueFlow();
 const l=lessons[selected-1];
 feedback=quizSelections.has(l.kind) ? (quizSelections.get(l.kind)===1?'ถูกต้อง — ':'ยังไม่ถูก — ')+l.why : '';
 $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a class="skip" href="#main">ข้ามไปห้องทดลอง</a><div class="layout"><aside class="sidebar"><div class="brand"><span class="brand-mark">S<span>↗</span></span><div>Scale Lab<small>SYSTEM DESIGN / TH</small></div></div><div class="course-label">ORDER SYSTEM · ${lessons.length} LABS</div><nav aria-label="บทเรียน">${lessons.map(x=>`<button data-lesson-kind="${x.kind}" data-lesson="${x.id}" aria-current="${x.id===selected?'page':'false'}"><span class="nav-num">${String(x.id).padStart(2,'0')}</span><span>${x.title}</span><span class="done">${progress.includes(x.id)?'✓':''}</span></button>`).join('')}</nav><div class="sidebar-bottom"><p id="progress-status" role="status"></p><button id="retry-progress" hidden>ลองโหลดอีกครั้ง</button><span id="progress">${progress.length} / ${lessons.length} บทเรียนจบ</span><progress max="${lessons.length}" value="${progress.length}" aria-label="ความคืบหน้าบทเรียน"></progress></div></aside><div class="workspace"><div class="simulation"><span class="dot"></span><strong>EDUCATIONAL SIMULATION</strong><span>โครงสร้างและค่าทั้งหมดเป็นแบบจำลองเพื่อการเรียนรู้ ไม่ใช่ benchmark จริง</span></div><header class="topbar"><span>ห้องทดลอง / ระบบสั่งซื้อสินค้า</span><span class="source-ref">คู่มือต้นฉบับ §${l.chapter}</span></header><main id="main"><div class="lesson-heading"><div><p class="eyebrow">LAB ${String(l.id).padStart(2,'0')} / ${l.en}</p><h1>${l.title}</h1><p class="objective">${l.objective}</p></div><span class="manual-tag">MANUAL STEP</span></div><div id="participation-notice" hidden><p id="participation-status" role="status"></p><button id="retry-participation" hidden>ลองบันทึกคะแนนอีกครั้ง</button></div><div class="learning-grid"><section class="lab" aria-label="ห้องทดลองแบบจำลอง"><div class="panel-title"><h2>ทดลองกับระบบ</h2><button id="reset">เริ่มการทดลองใหม่</button></div><div class="architecture" id="architecture" aria-label="แผนภาพสถาปัตยกรรม"></div><div class="state-grid" id="state-view" aria-label="สถานะแบบจำลอง"></div><div class="control-area"><h3>01 / ตั้งสถานการณ์และลงมือ</h3><div class="controls">${controls(l.kind)}</div></div>${l.kind==='workload'?'':`<div class="observation"><h3>02 / สิ่งที่เกิดขึ้น</h3><p id="outcome" role="status" aria-live="polite"></p></div><div class="event-area"><div class="event-heading"><h3>บันทึกเหตุการณ์</h3><span>เรียงตามขั้น · ไม่ใช่เวลาจริง</span></div><ol id="event-log"></ol></div>`}</section><aside class="teaching" aria-label="คำอธิบายประกอบ"><section><p class="eyebrow">WHY IT WORKS</p><h2>เข้าใจเหตุผล ก่อนเพิ่มเครื่องมือ</h2><p>${l.explain}</p><div class="experiment"><strong>ลองตามนี้</strong><p>${l.try}</p></div></section><section class="quiz"><p class="eyebrow">CHECK YOUR THINKING</p><h2>${l.question}</h2><div class="answers">${quizOrder.get(l.kind).map((choice,i)=>`<button data-answer="${choice}"><span>${i===0?'A':'B'}</span>${l.answers[choice]}</button>`).join('')}</div><p id="feedback" role="status">${feedback||'เลือกคำตอบเพื่อดูเหตุผล — ตอบใหม่ได้เสมอ'}</p></section></aside></div><footer><span>${storageOK?'บันทึกเฉพาะความคืบหน้าใน browser นี้':'บันทึกไม่ได้ — ใช้งานต่อได้ แต่ความคืบหน้าอยู่ในหน่วยความจำ'}</span><section class="lesson-completion" aria-label="สถานะการเรียนบทนี้"><button type="button" id="complete-lesson" aria-describedby="completion-status">ทำเครื่องหมายว่าเรียนจบ</button><p id="completion-status" role="status"></p><button type="button" id="retry-completion-load" hidden>ลองโหลดอีกครั้ง</button></section></footer></main></div></div><dialog id="help-dialog"><div class="dialog-header"><h2 id="dialog-title"></h2><button id="close-dialog" autofocus>ปิด</button></div><div id="dialog-content"></div></dialog>`;
@@ -351,7 +381,7 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
   document.querySelector('.source-ref').textContent='Data centers · เส้นทางและข้อมูล';
  }
  mountLessonLayout($('#main'),l.kind);
- mountLessonTopics($('#main'),l.kind,l.kind==='data-centers'?prepareDcTopic:l.kind==='stateless-web'?prepareWebTopic:l.kind==='cdn'?prepareCdnTopic:l.kind==='cache'?prepareCacheTopic:l.kind==='replica'?prepareReplicationTopic:l.kind==='balance'?prepareBalanceTopic:l.kind==='stock'?prepareScalingTopic:prepareWorkloadTopic);
+ mountLessonTopics($('#main'),l.kind,l.kind==='message-queue'?prepareQueueTopic:l.kind==='data-centers'?prepareDcTopic:l.kind==='stateless-web'?prepareWebTopic:l.kind==='cdn'?prepareCdnTopic:l.kind==='cache'?prepareCacheTopic:l.kind==='replica'?prepareReplicationTopic:l.kind==='balance'?prepareBalanceTopic:l.kind==='stock'?prepareScalingTopic:prepareWorkloadTopic);
  document.querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>navigate(Number(b.dataset.lesson)));
  document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>act(b.dataset.action));
  document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>answer(Number(b.dataset.answer)));
@@ -368,7 +398,11 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
  $('#complete-lesson').onclick=()=>completeLesson(lessons[selected-1]);
 }
 function navigate(id){selected=id;state=initial();events=[];feedback='';message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';mount();$('#main').setAttribute('tabindex','-1');$('#main').focus({preventScroll:true});}
-function renderState(){const dcActions=$('.dc-retained'),dcFocus=dcActions?.contains(document.activeElement)?document.activeElement:null;const webActions=$('.web-retained'),webFocus=webActions?.contains(document.activeElement)?document.activeElement:null;const cdnActions=$('.cdn-retained'),cdnFocus=cdnActions?.contains(document.activeElement)?document.activeElement:null;const cacheActions=$('.cache-retained'),cacheFocus=cacheActions?.contains(document.activeElement)?document.activeElement:null;const replicationActions=$('.replication-retained'),replicationFocus=replicationActions?.contains(document.activeElement)?document.activeElement:null;const balanceAction=$('#route'),balanceFocused=balanceAction===document.activeElement;const flowActions=$('.flow-actions'),flowFocus=flowActions?.contains(document.activeElement)?document.activeElement:null;const scalingAction=$('#order'),scalingFocused=scalingAction===document.activeElement;const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?loggingDiagram(state.loggingLab):l.kind==='message-queue'?queueDiagram(state.queueLab):l.kind==='data-centers'?dcScene(state.dataCenters,dcResult):l.kind==='stateless-web'?webScene(webResult?.state||state.webLab,webResult,webTopic):l.kind==='cdn'?cdnScene(cdnResult?.state||state.cdnLab,cdnResult):l.kind==='cache'?cacheScene(cacheResult?.state||state.cacheLab,cacheResult):l.kind==='replica'?replicationScene(replicationResult?.state||state.replication,replicationResult):l.kind==='balance'?balanceScene(state.balance,balanceResult):l.kind==='stock'?scalingScene(state.scaling,scalingResult):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?flowDiagram(state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+function renderState(){const queueActions=$('.queue-retained'),queueFocus=queueActions?.contains(document.activeElement)?document.activeElement:null;const dcActions=$('.dc-retained'),dcFocus=dcActions?.contains(document.activeElement)?document.activeElement:null;const webActions=$('.web-retained'),webFocus=webActions?.contains(document.activeElement)?document.activeElement:null;const cdnActions=$('.cdn-retained'),cdnFocus=cdnActions?.contains(document.activeElement)?document.activeElement:null;const cacheActions=$('.cache-retained'),cacheFocus=cacheActions?.contains(document.activeElement)?document.activeElement:null;const replicationActions=$('.replication-retained'),replicationFocus=replicationActions?.contains(document.activeElement)?document.activeElement:null;const balanceAction=$('#route'),balanceFocused=balanceAction===document.activeElement;const flowActions=$('.flow-actions'),flowFocus=flowActions?.contains(document.activeElement)?document.activeElement:null;const scalingAction=$('#order'),scalingFocused=scalingAction===document.activeElement;const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?loggingDiagram(state.loggingLab):l.kind==='message-queue'?queueScene(queueResult?.state||state.queueLab,queueResult,queueTopic):l.kind==='data-centers'?dcScene(state.dataCenters,dcResult):l.kind==='stateless-web'?webScene(webResult?.state||state.webLab,webResult,webTopic):l.kind==='cdn'?cdnScene(cdnResult?.state||state.cdnLab,cdnResult):l.kind==='cache'?cacheScene(cacheResult?.state||state.cacheLab,cacheResult):l.kind==='replica'?replicationScene(replicationResult?.state||state.replication,replicationResult):l.kind==='balance'?balanceScene(state.balance,balanceResult):l.kind==='stock'?scalingScene(state.scaling,scalingResult):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?flowDiagram(state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+if(l.kind==='message-queue'){
+ $('.queue-experiments').append(queueActions);if(queueFocus)queueFocus.focus({preventScroll:true});
+ queueAnimation=bindQueuePlayback($('#main'),queuePlay,queueResult);queuePlay=false;renderQueueControls();return;
+}
 if(l.kind==='data-centers'){
  $('.dc-experiments').append(dcActions);if(dcFocus)dcFocus.focus({preventScroll:true});
  dcAnimation=bindDcPlayback($('#main'),dcPlay,dcResult);dcPlay=false;renderDcControls();return;
@@ -475,7 +509,7 @@ function renderParticipation(){
   if(balanceAction){const saving=participation?.status==='saving';setWorkloadIcon(balanceAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');balanceAction.setAttribute('aria-busy',String(saving));}
   const scalingAction=document.querySelector('#lesson-topic[data-kind=stock] #order');
   if(scalingAction){const saving=participation?.status==='saving';setWorkloadIcon(scalingAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');scalingAction.setAttribute('aria-busy',String(saving));}
-  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();
+  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();renderQueueControls();
   renderProgress();
 }
 async function participationOperation(operation,...args){
@@ -510,7 +544,7 @@ function renderQuizControls(){
   });
 }
 function renderProgress(){
-  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();
+  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();renderQueueControls();
   if(localEligibility && !localEligibility.storageOK)storageOK=false;
   if(account) progress=lessons.filter(l=>account.completed.includes(l.kind)).map(l=>l.id);
   const total=account && account.status!=='loading' && account.status!=='load-error' ? account.total : lessons.length;

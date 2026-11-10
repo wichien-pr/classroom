@@ -28,5 +28,5 @@ for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`LAB0
  await expect(page.locator('#flow-result')).toHaveText('ยังไม่ได้ทดลอง');expect(posts).toEqual([]);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await reset.evaluate(e=>window.scrollBy(0,e.getBoundingClientRect().top-160));await page.screenshot({path:testInfo.outputPath(`navigation-${theme}-${width}.png`)});
- await page.locator('.sidebar button[data-lesson]').nth(9).click();await expect(page.locator('#reset')).toHaveText('เริ่มการทดลองใหม่');await expect(page.locator('#reset svg')).toHaveCount(0);
+ await page.locator('.sidebar button[data-lesson]').nth(10).click();await expect(page.locator('#reset')).toHaveText('เริ่มการทดลองใหม่');await expect(page.locator('#reset svg')).toHaveCount(0);
 });

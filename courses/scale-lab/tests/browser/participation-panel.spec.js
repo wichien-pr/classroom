@@ -10,7 +10,8 @@ test('score panel is absent on every lesson while manual completion remains usab
   await expect(page.getByText('คะแนนและเงื่อนไขการเรียนจบ',{exact:true})).toHaveCount(0);
   await expect(page.getByText(/Standalone · ไม่บันทึกคะแนนบัญชี/)).toHaveCount(0);
   await expect(page.locator('#participation-status')).toBeHidden();
-  await page.locator(lesson.kind==='data-centers'?'#dc-run':lesson.kind==='stateless-web'?'#web-run':lesson.kind==='cdn'?'#cdn-run':lesson.kind==='cache'?'#cache-run':lesson.kind==='replica'?'#replication-run':'[data-action]:visible').first().click();
+  await page.locator(lesson.kind==='message-queue'?'#queue-run':lesson.kind==='data-centers'?'#dc-run':lesson.kind==='stateless-web'?'#web-run':lesson.kind==='cdn'?'#cdn-run':lesson.kind==='cache'?'#cache-run':lesson.kind==='replica'?'#replication-run':'[data-action]:visible').first().click();
+  if(lesson.kind==='message-queue')await expect(page.locator('#queue-run')).toBeEnabled();
   if(lesson.kind==='data-centers')await expect(page.locator('#dc-run')).toBeEnabled();
   if(lesson.kind==='stateless-web')await expect(page.locator('#web-run')).toBeEnabled();
   if(lesson.kind==='cdn')await expect(page.locator('#cdn-run')).toBeEnabled();
