@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-const inventory=[['workload',4],['stock',4],['balance',4],['replica',5],['cache',5],['cdn',6],['stateless-web',6],['data-centers',7],['message-queue',6],['logging-operations',6],['database-scaling',6]];
+const inventory=[['workload',4],['stock',4],['balance',4],['replica',5],['cache',5],['cdn',6],['stateless-web',6],['data-centers',7],['message-queue',6],['database-scaling',6]];
 for(const [kind,count] of inventory)test(`${kind}: every original experiment topic is freely navigable and controls retain identity`,async({page})=>{
  await page.goto('/');await page.locator(`[data-lesson-kind="${kind}"]`).click();
  await expect(page.locator('#lesson-topic-title')).toContainText(`1 / ${count}`);
@@ -40,15 +40,15 @@ test('database scaling has an actual initial architecture before evaluation',asy
  await expect(page.locator('#event-log')).toContainText('ยังไม่มีเหตุการณ์');
 });
 
-test('logging topics isolate live results beside the matching action, including after Back',async({page})=>{
- await page.goto('/');await page.locator('[data-lesson-kind="logging-operations"]').click();
- await expect(page.locator('#metric-results')).toBeHidden();
- await page.locator('#inspect-logs').click();await expect(page.locator('#lesson-topic-results #logging-results')).toContainText('ไม่พบ error');
- await page.locator('#lesson-topic-next').click();await page.locator('#log-scope').selectOption('all');await page.locator('#inspect-logs').click();
- const logs=await page.locator('#logging-results').textContent();
- await page.locator('#lesson-topic-next').click();await page.locator('#inspect-metrics').click();
- await expect(page.locator('#logging-results')).toBeHidden();await expect(page.locator('#metric-results')).toBeVisible();
- await page.locator('#lesson-topic-back').click();await expect(page.locator('#logging-results')).toHaveText(logs);await expect(page.locator('#metric-results')).toBeHidden();
+test('logging pages retain cumulative evidence and Back replays the fixed Version',async({page})=>{
+ await page.goto('/');await page.locator('[data-lesson-kind="logging-operations"]').click();await page.emulateMedia({reducedMotion:'reduce'});
+ await page.locator('#logging-run').click();await expect(page.locator('[data-stage=test]')).toHaveAttribute('data-status','failed');
+ await page.locator('#lesson-topic-next').click();await expect(page.locator('.logging-scene')).toHaveAttribute('data-playback','finished');
+ await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','deployed');
+ await page.locator('#lesson-topic-next').click();await expect(page.locator('.logging-scene')).toHaveAttribute('data-playback','finished');
+ await expect(page.locator('.logging-event')).toHaveCount(2);await expect(page.locator('.logging-metric-panel')).toHaveCount(3);
+ await page.locator('#lesson-topic-back').click();await expect(page.locator('.logging-scene')).toHaveAttribute('data-playback','finished');
+ await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','deployed');await expect(page.locator('.logging-metric')).toHaveCount(0);
 });
 
 test('LAB02 prepares a new scenario while retaining the primary action identity',async({page})=>{

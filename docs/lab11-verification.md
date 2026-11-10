@@ -1,5 +1,7 @@
 # LAB11 — Logging, metrics & automation (not deployed)
 
+> Historical iteration report, not the current acceptance contract or a claim that its browser suite passes today. Superseded by [LAB11 current release verification](lab11-current-release.md). Commands, page counts, asset hashes and publication status below describe that earlier iteration only.
+
 ## Scope and isolation
 
 Implemented in `/Users/prommeesee/Documents/04_Learning/classroom-lab11`, detached from `b64b0d7`. The live `classroom` checkout remains clean on main. No production DB, credentials, dist or services were modified; the existing Python interpreter and Chromium cache were reused only for isolated testing. No stage, commit, push or deployment.

@@ -1,0 +1,51 @@
+.logging-choices{display:flex;flex-wrap:wrap;gap:8px;padding:12px 0;border:0;margin:0 0 12px;min-width:0}
+.logging-choices legend,.logging-decision h4{font-size:17px;line-height:1.7;font-weight:650;color:var(--topic-ink)}
+.logging-scene [data-logging-choice],.logging-scene [data-logging-decision]{min-height:48px;white-space:normal;text-align:left;font:inherit;font-size:16px;line-height:1.65;padding:10px 14px;border:1px solid var(--topic-line);border-radius:8px;background:var(--topic-surface);color:var(--topic-ink);max-width:100%;transition:none}
+.logging-scene button[aria-pressed=true]{border:2px solid var(--topic-blue);padding:9px 13px;box-shadow:inset 4px 0 var(--topic-blue)}
+.logging-scene button:focus-visible{outline:3px solid var(--topic-blue);outline-offset:3px}
+.logging-decision{margin-top:20px;border-top:1px solid var(--topic-line);padding-top:12px}.logging-decision h4{margin:0 0 8px}.logging-decision>div{display:flex;flex-wrap:wrap;gap:8px}.logging-scene #logging-decision-feedback{margin-top:12px;border-left:3px solid var(--topic-blue);padding:8px 12px}
+.logging-event[data-selected=true]{outline:3px solid var(--topic-blue);outline-offset:3px}
+.topic-lesson #lesson-topic[data-kind=logging-operations]{padding:20px;gap:12px}
+.topic-lesson #lesson-topic[data-kind=logging-operations] .lesson-topic-nav{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--topic-line)}
+.topic-lesson #lesson-topic[data-kind=logging-operations] #lesson-topic-title{text-align:center;margin:0;font-size:22px;line-height:1.6}
+.topic-lesson #lesson-topic[data-kind=logging-operations] .experiment{border:0;background:none;padding:0}
+.topic-lesson #lesson-topic[data-kind=logging-operations] .experiment>strong{display:none}
+.topic-lesson #lesson-topic[data-kind=logging-operations] ol{padding:0;list-style:none}
+.topic-lesson #lesson-topic[data-kind=logging-operations] #architecture{display:block;padding:0;min-height:0;background:none}
+.logging-scene{--wl-accent:var(--topic-blue);margin:0;padding:18px;border:1px solid var(--topic-line);border-radius:14px;background:var(--topic-surface);color:var(--topic-ink)}
+html:not([data-theme=dark]):not([data-classroom-theme=dark]) .logging-scene,html:not([data-theme=dark]):not([data-classroom-theme=dark]) .topic-lesson #lesson-topic[data-kind=logging-operations] #architecture{background:#f3f7fa}
+.logging-map{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:76px;max-width:900px;margin:auto;padding:12px 0}
+.logging-map:has(.logging-code){gap:16px}
+.logging-code{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px;border-left:4px solid var(--topic-blue)}
+.logging-progress{display:grid;gap:8px;margin:12px 0}.logging-progress progress{width:100%;accent-color:var(--topic-blue)}
+.logging-services{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.logging-services span{padding:6px;border:1px solid var(--topic-line);border-radius:8px}
+.logging-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:12px;margin-top:16px}
+.logging-metric-panel,.logging-observe{border:1px solid var(--topic-line);border-radius:10px;padding:12px;min-width:0;background:var(--topic-surface)}
+.logging-scene h4{font-size:18px;line-height:1.6;margin:0 0 8px;color:var(--topic-ink)}
+.logging-scene .logging-demo,.logging-scene .logging-hygiene{font-size:14px;line-height:1.6}
+.logging-scene .logging-metric-panel p{font-size:14px}.logging-scene .logging-metric{flex-wrap:wrap}
+.logging-observe{margin-top:16px}.logging-verdict{padding:12px;border-left:4px solid var(--topic-blue);margin-top:8px;font-size:17px}
+.logging-scene .logging-stages{grid-template-columns:repeat(3,minmax(0,1fr));gap:64px}
+@media(max-width:650px){.logging-scene .logging-stages{grid-template-columns:minmax(0,1fr);gap:64px}}
+.logging-map:has(.logging-source:not([data-node])){gap:16px}
+.logging-source,.logging-evidence,.logging-stage{border:1px solid var(--topic-line);border-radius:10px;padding:12px;background:var(--topic-surface);min-width:0;box-sizing:border-box}
+.logging-source,.logging-stage{text-align:center;display:flex;flex-direction:column;gap:4px}
+.logging-scene strong{font-size:18px;color:var(--topic-ink);line-height:1.6}
+.logging-scene span,.logging-scene p{font-size:16px;color:var(--topic-ink);line-height:1.7;margin:0;overflow-wrap:anywhere}
+.logging-event{display:flex;flex-direction:column;padding:10px;border:2px solid #b42332;border-radius:8px;margin:8px 0;color:#b42332}
+.logging-scene .logging-event strong{color:inherit;font-size:16px}
+.logging-metric{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--topic-line)}
+.logging-metric strong{flex-shrink:0}.logging-window{margin-bottom:12px!important}
+.logging-stages{display:grid;gap:64px}.logging-stage[data-status=passed]{border:3px solid #176652;padding:10px}
+.logging-stage[data-status=failed]{border:3px solid #b42332;padding:10px;color:#b42332}.logging-stage[data-status=failed] *{color:inherit}
+[data-theme=dark] .logging-stage[data-status=failed],[data-classroom-theme=dark] .logging-stage[data-status=failed],[data-theme=dark] .logging-event,[data-classroom-theme=dark] .logging-event{border-color:#ff8e98;color:#ff8e98}
+[data-theme=dark] .logging-stage[data-status=passed],[data-classroom-theme=dark] .logging-stage[data-status=passed]{border-color:#7de3c6}
+.logging-wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}.logging-wires path{fill:none;stroke:var(--topic-line);stroke-width:2;stroke-dasharray:0 7;stroke-linecap:round}
+.logging-transit{position:absolute;top:0;left:0;display:flex;flex-direction:column;gap:2px;z-index:2;offset-anchor:50% 50%;offset-position:0px 0px;offset-rotate:0deg;border:1px solid #087bc1;border-radius:5px;padding:2px 8px;background:#087bc1;color:white;font-size:16px}.logging-transit span{color:white;font-size:14px;white-space:nowrap}
+.topic-lesson #logging-result{font-size:17px;line-height:1.7;margin:0;color:var(--topic-ink);font-weight:650}
+.logging-scene figcaption{font-size:14px;line-height:1.7;color:var(--topic-muted);margin-top:12px}
+.topic-lesson .logging-scene .workload-actions{background:transparent;border:0;border-top:1px solid var(--topic-line);border-radius:0;padding:16px 0 0;display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;margin-top:16px}
+.logging-retained{display:flex;gap:8px}.logging-experiments{flex:0 0 auto}.logging-scene .workload-feedback{min-width:0;flex:1 1 280px}
+.logging-scene [data-logging-label]{background:#176652;border:2px solid #176652;color:white}
+[data-theme=dark] .logging-scene [data-logging-label]{background:#7de3c6;border-color:#7de3c6;color:#102e27}
+@media(max-width:650px){.topic-lesson #lesson-topic[data-kind=logging-operations]{padding:14px}.topic-lesson #lesson-topic[data-kind=logging-operations] .lesson-topic-nav{gap:8px}.topic-lesson #lesson-topic[data-kind=logging-operations] #lesson-topic-title{font-size:18px}.logging-scene{padding:12px}.logging-metric{flex-wrap:wrap}.topic-lesson .logging-scene .workload-feedback{flex:1 1 100%}}

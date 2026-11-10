@@ -1,3 +1,4 @@
+import {loggingTopics} from './logging-presentation.js';
 import {queueTopics} from './queue-presentation.js';
 import {dcTopics} from './dc-presentation.js';
 import {webTopics} from './web-presentation.js';
@@ -33,14 +34,7 @@ export const lessonTopics={
  'stateless-web':webTopics,
  'data-centers':dcTopics,
  'message-queue':queueTopics,
- 'logging-operations':[
-  ['Logs เครื่องเดียวบอกอะไร','log-scope log-level inspect-logs'],
-  ['ค้นเหตุการณ์ข้ามบริการ','log-scope log-level inspect-logs'],
-  ['Metrics สามระดับ','metric-group inspect-metrics'],
-  ['Tests ไม่ผ่าน ต้องหยุด deploy','code-version run-pipeline'],
-  ['รุ่นที่ผ่าน Build → Test → Deploy','code-version run-pipeline'],
-  ['Pipeline จบแล้วไม่มีขั้นใหม่','code-version run-pipeline'],
- ],
+ 'logging-operations':loggingTopics,
  'database-scaling':[
   ['ภาระเกินกำลังเครื่องเดียว','tier-mode tier-power evaluate-data-tier'],
   ['เพิ่มกำลัง ไม่ได้ป้องกันเครื่องล่ม','tier-power tier-up evaluate-data-tier'],
@@ -73,14 +67,12 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
  const controls=find('.control-area'),observation=find('.observation');
  controls.querySelector('h3').textContent='ลงมือทดลอง';if(observation)observation.querySelector('h3').textContent='ผลจากการกดล่าสุด · คงอยู่เมื่อเปลี่ยนหัวข้อ';
  topic.append(find('#architecture'),controls,...(observation?[observation]:[]),find('#state-view'));
- if(kind==='logging-operations'){
-  const results=document.createElement('div');results.id='lesson-topic-results';observation.after(results);
- }
+
  const more=document.createElement('button');more.type='button';more.id='lesson-topic-settings';more.setAttribute('aria-expanded','false');controls.append(more);
  const navigation=document.createElement('nav');navigation.className='lesson-topic-nav';navigation.setAttribute('aria-label','หัวข้อการทดลอง');
  navigation.innerHTML='<button type="button" id="lesson-topic-back" aria-controls="lesson-topic">← ย้อนกลับ · Back</button><button type="button" id="lesson-topic-next" aria-controls="lesson-topic">ถัดไป · Next →</button>';
  topic.append(navigation);
- if(!['workload','stock','balance','replica','cache','cdn','stateless-web','data-centers','message-queue'].includes(kind)){
+ if(!['workload','stock','balance','replica','cache','cdn','stateless-web','data-centers','message-queue','logging-operations'].includes(kind)){
  const note=document.createElement('p');note.className='lesson-topic-note';note.textContent='ข้ามด้วย Next ได้ · ไม่เพิ่มคะแนนหรือทำให้เรียนจบ · สถานะเดิมยังอยู่ หากข้ามขั้น ให้ปรับเงื่อนไขหรือทำขั้นก่อนหน้าด้วยตนเอง';topic.append(note);
  const history=document.createElement('details');history.className='lesson-topic-history';history.innerHTML='<summary>บันทึกเหตุการณ์และข้อจำกัด</summary>';history.append(find('.event-area'));
  for(const p of steps.querySelectorAll('.lesson-step-note,.web-step-note'))history.append(p);
@@ -121,6 +113,16 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   const action=document.createElement('button');action.id='replication-run';action.type='button';action.dataset.replicationLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
   topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
   items.forEach((item,i)=>item.textContent=replicationTopics[i][2]);
+ }
+ if(kind==='logging-operations'){
+  setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
+  navigation.firstElementChild.after(heading);topic.prepend(navigation);
+  const retained=document.createElement('div');retained.className='logging-retained';
+  const action=document.createElement('button');action.id='logging-run';action.type='button';action.dataset.loggingLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
+  topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
+  steps.remove();
+  heading.textContent=loggingTopics[0][0];
+  onWorkloadTopic(0);return;
  }
  if(kind==='message-queue'){
   setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
@@ -178,7 +180,7 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   containers.forEach(node=>node.hidden=![...node.querySelectorAll('input,select,button')].some(el=>!el.hidden&&!el.closest('label')?.hidden));
   more.textContent=kind==='workload'?(expanded?'ซ่อนการตั้งค่าเพิ่มเติม':'ตั้งค่าเพิ่มเติม'):(expanded?'ซ่อนตัวตั้งค่าอื่น':'ปรับเงื่อนไขอื่น / เตรียมขั้นที่ข้าม');more.setAttribute('aria-expanded',String(expanded));
   find('#lesson-topic-back').disabled=index===0;find('#lesson-topic-next').disabled=index===topics.length-1;
-  if(['workload','stock','balance','replica','cache','cdn','stateless-web','data-centers','message-queue'].includes(kind))onWorkloadTopic(index);
+  if(['workload','stock','balance','replica','cache','cdn','stateless-web','data-centers','message-queue','logging-operations'].includes(kind))onWorkloadTopic(index);
   if(focus){heading.focus({preventScroll:true});topic.scrollIntoView({block:'start',behavior:'instant'});}
  }
  find('#lesson-topic-back').onclick=()=>{if(index>0){index--;expanded=false;show(true);}};

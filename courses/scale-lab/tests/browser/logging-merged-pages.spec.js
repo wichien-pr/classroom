@@ -1,0 +1,27 @@
+import {test,expect} from '@playwright/test';
+test('four phases stay on page two, pause holds, replay and navigation cancel the whole page',async({page})=>{
+ await page.goto('/');await page.locator('[data-lesson="11"]').click();
+ await page.locator('#lesson-topic-next').click();
+ await expect(page.locator('#lesson-topic-title')).toHaveText('2 / 3 · แก้ไข Code Version → Build → Test → Deploy');
+ await page.evaluate(()=>{window.phases=[];new MutationObserver(()=>{const key=document.querySelector('.logging-scene')?.dataset.stage;if(key&&window.phases.at(-1)!==key)window.phases.push(key);}).observe(document.querySelector('#architecture'),{childList:true,subtree:true});window.phases.push(document.querySelector('.logging-scene').dataset.stage);});
+ await expect(page.locator('.logging-progress')).toContainText('ช่วง 1 / 4');
+ await expect(page.locator('.logging-progress progress')).toHaveAttribute('max','4');
+ await page.locator('#logging-pause').click();await page.waitForTimeout(1800);
+ await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','fix');
+ await page.locator('#logging-pause').click();
+ await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','tested');
+ await expect(page.locator('.logging-transit')).toBeVisible();
+ await expect(page.locator('.logging-transit')).toHaveText('v.2');
+ await expect(page.locator('[data-stage=deploy]')).toHaveAttribute('data-status','waiting');
+ await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','deployed');
+ await expect(page.locator('.logging-transit')).toBeVisible();
+ await expect(page.locator('.logging-transit')).toHaveText('v.2');
+ await expect(page.locator('.logging-scene')).toHaveAttribute('data-playback','finished');
+ expect(await page.evaluate(()=>window.phases)).toEqual(['fix','build-fixed','tested','deployed']);
+ await page.waitForTimeout(1800);await expect(page.locator('#lesson-topic-title')).toContainText('2 / 3');
+ await page.locator('#logging-replay').click();await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','fix');
+ await page.locator('#lesson-topic-next').click();await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','logs');
+ await page.locator('#lesson-topic-back').click();await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','fix');
+ await page.locator('#lesson-topic-back').click();await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','blocked');
+ await page.waitForTimeout(10000);await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','blocked');
+});

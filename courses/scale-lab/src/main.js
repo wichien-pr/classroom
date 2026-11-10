@@ -44,6 +44,58 @@ function renderWebControls(){
  const replay=$('#web-replay');if(replay){replay.disabled=busy||blocked||!webFlow.completed;replay.onclick=()=>runWeb(true);}
  button.onclick=()=>runWeb();
 }
+import './logging-presentation.css';
+import {loggingScene,bindLoggingPlayback,stopLoggingPlayback} from './logging-presentation.js';
+import {createLoggingStory as createLoggingFlow,loggingStageFrames,loggingPages,storyStages} from './logging-story.js';
+const loggingSnapshots=loggingStageFrames();
+const loggingPreset=()=>loggingInitial();
+let loggingTopic=0,loggingResult=null,loggingPlay=false,loggingAnimation,loggingEpoch=0;
+const loggingFlow=createLoggingFlow({
+ show:frame=>{loggingResult=frame;loggingPlay=true;renderState();return loggingAnimation;},
+ record:async(action,retry)=>{
+  if(participation){
+   if(!retry)await participationOperation('record','logging-operations',action);
+   else if(participation.status==='save-error')await participationOperation('retry');
+   if(participation.status!=='saved')throw Error('บันทึกไม่ได้ · ลองบันทึกกิจกรรมอีกครั้งที่ส่วนสถานะ แล้วกดทดลองเพื่อทำต่อ');
+  }else{localEligibility.record('logging-operations',action);renderProgress();}
+ }
+});
+function cancelLoggingFlow(){loggingEpoch++;loggingFlow.cancel();stopLoggingPlayback();}
+function prepareLoggingTopic(){selectLoggingEvidence(0);}
+async function selectLoggingEvidence(index,play=false){
+  if(index<0||index>=loggingPages.length)return;
+  cancelLoggingFlow();loggingTopic=index;const epoch=loggingEpoch;
+  if(!play){loggingResult=null;loggingPlay=false;renderState();return;}
+  // Projection-only playback: all phases on this page, never the following page.
+  for(const stage of loggingPages[index].stages){
+   loggingResult=structuredClone(loggingSnapshots[stage]);loggingPlay=true;renderState();
+   await loggingAnimation;if(epoch!==loggingEpoch)return;
+  }
+ }
+function replayLoggingStage(){selectLoggingEvidence(loggingTopic,true);}
+async function runLogging(){
+ if(loggingFlow.busy||quizBlocked()||pendingLesson!==null)return;
+ loggingEpoch++;stopLoggingPlayback();
+ const epoch=loggingEpoch,focus=$('#logging-run');
+ try{const pending=loggingFlow.run(loggingTopic);renderLoggingControls();await pending;}
+ catch(error){if(epoch===loggingEpoch)$('#logging-result').textContent=error.message;}
+ finally{if(epoch===loggingEpoch){renderLoggingControls();if(focus?.isConnected&&!focus.disabled&&document.activeElement===document.body)focus.focus({preventScroll:true});}}
+}
+function renderLoggingControls(){
+ const button=$('#logging-run');if(!button)return;
+ const busy=loggingFlow.busy,blocked=quizBlocked()||pendingLesson!==null;button.disabled=busy||blocked;button.setAttribute('aria-busy',String(busy||participation?.status==='saving'));
+ setWorkloadIcon(button,participation?.status==='saving'?'saving':'play',participation?.status==='saving'?'กำลังบันทึก':busy?'กำลังทดลองขั้นนี้':['change','observe'].includes(storyStages[loggingPages[loggingTopic].stages[0]][0])?'เล่นภาพขั้นนี้ · ไม่บันทึกกิจกรรม':'ทดลองขั้นนี้ · บันทึกกิจกรรม');
+  const replay=$('#logging-replay');if(replay){replay.disabled=!loggingResult;replay.onclick=replayLoggingStage;}
+  const heading=$('#lesson-topic-title'),topic=$('#lesson-topic');
+  heading.textContent=`${loggingTopic+1} / ${loggingPages.length} · ${loggingPages[loggingTopic].title}`;
+  topic.dataset.topic=String(loggingTopic);
+  const back=$('#lesson-topic-back'),next=$('#lesson-topic-next');
+  back.disabled=loggingTopic===0;next.disabled=loggingTopic===loggingPages.length-1;
+  back.onclick=()=>selectLoggingEvidence(loggingTopic-1,true);
+  next.onclick=()=>selectLoggingEvidence(loggingTopic+1,true);
+ button.onclick=()=>runLogging();
+
+}
 import './queue-presentation.css';
 import {queueScene,bindQueuePlayback,stopQueuePlayback} from './queue-presentation.js';
 import {queuePreset,createQueueFlow} from './queue-flow.js';
@@ -306,6 +358,7 @@ case 'data-centers':return dataCentersControls();
 case 'region':return '<label>Region หลักติดต่อไม่ได้<select id="choice"><option value="dns">สลับ DNS แล้วเปิด writer ทันที</option><option value="fence">Fence writer เดิม ตรวจ lag แล้ว promote</option></select></label>'+button('decision','ทดลองการตัดสินใจ');
 }}
 function mount(){
+cancelLoggingFlow();
 stopFlowPlayback();stopWorkloadPlayback();stopScalingPlayback();stopBalancePlayback();cancelReplicationFlow();cancelCacheFlow();cancelCdnFlow();cancelWebFlow();cancelDcFlow();cancelQueueFlow();
 const l=lessons[selected-1];
 feedback=quizSelections.has(l.kind) ? (quizSelections.get(l.kind)===1?'ถูกต้อง — ':'ยังไม่ถูก — ')+l.why : '';
@@ -381,7 +434,7 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
   document.querySelector('.source-ref').textContent='Data centers · เส้นทางและข้อมูล';
  }
  mountLessonLayout($('#main'),l.kind);
- mountLessonTopics($('#main'),l.kind,l.kind==='message-queue'?prepareQueueTopic:l.kind==='data-centers'?prepareDcTopic:l.kind==='stateless-web'?prepareWebTopic:l.kind==='cdn'?prepareCdnTopic:l.kind==='cache'?prepareCacheTopic:l.kind==='replica'?prepareReplicationTopic:l.kind==='balance'?prepareBalanceTopic:l.kind==='stock'?prepareScalingTopic:prepareWorkloadTopic);
+ mountLessonTopics($('#main'),l.kind,l.kind==='logging-operations'?prepareLoggingTopic:l.kind==='message-queue'?prepareQueueTopic:l.kind==='data-centers'?prepareDcTopic:l.kind==='stateless-web'?prepareWebTopic:l.kind==='cdn'?prepareCdnTopic:l.kind==='cache'?prepareCacheTopic:l.kind==='replica'?prepareReplicationTopic:l.kind==='balance'?prepareBalanceTopic:l.kind==='stock'?prepareScalingTopic:prepareWorkloadTopic);
  document.querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>navigate(Number(b.dataset.lesson)));
  document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>act(b.dataset.action));
  document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>answer(Number(b.dataset.answer)));
@@ -398,7 +451,11 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
  $('#complete-lesson').onclick=()=>completeLesson(lessons[selected-1]);
 }
 function navigate(id){selected=id;state=initial();events=[];feedback='';message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';mount();$('#main').setAttribute('tabindex','-1');$('#main').focus({preventScroll:true});}
-function renderState(){const queueActions=$('.queue-retained'),queueFocus=queueActions?.contains(document.activeElement)?document.activeElement:null;const dcActions=$('.dc-retained'),dcFocus=dcActions?.contains(document.activeElement)?document.activeElement:null;const webActions=$('.web-retained'),webFocus=webActions?.contains(document.activeElement)?document.activeElement:null;const cdnActions=$('.cdn-retained'),cdnFocus=cdnActions?.contains(document.activeElement)?document.activeElement:null;const cacheActions=$('.cache-retained'),cacheFocus=cacheActions?.contains(document.activeElement)?document.activeElement:null;const replicationActions=$('.replication-retained'),replicationFocus=replicationActions?.contains(document.activeElement)?document.activeElement:null;const balanceAction=$('#route'),balanceFocused=balanceAction===document.activeElement;const flowActions=$('.flow-actions'),flowFocus=flowActions?.contains(document.activeElement)?document.activeElement:null;const scalingAction=$('#order'),scalingFocused=scalingAction===document.activeElement;const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?loggingDiagram(state.loggingLab):l.kind==='message-queue'?queueScene(queueResult?.state||state.queueLab,queueResult,queueTopic):l.kind==='data-centers'?dcScene(state.dataCenters,dcResult):l.kind==='stateless-web'?webScene(webResult?.state||state.webLab,webResult,webTopic):l.kind==='cdn'?cdnScene(cdnResult?.state||state.cdnLab,cdnResult):l.kind==='cache'?cacheScene(cacheResult?.state||state.cacheLab,cacheResult):l.kind==='replica'?replicationScene(replicationResult?.state||state.replication,replicationResult):l.kind==='balance'?balanceScene(state.balance,balanceResult):l.kind==='stock'?scalingScene(state.scaling,scalingResult):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?flowDiagram(state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+function renderState(){const loggingActions=$('.logging-retained'),loggingFocus=loggingActions?.contains(document.activeElement)?document.activeElement:null;const queueActions=$('.queue-retained'),queueFocus=queueActions?.contains(document.activeElement)?document.activeElement:null;const dcActions=$('.dc-retained'),dcFocus=dcActions?.contains(document.activeElement)?document.activeElement:null;const webActions=$('.web-retained'),webFocus=webActions?.contains(document.activeElement)?document.activeElement:null;const cdnActions=$('.cdn-retained'),cdnFocus=cdnActions?.contains(document.activeElement)?document.activeElement:null;const cacheActions=$('.cache-retained'),cacheFocus=cacheActions?.contains(document.activeElement)?document.activeElement:null;const replicationActions=$('.replication-retained'),replicationFocus=replicationActions?.contains(document.activeElement)?document.activeElement:null;const balanceAction=$('#route'),balanceFocused=balanceAction===document.activeElement;const flowActions=$('.flow-actions'),flowFocus=flowActions?.contains(document.activeElement)?document.activeElement:null;const scalingAction=$('#order'),scalingFocused=scalingAction===document.activeElement;const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?loggingScene(loggingResult?.state||state.loggingLab,loggingResult,loggingTopic):l.kind==='message-queue'?queueScene(queueResult?.state||state.queueLab,queueResult,queueTopic):l.kind==='data-centers'?dcScene(state.dataCenters,dcResult):l.kind==='stateless-web'?webScene(webResult?.state||state.webLab,webResult,webTopic):l.kind==='cdn'?cdnScene(cdnResult?.state||state.cdnLab,cdnResult):l.kind==='cache'?cacheScene(cacheResult?.state||state.cacheLab,cacheResult):l.kind==='replica'?replicationScene(replicationResult?.state||state.replication,replicationResult):l.kind==='balance'?balanceScene(state.balance,balanceResult):l.kind==='stock'?scalingScene(state.scaling,scalingResult):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?flowDiagram(state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+if(l.kind==='logging-operations'){
+ $('.logging-experiments').append(loggingActions);if(loggingFocus)loggingFocus.focus({preventScroll:true});
+ loggingAnimation=bindLoggingPlayback($('#main'),loggingPlay,loggingResult);loggingPlay=false;renderLoggingControls();return;
+}
 if(l.kind==='message-queue'){
  $('.queue-experiments').append(queueActions);if(queueFocus)queueFocus.focus({preventScroll:true});
  queueAnimation=bindQueuePlayback($('#main'),queuePlay,queueResult);queuePlay=false;renderQueueControls();return;
@@ -509,7 +566,7 @@ function renderParticipation(){
   if(balanceAction){const saving=participation?.status==='saving';setWorkloadIcon(balanceAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');balanceAction.setAttribute('aria-busy',String(saving));}
   const scalingAction=document.querySelector('#lesson-topic[data-kind=stock] #order');
   if(scalingAction){const saving=participation?.status==='saving';setWorkloadIcon(scalingAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');scalingAction.setAttribute('aria-busy',String(saving));}
-  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();renderQueueControls();
+  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();renderQueueControls();renderLoggingControls();
   renderProgress();
 }
 async function participationOperation(operation,...args){
@@ -544,7 +601,7 @@ function renderQuizControls(){
   });
 }
 function renderProgress(){
-  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();renderQueueControls();
+  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();renderQueueControls();renderLoggingControls();
   if(localEligibility && !localEligibility.storageOK)storageOK=false;
   if(account) progress=lessons.filter(l=>account.completed.includes(l.kind)).map(l=>l.id);
   const total=account && account.status!=='loading' && account.status!=='load-error' ? account.total : lessons.length;

@@ -1,0 +1,22 @@
+import {test,expect} from '@playwright/test';
+test('page three plays all five phases, holds pause, retains evidence and stops',async({page})=>{
+ await page.goto('/');await page.locator('[data-lesson="11"]').click();
+ await page.locator('#lesson-topic-next').click();await page.locator('#lesson-topic-next').click();
+ await page.evaluate(()=>{window.phases=['logs'];new MutationObserver(()=>{const k=document.querySelector('.logging-scene')?.dataset.stage;if(k&&window.phases.at(-1)!==k)window.phases.push(k);}).observe(document.querySelector('#architecture'),{childList:true,subtree:true});});
+ await expect(page.locator('#lesson-topic-title')).toContainText('3 / 3');
+ await expect(page.locator('.logging-progress')).toContainText('ช่วง 1 / 5');
+ await page.locator('#logging-pause').click();await page.waitForTimeout(1700);
+ await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','logs');
+ await page.locator('#logging-pause').click();
+ await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','observe');
+ await expect(page.locator('.logging-scene')).toHaveAttribute('data-playback','finished');
+ expect(await page.evaluate(()=>window.phases)).toEqual(['logs','host','tier','business','observe']);
+ await expect(page.locator('.logging-event')).toHaveCount(2);await expect(page.locator('.logging-metric-panel')).toHaveCount(3);
+ await expect(page.locator('.logging-progress')).toContainText('ช่วง 5 / 5');
+ await expect(page.locator('.logging-observe')).toBeVisible();await expect(page.locator('#lesson-topic-next')).toBeDisabled();
+ await page.waitForTimeout(1700);await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','observe');
+ await page.locator('#logging-replay').click();await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','logs');
+ await page.locator('#lesson-topic-back').click();await page.locator('#lesson-topic-next').click();await page.locator('#lesson-topic-back').click();
+ await expect(page.locator('.logging-scene')).toHaveAttribute('data-stage','deployed');await page.waitForTimeout(1700);
+ await expect(page.locator('#lesson-topic-title')).toContainText('2 / 3');
+});
