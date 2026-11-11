@@ -1,4 +1,6 @@
 import './database-scaling.css';
+import {mountTierPresentation} from './data-tier-presentation.js';
+let tierPresentation=null;
 import {dataTierInitial,evaluateDataTier} from './database-scaling.js';
 import {dataTierControls,dataTierDiagram,dataTierNotes,tierStatus} from './database-scaling-view.js';
 import './logging.css';
@@ -358,6 +360,7 @@ case 'data-centers':return dataCentersControls();
 case 'region':return '<label>Region หลักติดต่อไม่ได้<select id="choice"><option value="dns">สลับ DNS แล้วเปิด writer ทันที</option><option value="fence">Fence writer เดิม ตรวจ lag แล้ว promote</option></select></label>'+button('decision','ทดลองการตัดสินใจ');
 }}
 function mount(){
+tierPresentation?.dispose();tierPresentation=null;
 cancelLoggingFlow();
 stopFlowPlayback();stopWorkloadPlayback();stopScalingPlayback();stopBalancePlayback();cancelReplicationFlow();cancelCacheFlow();cancelCdnFlow();cancelWebFlow();cancelDcFlow();cancelQueueFlow();
 const l=lessons[selected-1];
@@ -434,7 +437,18 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
   document.querySelector('.source-ref').textContent='Data centers · เส้นทางและข้อมูล';
  }
  mountLessonLayout($('#main'),l.kind);
- mountLessonTopics($('#main'),l.kind,l.kind==='logging-operations'?prepareLoggingTopic:l.kind==='message-queue'?prepareQueueTopic:l.kind==='data-centers'?prepareDcTopic:l.kind==='stateless-web'?prepareWebTopic:l.kind==='cdn'?prepareCdnTopic:l.kind==='cache'?prepareCacheTopic:l.kind==='replica'?prepareReplicationTopic:l.kind==='balance'?prepareBalanceTopic:l.kind==='stock'?prepareScalingTopic:prepareWorkloadTopic);
+ if(l.kind==='database-scaling')tierPresentation=mountTierPresentation($('#main'),{
+  blocked:()=>quizBlocked()||pendingLesson!==null,
+  commit:frame=>{state.dataTier={config:structuredClone(frame.config),result:structuredClone(frame.result)};events.push(tierStatus(frame.result.status));},
+  record:async(action,retry)=>{
+   if(participation){
+    if(!retry)await participationOperation('record','database-scaling',action);
+    else if(participation.status==='save-error')await participationOperation('retry');
+    if(participation.status!=='saved')throw Error('บันทึกไม่ได้ · ลองบันทึกกิจกรรมอีกครั้ง แล้วกดทดลองเพื่อทำต่อ');
+   }else{localEligibility.record('database-scaling',action);renderProgress();}
+  }
+ });
+ else mountLessonTopics($('#main'),l.kind,l.kind==='logging-operations'?prepareLoggingTopic:l.kind==='message-queue'?prepareQueueTopic:l.kind==='data-centers'?prepareDcTopic:l.kind==='stateless-web'?prepareWebTopic:l.kind==='cdn'?prepareCdnTopic:l.kind==='cache'?prepareCacheTopic:l.kind==='replica'?prepareReplicationTopic:l.kind==='balance'?prepareBalanceTopic:l.kind==='stock'?prepareScalingTopic:prepareWorkloadTopic);
  document.querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>navigate(Number(b.dataset.lesson)));
  document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>act(b.dataset.action));
  document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>answer(Number(b.dataset.answer)));
@@ -451,7 +465,7 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
  $('#complete-lesson').onclick=()=>completeLesson(lessons[selected-1]);
 }
 function navigate(id){selected=id;state=initial();events=[];feedback='';message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';mount();$('#main').setAttribute('tabindex','-1');$('#main').focus({preventScroll:true});}
-function renderState(){const loggingActions=$('.logging-retained'),loggingFocus=loggingActions?.contains(document.activeElement)?document.activeElement:null;const queueActions=$('.queue-retained'),queueFocus=queueActions?.contains(document.activeElement)?document.activeElement:null;const dcActions=$('.dc-retained'),dcFocus=dcActions?.contains(document.activeElement)?document.activeElement:null;const webActions=$('.web-retained'),webFocus=webActions?.contains(document.activeElement)?document.activeElement:null;const cdnActions=$('.cdn-retained'),cdnFocus=cdnActions?.contains(document.activeElement)?document.activeElement:null;const cacheActions=$('.cache-retained'),cacheFocus=cacheActions?.contains(document.activeElement)?document.activeElement:null;const replicationActions=$('.replication-retained'),replicationFocus=replicationActions?.contains(document.activeElement)?document.activeElement:null;const balanceAction=$('#route'),balanceFocused=balanceAction===document.activeElement;const flowActions=$('.flow-actions'),flowFocus=flowActions?.contains(document.activeElement)?document.activeElement:null;const scalingAction=$('#order'),scalingFocused=scalingAction===document.activeElement;const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?loggingScene(loggingResult?.state||state.loggingLab,loggingResult,loggingTopic):l.kind==='message-queue'?queueScene(queueResult?.state||state.queueLab,queueResult,queueTopic):l.kind==='data-centers'?dcScene(state.dataCenters,dcResult):l.kind==='stateless-web'?webScene(webResult?.state||state.webLab,webResult,webTopic):l.kind==='cdn'?cdnScene(cdnResult?.state||state.cdnLab,cdnResult):l.kind==='cache'?cacheScene(cacheResult?.state||state.cacheLab,cacheResult):l.kind==='replica'?replicationScene(replicationResult?.state||state.replication,replicationResult):l.kind==='balance'?balanceScene(state.balance,balanceResult):l.kind==='stock'?scalingScene(state.scaling,scalingResult):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?flowDiagram(state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+function renderState(){if(lessons[selected-1].kind==='database-scaling'){tierPresentation?.update();return;}const loggingActions=$('.logging-retained'),loggingFocus=loggingActions?.contains(document.activeElement)?document.activeElement:null;const queueActions=$('.queue-retained'),queueFocus=queueActions?.contains(document.activeElement)?document.activeElement:null;const dcActions=$('.dc-retained'),dcFocus=dcActions?.contains(document.activeElement)?document.activeElement:null;const webActions=$('.web-retained'),webFocus=webActions?.contains(document.activeElement)?document.activeElement:null;const cdnActions=$('.cdn-retained'),cdnFocus=cdnActions?.contains(document.activeElement)?document.activeElement:null;const cacheActions=$('.cache-retained'),cacheFocus=cacheActions?.contains(document.activeElement)?document.activeElement:null;const replicationActions=$('.replication-retained'),replicationFocus=replicationActions?.contains(document.activeElement)?document.activeElement:null;const balanceAction=$('#route'),balanceFocused=balanceAction===document.activeElement;const flowActions=$('.flow-actions'),flowFocus=flowActions?.contains(document.activeElement)?document.activeElement:null;const scalingAction=$('#order'),scalingFocused=scalingAction===document.activeElement;const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?loggingScene(loggingResult?.state||state.loggingLab,loggingResult,loggingTopic):l.kind==='message-queue'?queueScene(queueResult?.state||state.queueLab,queueResult,queueTopic):l.kind==='data-centers'?dcScene(state.dataCenters,dcResult):l.kind==='stateless-web'?webScene(webResult?.state||state.webLab,webResult,webTopic):l.kind==='cdn'?cdnScene(cdnResult?.state||state.cdnLab,cdnResult):l.kind==='cache'?cacheScene(cacheResult?.state||state.cacheLab,cacheResult):l.kind==='replica'?replicationScene(replicationResult?.state||state.replication,replicationResult):l.kind==='balance'?balanceScene(state.balance,balanceResult):l.kind==='stock'?scalingScene(state.scaling,scalingResult):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?flowDiagram(state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
 if(l.kind==='logging-operations'){
  $('.logging-experiments').append(loggingActions);if(loggingFocus)loggingFocus.focus({preventScroll:true});
  loggingAnimation=bindLoggingPlayback($('#main'),loggingPlay,loggingResult);loggingPlay=false;renderLoggingControls();return;
@@ -566,7 +580,7 @@ function renderParticipation(){
   if(balanceAction){const saving=participation?.status==='saving';setWorkloadIcon(balanceAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');balanceAction.setAttribute('aria-busy',String(saving));}
   const scalingAction=document.querySelector('#lesson-topic[data-kind=stock] #order');
   if(scalingAction){const saving=participation?.status==='saving';setWorkloadIcon(scalingAction,saving?'saving':'play',saving?'กำลังบันทึก':'ทดลอง');scalingAction.setAttribute('aria-busy',String(saving));}
-  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();renderQueueControls();renderLoggingControls();
+  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();renderQueueControls();renderLoggingControls();tierPresentation?.update();
   renderProgress();
 }
 async function participationOperation(operation,...args){
@@ -601,7 +615,7 @@ function renderQuizControls(){
   });
 }
 function renderProgress(){
-  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();renderQueueControls();renderLoggingControls();
+  renderReplicationControls();renderCacheControls();renderCdnControls();renderWebControls();renderDcControls();renderQueueControls();renderLoggingControls();tierPresentation?.update();
   if(localEligibility && !localEligibility.storageOK)storageOK=false;
   if(account) progress=lessons.filter(l=>account.completed.includes(l.kind)).map(l=>l.id);
   const total=account && account.status!=='loading' && account.status!=='load-error' ? account.total : lessons.length;

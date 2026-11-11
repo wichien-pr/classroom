@@ -1,0 +1,40 @@
+#main.database-scaling-lesson #lesson-topic{padding:20px;--wl-accent:var(--topic-blue)}
+#main.database-scaling-lesson #lesson-topic .lesson-topic-nav{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--topic-line)}
+#main.database-scaling-lesson #lesson-topic-title{font-size:22px;line-height:1.6;text-align:center;margin:0;color:var(--topic-ink)}
+#main.database-scaling-lesson #lesson-topic .lesson-topic-nav button{display:flex;align-items:center;justify-content:center;width:48px;height:48px;min-height:48px;padding:0;color:var(--topic-blue);border:1px solid var(--topic-blue);border-radius:10px;background:transparent}
+#main.database-scaling-lesson #lesson-topic .lesson-topic-nav #lesson-topic-next{background:var(--topic-blue);color:#fff}
+#main.database-scaling-lesson #lesson-topic .lesson-topic-nav button:disabled{background:transparent!important;border:2px dashed var(--topic-line);color:var(--topic-muted)!important;opacity:1}
+#main.database-scaling-lesson #architecture{padding:0;min-height:0;background:none;display:block}
+.tier-scene{margin:16px 0 0;padding:18px;background:var(--topic-surface);border:1px solid var(--topic-line);border-radius:14px;color:var(--topic-ink)}
+html:not([data-theme=dark]):not([data-classroom-theme=dark]) .tier-scene{background:#f3f7fa}
+.tier-scene p,.tier-scene span,.tier-scene strong{color:inherit;font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.tier-scene h4{color:inherit;font-size:18px;margin:0 0 6px;line-height:1.6}
+.tier-scene p{margin:0 0 10px}.tier-premise{font-weight:650}.tier-scene .tier-routing,.tier-scene .tier-phase{font-size:16px}
+.tier-map{display:grid;gap:16px;margin:16px 0}.tier-lane{display:grid;grid-template-columns:90px 100px minmax(0,1fr);align-items:center;min-width:0}
+.tier-source{display:flex;flex-direction:column;gap:6px;padding:6px;border-left:3px solid var(--topic-line);min-width:0}.tier-source span{font-size:14px}
+.tier-route{height:54px;position:relative;min-width:0}.tier-route svg{position:absolute;width:100%;height:100%;inset:0}.tier-route path{fill:none;stroke:var(--topic-muted);stroke-width:2;stroke-dasharray:0 7;stroke-linecap:round}
+.tier-scene .tier-token{position:absolute;left:0;top:0;offset-position:0px 0px;offset-anchor:50% 50%;offset-rotate:0deg;white-space:nowrap;padding:3px 5px;background:#087bc1;color:white;border:1px solid #087bc1;border-radius:5px;font-size:14px;line-height:1.5;z-index:1}
+.tier-token[hidden],.tier-excess[hidden]{display:none}
+.tier-scene .tier-concentration{border-left:4px solid var(--topic-blue);padding:6px 10px;font-weight:700}
+.tier-demand{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:3px;padding:5px;border:1px solid var(--topic-line);border-radius:5px}
+.tier-demand i{height:12px;background:var(--topic-blue);border:1px solid var(--topic-blue);border-radius:2px}
+.tier-demand i[data-excess=true]{background:transparent;border:2px solid #b42332}
+[data-theme=dark] .tier-demand i[data-excess=true],[data-classroom-theme=dark] .tier-demand i[data-excess=true]{border-color:#ff8e98}
+.tier-scene .tier-resource-label{font-size:14px;margin:8px 0 4px}
+.tier-bridge{border-left:4px solid var(--topic-blue);padding:8px 12px;margin-top:12px}
+.tier-bridge p{margin:4px 0}.tier-scene .tier-bridge span{font-size:14px}
+.tier-node{padding:10px;border:1px solid var(--topic-line);border-radius:10px;background:var(--topic-surface);min-width:0}
+.tier-node[data-target=true]{box-shadow:inset 4px 0 var(--topic-blue)}
+.tier-node[data-down=true]{border:3px solid #b42332;padding:8px;color:#b42332;box-shadow:none}
+[data-theme=dark] .tier-node[data-down=true],[data-classroom-theme=dark] .tier-node[data-down=true]{color:#ff8e98;border-color:#ff8e98}
+.tier-rows{display:flex;flex-wrap:wrap;gap:4px}.tier-scene .tier-row{display:inline-flex;justify-content:center;min-width:25px;padding:0 3px;border:1px solid var(--topic-line);border-radius:4px;font-size:14px;background:var(--topic-surface);color:var(--topic-ink)}
+.tier-scene .tier-row-count{font-size:14px;margin:4px 0 8px}.tier-capacity{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:3px;padding:5px;border:1px solid var(--topic-line);border-radius:5px}
+.tier-capacity i{height:12px;background:var(--topic-surface);border:1px solid var(--topic-line);border-radius:2px}.tier-capacity i[data-filled=true]{background:var(--topic-blue);border-color:var(--topic-blue)}
+.tier-scene .tier-load{font-size:16px;font-weight:650;margin:6px 0 0}.tier-excess{margin-top:6px;padding:4px 6px;border:2px solid #b42332;color:#b42332;font-size:16px;font-weight:650;border-radius:5px}
+[data-theme=dark] .tier-excess,[data-classroom-theme=dark] .tier-excess{color:#ff8e98;border-color:#ff8e98}
+.tier-migration{border-top:1px solid var(--topic-line);padding-top:14px}.tier-original{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.tier-moves{display:flex;flex-wrap:wrap;gap:8px}.tier-moves span{border:1px dashed var(--topic-line);padding:4px 8px;border-radius:4px}
+.tier-toolbar{border-top:1px solid var(--topic-line);padding-top:16px;margin-top:16px;display:flex;align-items:center;flex-wrap:wrap;gap:12px}.tier-controls{display:flex;gap:8px}.tier-controls button{min-width:48px;min-height:48px;background:var(--topic-surface);color:var(--topic-ink);border:1px solid var(--topic-line)}
+.tier-controls #tier-run{background:#176652;color:white;border-color:#176652}.tier-controls button:focus-visible,#main.database-scaling-lesson button:focus-visible{outline:3px solid var(--topic-blue);outline-offset:3px}
+.tier-scene #tier-result{flex:1 1 260px;font-size:17px;margin:0;line-height:1.7}.tier-scene figcaption{font-size:14px;line-height:1.7;margin-top:12px;color:var(--topic-muted)}
+@media(min-width:1200px){.tier-map:has(.tier-lane:nth-child(2)){grid-template-columns:repeat(2,minmax(0,1fr))}.tier-map:has(.tier-lane:nth-child(2)) .tier-lane{grid-template-columns:64px 72px minmax(0,1fr)}}
+@media(max-width:650px){#main.database-scaling-lesson #lesson-topic{padding:12px}#main.database-scaling-lesson #lesson-topic .lesson-topic-nav{gap:8px}#main.database-scaling-lesson #lesson-topic-title{font-size:18px}.tier-scene{padding:10px}.tier-lane{grid-template-columns:52px 62px minmax(0,1fr)}.tier-node{padding:7px}.tier-node[data-down=true]{padding:5px}.tier-original{grid-template-columns:1fr}.tier-source{padding:3px}.tier-capacity{gap:2px;padding:3px}.tier-scene .tier-token{font-size:14px;padding:2px 3px}.tier-scene h4{font-size:16px}}
