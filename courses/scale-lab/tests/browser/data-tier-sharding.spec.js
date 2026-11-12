@@ -6,7 +6,7 @@ for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`part
  await page.evaluate(t=>{document.documentElement.dataset.theme=t;document.documentElement.dataset.classroomTheme=t},theme);
  await page.locator('[data-lesson="12"]').click();await page.locator('#lesson-topic-next').click();
  await expect(page.locator('.tier-sharding')).toHaveCount(1);
- await expect(page.locator('#lesson-topic-title')).toHaveText('2 / 3 · Sharding · แบ่งข้อมูล กระจายภาระงาน');
+ await expect(page.locator('#lesson-topic-title')).toHaveText('2 / 2 · Sharding · แบ่งข้อมูล กระจายภาระงาน');
  for(let phase=0;phase<1;phase++){
   await expect(page.locator('.tier-phase')).toHaveText(`แบ่งข้อมูล → แบ่งภาระต่อเครื่อง`);
   await expect(page.locator('.tier-scene')).toHaveAttribute('data-phase','placement');
@@ -29,9 +29,8 @@ for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`part
  }
  await expect(page.locator('.tier-scene')).toHaveAttribute('data-playback','finished');
  await page.locator('#tier-replay').click();await expect(page.locator('.tier-scene')).toHaveAttribute('data-phase','placement');
- await page.locator('#lesson-topic-next').click();await expect(page.locator('#lesson-topic-title')).toContainText('3 / 3');await expect(page.locator('.tier-move-count')).toContainText('8 / 16');
- await page.waitForTimeout(1800);await expect(page.locator('.tier-sharding')).toHaveCount(0);
- await page.locator('#lesson-topic-back').click();await page.locator('#reset').click();await expect(page.locator('.tier-comparison')).toHaveCount(3);await expect(page.locator('.tier-bridge')).toHaveCount(0);
+ await expect(page.locator('#lesson-topic-next')).toBeDisabled();await expect(page.locator('#lesson-topic')).not.toContainText('Resharding');await expect(page.locator('.tier-migration, .tier-move-count, #tier-shards')).toHaveCount(0);
+ await page.locator('#lesson-topic-back').click();await expect(page.locator('#lesson-topic-title')).toContainText('1 / 2');await expect(page.locator('#lesson-topic-back')).toBeDisabled();await expect(page.locator('#lesson-topic-next')).toBeEnabled();await page.locator('#reset').click();await expect(page.locator('#lesson-topic-title')).toContainText('1 / 2');await expect(page.locator('#lesson-topic-back')).toBeDisabled();await expect(page.locator('.tier-comparison')).toHaveCount(3);await expect(page.locator('.tier-bridge')).toHaveCount(0);
 });
 test('explicit experiment advances real per-shard load; pause, replay and navigation never add evaluations',async({page})=>{
  await page.goto('/');await page.locator('[data-lesson="12"]').click();await page.locator('#lesson-topic-next').click();
@@ -41,9 +40,9 @@ test('explicit experiment advances real per-shard load; pause, replay and naviga
  await page.waitForTimeout(250);expect(await page.locator('.tier-load').allTextContents()).toEqual(counts);
  const geometry=await page.locator('.tier-token:not([hidden])').evaluateAll(es=>es.map(e=>{const b=e.getBoundingClientRect(),g=e.parentElement.getBoundingClientRect();return b.left>=g.left-1&&b.right<=g.right+1;}));expect(geometry).toEqual(Array(4).fill(true));
  await page.locator('#tier-pause').click();await expect(page.locator('.tier-load').first()).toHaveText('ภาระ 2 / 8');
- await page.locator('#lesson-topic-next').click();await expect(page.locator('#lesson-topic-title')).toContainText('3 / 3');
+ await page.locator('#lesson-topic-back').click();await expect(page.locator('#lesson-topic-title')).toContainText('1 / 2');
  await page.locator('[data-answer="0"]').click();await expect(page.locator('#complete-lesson')).toBeDisabled();
- await page.waitForTimeout(7000);await expect(page.locator('#lesson-topic-title')).toContainText('3 / 3');await expect(page.locator('#complete-lesson')).toBeDisabled();
+ await page.waitForTimeout(7000);await expect(page.locator('#lesson-topic-title')).toContainText('1 / 2');await expect(page.locator('#complete-lesson')).toBeDisabled();
 });
 test('explicit run, reduced-motion replay and navigation retain completion gates',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/');await page.locator('[data-lesson="12"]').click();await page.locator('#lesson-topic-next').click();await page.locator('#tier-replay').click();await expect(page.locator('.tier-scene')).toHaveAttribute('data-playback','finished');

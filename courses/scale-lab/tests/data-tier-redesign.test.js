@@ -16,7 +16,7 @@ test('three comparison graphics retain shared bar scale without routing prose',(
 });
 test('page one has a dedicated visual story, not the routing dashboard',()=>{
  const source=readFileSync(new URL('../src/data-tier-presentation.js',import.meta.url),'utf8');
- assert.match(source,/if\(single\)return singleTierScene\(frame\)/);
+ assert.match(source,/if\(frame.index===0\)return singleTierScene\(frame\)/);
  const view=readFileSync(new URL('../src/data-tier-single.js',import.meta.url),'utf8');
  assert.match(view,/tier-single/);assert.match(view,/r\.capacity/);assert.match(view,/r\.total/);
  assert.doesNotMatch(view,/tier-shard-preview/);assert.doesNotMatch(view,/tier-routing/);

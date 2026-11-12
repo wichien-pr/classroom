@@ -44,8 +44,8 @@ for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`simu
   await page.locator('#tier-pause').click();await expect(page.locator('.tier-scene')).toHaveAttribute('data-playback','finished',{timeout:15000});await expect(page.locator('#tier-run')).toBeEnabled();await expect(page.locator('.tier-comparison')).toHaveCount(3);
  }
  await page.locator('#tier-replay').click();await page.locator('#reset').click();await expect(page.locator('.tier-scene')).toHaveAttribute('data-playback','idle');await page.waitForTimeout(1800);await expect(page.locator('.tier-scene')).toHaveAttribute('data-playback','idle');
- await page.locator('#tier-replay').click();await page.locator('#lesson-topic-next').click();await expect(page.locator('.tier-comparison')).toHaveCount(0);await expect(page.locator('#lesson-topic-title')).toContainText('2 / 3');
+ await page.locator('#tier-replay').click();await page.locator('#lesson-topic-next').click();await expect(page.locator('.tier-comparison')).toHaveCount(0);await expect(page.locator('#lesson-topic-title')).toContainText('2 / 2');
  await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#tier-replay').click();await expect(page.locator('.tier-scene')).toHaveAttribute('data-playback','finished');expect(await page.locator('.tier-load').allTextContents()).toEqual(['ภาระ 4 / 8','ภาระ 4 / 8','ภาระ 4 / 8','ภาระ 4 / 8']);
- await page.locator('#lesson-topic-next').click();await expect(page.locator('.tier-move-count')).toHaveText('เปลี่ยนปลายทางในแผน 8 / 16 แถว');await expect(page.locator('#lesson-topic-next')).toBeDisabled();
+ await expect(page.locator('.tier-migration, .tier-move-count')).toHaveCount(0);await expect(page.locator('#lesson-topic-next')).toBeDisabled();
  await page.locator('#reset').click();await page.locator('#tier-replay').click();await expect(page.locator('.tier-scene')).toHaveAttribute('data-playback','finished');expect(await page.locator('.tier-token:not([hidden])').count()).toBe(0);expect(errors).toEqual([]);
 });

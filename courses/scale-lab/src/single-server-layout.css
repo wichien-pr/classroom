@@ -90,7 +90,7 @@
 /* LAB01 thinking choices/explanation only; glossary controls inherit this type. */
 .flow-lesson .answers button{font-size:16px;line-height:1.6;margin:0;min-width:0;overflow-wrap:anywhere}
 .flow-lesson .answers button > span{font-size:12px;line-height:1.6;flex:none}
-.flow-lesson .quiz #feedback{font-size:16px;line-height:1.6;overflow-wrap:anywhere}
+.flow-lesson .quiz #feedback{font-size:14px;line-height:1.6;overflow-wrap:anywhere}
 .flow-lesson #flow-details{border:1px solid #d9ded5;border-radius:10px;background:#f8faf6;padding:14px 20px}
 .flow-lesson summary{cursor:pointer;min-height:44px;align-content:center;font-weight:600}
 .flow-lesson #flow-details p{max-width:85ch;font-size:14px;line-height:1.9}.flow-score-help small{display:block;padding:10px 0}

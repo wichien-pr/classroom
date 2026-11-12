@@ -19,10 +19,10 @@ try{
  const read=()=>page.evaluate(async()=>({participation:await fetch('/api/courses/scale-lab/participation').then(r=>r.json()),progress:await fetch('/api/courses/scale-lab/progress').then(r=>r.json())}));
  const select=async index=>{await page.locator('#reset').click();for(let i=0;i<index;i++)await page.locator('#lesson-topic-next').click();};
  const play=async()=>{await page.locator('#tier-run').click();await expect(page.locator('#tier-run')).toBeEnabled({timeout:15000});};
- for(let i=0;i<2;i++)await page.locator('#lesson-topic-next').click();for(let i=0;i<2;i++)await page.locator('#lesson-topic-back').click();await page.locator('#tier-replay').click();
+ for(let i=0;i<1;i++)await page.locator('#lesson-topic-next').click();for(let i=0;i<1;i++)await page.locator('#lesson-topic-back').click();await page.locator('#tier-replay').click();
  expect(posts).toHaveLength(0);let saved=await read();expect(saved.participation.score).toBe(0);expect(saved.progress.criteria['database-scaling']).toEqual({manual:false,simulation:false,thinking:false});
  const coverage=[];
- for(const index of [2,0,1]){
+ for(const index of [0,1]){
   await select(index);const before=posts.length;await play();expect(posts.slice(before).map(p=>p.action)).toEqual(Array(index===0?3:1).fill('evaluate-data-tier'));
   const after=posts.length;await page.locator('#tier-replay').click();await expect(page.locator('.tier-scene')).toHaveAttribute('data-playback','finished');expect(posts.length).toBe(after);coverage.push(index+1);
  }
@@ -36,11 +36,11 @@ try{
  // Cancel the single balanced page during its save boundary.
  await select(1);let release,arrived,handled;const held=new Promise(r=>release=r),ready=new Promise(r=>arrived=r),handledPromise=new Promise(r=>handled=r);
  await page.route('**/api/courses/scale-lab/participation',async route=>{if(route.request().method()==='POST'){arrived();await held;}await route.continue();handled();});
- const before=posts.length;await page.locator('#tier-run').click();await ready;await page.locator('#lesson-topic-next').click();release();await handledPromise;await expect(page.locator('#tier-run')).toBeEnabled();await page.waitForTimeout(200);expect(posts.length).toBe(before+1);await expect(page.locator('#lesson-topic-title')).toContainText('3 / 3');await page.unroute('**/api/courses/scale-lab/participation');
+ const before=posts.length;await page.locator('#tier-run').click();await ready;await page.locator('#lesson-topic-back').click();release();await handledPromise;await expect(page.locator('#tier-run')).toBeEnabled();await page.waitForTimeout(200);expect(posts.length).toBe(before+1);await expect(page.locator('#lesson-topic-title')).toContainText('1 / 2');await page.unroute('**/api/courses/scale-lab/participation');
  // Lost response after real commit: exact payload/UUID survives reset and cannot resume canceled page.
  await select(1);let lose=true;
  await page.route('**/api/courses/scale-lab/participation',async route=>{if(route.request().method()==='POST'&&lose){lose=false;await route.fetch();await route.abort();}else await route.continue();});
- await page.locator('#tier-run').click();await expect(page.locator('#retry-participation')).toBeVisible();const failed=posts.at(-1);await page.locator('#lesson-topic-next').click();await page.locator('#reset').click();const count=posts.length;
+ await page.locator('#tier-run').click();await expect(page.locator('#retry-participation')).toBeVisible();const failed=posts.at(-1);await page.locator('#lesson-topic-back').click();await page.locator('#reset').click();const count=posts.length;
  await page.locator('#retry-participation').click();await expect(page.locator('#tier-run')).toBeEnabled();expect(posts.length).toBe(count+1);expect(posts.at(-1)).toEqual(failed);await expect(page.locator('.tier-scene')).toHaveAttribute('data-playback','idle');await page.unroute('**/api/courses/scale-lab/participation');
  // Same-page exact retry, then continue remaining original evaluations only on explicit run.
  await select(1);lose=true;await page.route('**/api/courses/scale-lab/participation',async route=>{if(route.request().method()==='POST'&&lose){lose=false;await route.fetch();await route.abort();}else await route.continue();});
@@ -48,5 +48,5 @@ try{
  await expect(page.locator('#complete-lesson')).toBeDisabled();await page.locator('[data-answer="0"]').click();await expect(page.locator('#complete-lesson')).toBeEnabled();saved=await read();expect(saved.progress.completed).toEqual([]);expect(saved.progress.criteria['database-scaling']).toEqual({manual:false,simulation:true,thinking:true});
  await page.locator('#complete-lesson').click();await expect(page.locator('#complete-lesson')).toBeDisabled();saved=await read();expect(saved.progress.completed).toEqual(['database-scaling']);
  await page.reload();await page.locator('[data-lesson="12"]').click();await expect(page.locator('#tier-run')).toBeEnabled();await play();saved=await read();expect(saved.participation.score).toBe(2);expect(saved.progress.completed).toEqual(['database-scaling']);expect(errors).toEqual([]);
- const report={realBackend:true,syntheticAccount:true,guidedEvaluations:5,pageEvaluationCounts:[3,1,1],coverage,navigationReplayPosts:0,originalIdentity:'database-scaling / database-scaling / evaluate-data-tier',semanticSimulationAwards:1,scoreAfterWrongAnswer:2,completed:saved.progress.completed,heldSaveCancellation:true,exactUUIDRetryAfterReset:true,samePageRetry:true,manualCompletionOnly:true,reloadDedup:true,errors};await writeFile(out+'/account-report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+ const report={realBackend:true,syntheticAccount:true,guidedEvaluations:4,pageEvaluationCounts:[3,1],coverage,navigationReplayPosts:0,originalIdentity:'database-scaling / database-scaling / evaluate-data-tier',semanticSimulationAwards:1,scoreAfterWrongAnswer:2,completed:saved.progress.completed,heldSaveCancellation:true,exactUUIDRetryAfterReset:true,samePageRetry:true,manualCompletionOnly:true,reloadDedup:true,errors};await writeFile(out+'/account-report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
 }finally{if(browser)await browser.close();server.kill('SIGTERM');await new Promise(resolve=>server.exitCode!==null?resolve():server.once('exit',resolve));}

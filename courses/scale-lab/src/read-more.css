@@ -1,0 +1,6 @@
+/* Only the three mounted อ่านเพิ่มเติม disclosures, including their nested
+   notes and inline glossary buttons. Keep semantic heading weight/spacing. */
+:is(#flow-details, #lesson-details, #web-details),
+:is(#flow-details, #lesson-details, #web-details) * {
+  font-size: 14px;
+}

@@ -1,5 +1,4 @@
 import {tierPages,tierFrames,createTierFlow} from './data-tier-flow.js';
-import {tierStatus} from './database-scaling-view.js';
 import {setWorkloadIcon} from './workload-view.js';
 import './data-tier-presentation.css';
 import {singleTierScene} from './data-tier-single.js';
@@ -7,18 +6,10 @@ import './data-tier-single.css';
 import {shardingScene,shardSteps} from './data-tier-sharding.js';
 import './data-tier-sharding.css';
 
-const chips=ids=>ids.map(id=>`<span class="tier-row">${id}</span>`).join('')||'—';
 export function tierScene(frame){
- const {config:c,result:r,index,phase}=frame,page=tierPages[index];
- const requests=c.traffic==='hotspot'?[...Array(13).fill(4),0,1,2]:Array.from({length:16},(_,i)=>i);
- const single=index===0;
- if(single)return singleTierScene(frame);
- if(index===1)return shardingScene(frame);
- const route=id=>c.mode==='vertical'?0:c.key==='country'?0:id%c.shards;
- return `<figure class="tier-scene" data-playback="idle" data-phase="ready" aria-label="Database capacity และแผน routing"><p class="tier-premise">${frame.situation}</p>${single?`<p class="tier-concentration">${r.rows.flat().length} แถว · ${r.total} คำขอ → Database เดียว</p>`:''}<p class="tier-phase">${page.configs.length>1?`ช่วง ${phase+1} / ${page.configs.length} · `:''}${frame.caption} · ${c.up?'เครื่องพร้อม':'เครื่องไม่พร้อม · ไม่มี failover'} · กำลัง ${r.capacity} หน่วย / เครื่อง</p><p class="tier-routing">${c.mode==='vertical'?'user 7 → Database':`${c.key==='user'?'user 7':'key 0'} % ${c.shards} → Shard ${r.target}`} · เป็นสูตรเลือกปลายทาง ไม่ยืนยันว่ามีข้อมูล</p><div class="tier-map">${r.rows.map((ids,i)=>{
- const keys=[...new Set(requests.filter(id=>route(id)===i))];
- return `<div class="tier-lane" data-shard="${i}"><div class="tier-source"><strong>คำขอ</strong><span>${keys.length>4?`u${keys[0]}–u${keys.at(-1)}`:keys.length?keys.map(id=>`u${id}${requests.filter(x=>x===id).length>1?' ×'+requests.filter(x=>x===id).length:''}`).join(' · '):'ไม่มี'}</span></div><div class="tier-route" aria-hidden="true"><svg><path/></svg><span class="tier-token" hidden title="${keys.map(id=>'user '+id).join(', ')}">u${keys[0]??'—'}${keys.length>1?'…':''}<br>${r.loads[i]} req</span></div><section class="tier-node" data-down="${!c.up}" data-target="${i===r.target}"><h4>${c.mode==='vertical'?'Database':'Shard '+i}</h4><div class="tier-rows" aria-label="แถวในแผน">${chips(ids)}</div><p class="tier-row-count">${ids.length} ${single?'แถวรวมที่เครื่องนี้':'แถวในแผน'}</p>${single?`<p class="tier-resource-label">ภาระที่ส่งมา ${r.loads[i]} หน่วย</p><div class="tier-demand" aria-label="ภาระ ${r.loads[i]} หน่วย">${Array.from({length:r.loads[i]},(_,j)=>`<i data-demand="${j}"></i>`).join('')}</div><p class="tier-resource-label">กำลังเครื่อง ${r.capacity} หน่วย · ${c.up?'พร้อม':'ไม่พร้อม'}</p>`:''}<div class="tier-capacity" aria-label="กำลัง ${r.capacity} หน่วย">${Array.from({length:r.capacity},(_,j)=>`<i data-unit="${j}"></i>`).join('')}</div><p class="tier-load" data-load="${r.loads[i]}">ภาระ — / ${r.capacity}</p><div class="tier-excess" hidden>เกินกำลัง ${Math.max(0,r.loads[i]-r.capacity)} หน่วย</div>${!c.up?'<strong class="tier-unavailable">ไม่พร้อม · ไม่ส่งคำขอสำเร็จ</strong>':''}</section></div>`;
- }).join('')}</div>${frame.sourceTopic===5?`<section class="tier-migration"><h4>ข้อมูลเดิมยังอยู่ที่ % 4 · ไม่ได้เคลื่อนย้าย</h4><div class="tier-original">${Array.from({length:4},(_,i)=>`<p>Shard ${i}: ${chips(Array.from({length:16},(_,id)=>id).filter(id=>id%4===i))}</p>`).join('')}</div><p class="tier-move-count">เปลี่ยนปลายทางในแผน ${r.moves.length} / 16 แถว</p><div class="tier-moves">${r.moves.map(m=>`<span>u${m.id}: ${m.from} → ${m.to}</span>`).join('')}</div></section>`:''}${single?'<aside class="tier-bridge"><strong>ทำไมต้อง Sharding?</strong><p>Scale Up ยังมีเพดานฮาร์ดแวร์และค่าใช้จ่าย → แบ่งข้อมูลและภาระงานไปหลายเครื่อง</p><span>หน้าถัดไป: แบ่งด้วย user_id ไม่ใช่สำเนาสำรอง · เพดานและราคาไม่ได้คำนวณในแบบจำลอง</span></aside>':''}<div class="tier-toolbar"><div class="tier-actions"></div><p id="tier-result" role="status">ยังไม่ได้ทดลอง · ภาพแสดงเงื่อนไข</p></div><figcaption>16 คำขอ / รอบ · 1 คำขอใช้กำลัง 1 หน่วย · กำลัง = 8 × ตัวคูณ เป็นสมมติฐาน ไม่ใช่ benchmark, latency, migration หรือการรับประกัน availability</figcaption></figure>`;
+ if(frame.index===0)return singleTierScene(frame);
+ if(frame.index===1)return shardingScene(frame);
+ throw Error('Unknown database page');
 }
 
 export function mountTierPresentation(main,{record,blocked,commit}){
@@ -121,36 +112,7 @@ export function mountTierPresentation(main,{record,blocked,commit}){
  async function show(frame,play){
   if(frame.index===1)return showSharding(frame,play);
   if(frame.index===0)return showComparison(frame,play);
-  render(frame);const epoch=generation,scene=find('.tier-scene'),r=frame.result,c=frame.config;
-  if(!play)return;
-  scene.dataset.playback='running';pause.disabled=false;
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const settle=()=>{scene.querySelectorAll('.tier-node').forEach((node,i)=>{
-   if(frame.index!==0)node.querySelector('.tier-load').textContent=`ภาระ ${r.loads[i]} / ${r.capacity}`;
-   node.querySelectorAll('[data-unit]').forEach((unit,j)=>unit.dataset.filled=String(j<Math.min(r.loads[i],r.capacity)));
-   node.querySelectorAll('[data-demand]').forEach((unit,j)=>unit.dataset.excess=String(c.up&&j>=r.capacity));
-   node.querySelector('.tier-excess').hidden=r.loads[i]<=r.capacity;
-  });scene.querySelectorAll('.tier-token').forEach(t=>t.hidden=true);
-  find('#tier-result').textContent=frame.index===0?(c.up?(r.total>r.capacity?`งาน ${r.total} > กำลัง ${r.capacity} · เครื่องเดียวรับไม่ไหว`:`งานเท่าเดิม · เพิ่มกำลังเป็น ${r.capacity} แล้วรับไหว`):'เครื่องไม่พร้อม · ต้องออกแบบ replication และ failover แยกต่างหาก'):`${tierStatus(r.status)} · ${frame.takeaway}`;};
-  if(!reduced&&c.up){
-   const specs=[];scene.dataset.phase='routing';
-   for(const lane of scene.querySelectorAll('.tier-lane')){
-    const i=Number(lane.dataset.shard);if(!r.loads[i])continue;
-    const gap=lane.querySelector('.tier-route'),token=lane.querySelector('.tier-token'),svg=gap.querySelector('svg');token.hidden=false;
-    const box=gap.getBoundingClientRect(),t=token.getBoundingClientRect(),vertical=frame.index===0&&getComputedStyle(lane).gridTemplateColumns.split(' ').length===1;
-    const d=vertical?`M ${box.width/2} ${t.height/2} L ${box.width/2} ${box.height-t.height/2}`:`M ${t.width/2} ${box.height/2} L ${box.width-t.width/2} ${box.height/2}`;
-    svg.setAttribute('viewBox',`0 0 ${box.width} ${box.height}`);svg.querySelector('path').setAttribute('d',d);token.style.offsetPath=`path('${d}')`;
-    specs.push([token,[{offsetDistance:'0%'},{offsetDistance:'100%'}]]);
-   }
-   if(!await wait(specs,1500)||epoch!==generation)return;
-  }
-  settle();scene.dataset.phase=c.up?'capacity':'unavailable';
-  if(!reduced){
-   const specs=[...scene.querySelectorAll(c.up?'.tier-capacity':'.tier-node')].map(el=>[el,c.up?(frame.index===0?[{transform:'none'},{transform:'none'}]:[{transform:'scaleX(0)',transformOrigin:'left'},{transform:'scaleX(1)',transformOrigin:'left'}]):[{transform:'translateY(-5px)'},{transform:'translateY(0)'}]]);
-   if(!await wait(specs,c.up?(frame.index===0?2200:900):1500)||epoch!==generation)return;
-  }
-  const last=frame.phase===tierPages[frame.index].configs.length-1;
-  scene.dataset.phase='settled';scene.dataset.playback=last?'finished':'running';pause.disabled=last;
+  throw Error('Unknown database page');
  }
  async function select(next,play=true){
   if(next<0||next>=tierPages.length)return;

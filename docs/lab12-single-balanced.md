@@ -1,14 +1,14 @@
-# LAB12 — current three-page sharding experiments
+# LAB12 — current two-page sharding experiments
 
 ## Acceptance contract
 
 - Page 1 shows three simultaneous model-backed comparisons: overload (16/8), Scale Up on the same database (16/32), and unavailable as a secondary replication/failover concern. Shared pause/replay/cancel controls govern concurrent visuals; the three original evaluations save serially. The former bottom sharding bridge and assumptions disclosure are absent from mounted DOM.
 - Page 2 is titled `Sharding · แบ่งข้อมูล กระจายภาระงาน`. Its single balanced user_id scenario partitions 16 distinct rows across four shards, then routes 16 requests in four batches. Each shard receives four requests with capacity eight. No redundant scenario counter.
-- Page 3 retains the resharding comparison: modulo-8 routing versus stationary modulo-4 data, eight changed destinations, not actual migration.
-- Three outer pages; source-topic mapping `[[0,1],[2],[5]]`; five guided evaluations `[3,1,1]`. Historical hotspot/country model capabilities and source IDs remain but are not guided presets.
+- The Resharding experiment page, its preset, instruction and presentation renderer are removed. General reading, quiz, underlying model and historical records remain unchanged.
+- Two outer pages; source-topic mapping `[[0,1],[2]]`; four guided evaluations `[3,1]`. Historical hotspot/country model capabilities and source IDs remain but are not guided presets.
 - Navigation/replay are unscored. Stable identity: `database-scaling / database-scaling / evaluate-data-tier`. Exact failed-event retry, semantic deduplication, and manual completion remain intact. Manifests, private assessment bank and backend scoring policies are unchanged.
 
-## Pre-publication verification
+## Historical three-page pre-publication verification
 
 Executed in the canonical checkout with Node 26.7.0. Builds and reports were isolated under `$HOME/.hermes/cache/scratch`; no live dist, deployment or existing preview output was modified.
 
@@ -29,6 +29,16 @@ Local verification artifacts (not published):
 - `lab12-publish-unit.log`
 - `lab12-publish-parallel/` and `lab12-publish-sharding/`
 - `lab12-publish-account/evidence/account-report.json`
+
+## Current two-page removal verification
+
+- RED: current page-map test failed with `3 !== 2`; GREEN: all 146 unit tests pass, including preserved resharding model coverage.
+- Standalone and account-integrated scratch builds passed (95 modules including the pre-existing 14px read-more change).
+- Existing parent-owned preview `http://127.0.0.1:4178` was rebuilt in `lab12-why-sharding-build`; live dist, database and port 4173 were not targeted.
+- Compiled parallel browser suite: 7 passed; balanced-sharding suite: 8 passed. Light/Dark at 1280/390/320px: actual animation advance/freeze, both retained topics, 1/2 and 2/2, disabled final Next, Back/reset/cancel, no mounted resharding cards or controls.
+- Disposable real Flask/SQLite account runner passed with four `[3,1]` evaluations, zero navigation/replay POSTs, one semantic simulation award, exact UUID/payload retry after reset and on the same page, held-save cancellation, explicit manual completion and reload deduplication. No browser errors. This is synthetic-account QA, not signup or restart coverage.
+- Current scratch evidence: `lab12-remove-unit.log`, `lab12-remove-parallel/`, `lab12-remove-sharding/`, `lab12-remove-account/evidence/account-report.json`. Older reports above are historical, not current acceptance totals.
+- The known-compatible QA interpreter is `lab08-python/bin/python` under scratch, launched arm64; no environment packages were changed.
 
 ## Reproduction
 
