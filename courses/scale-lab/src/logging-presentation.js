@@ -1,3 +1,4 @@
+import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
 import {loggingPages} from './logging-story.js';
 export const loggingTopics=[['เปลี่ยนโค้ด → ตรวจ → ปล่อย → สังเกต','run-pipeline','Back / Next เล่นเฉพาะหน้าที่เลือกแล้วหยุด · ทดลองขั้นนี้บันทึกเฉพาะกิจกรรมของหน้านี้ · เล่นซ้ำไม่บันทึกกิจกรรม']];
@@ -27,7 +28,7 @@ export function bindLoggingPlayback(main,play=false,frame=null){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){settle();await new Promise(r=>setTimeout(r,30));if(!disposed)finish();return;}
   if(frame.key==='logs'){route=[scene.querySelector('[data-node=source]'),scene.querySelector('[data-node=result]')];token.textContent='Error × 2';}
   if(['blocked','tested','deployed'].includes(frame.key)){const nodes=scene.querySelectorAll('.logging-stage'),i=frame.key==='deployed'?1:0;route=[nodes[i],nodes[i+1]];token.textContent=frame.key==='blocked'?'v.1':'v.2';}
-  if(route){token.hidden=false;layout();scene.dataset.phase='transfer';if(!await wait(token,[{offsetDistance:'0%'},{offsetDistance:'100%'}],1500))return;}
+  if(route){token.hidden=false;layout();scene.dataset.phase='transfer';if(!await wait(token,[{offsetDistance:'0%'},{offsetDistance:'100%'}],animationTiming.lab11.routeMs))return;}
   settle();scene.dataset.phase='reveal';const target=scene.querySelector(`[data-metric="${frame.key}"]`)||scene.querySelector('.logging-observe')||map;
   if(!await wait(target,[{transform:'translateY(8px)'},{transform:'translateY(0)'}],1500))return;
   scene.dataset.phase='settled';finish();

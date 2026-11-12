@@ -1,3 +1,4 @@
+import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
 export const cacheLabels={'read-cache':'อ่านสินค้า',update:'เขียนราคา DB',invalidate:'ลบสำเนา',tick:'เวลา +1 หน่วย',outage:'Cache ล่ม',restart:'เริ่ม Cache แบบ cold'};
 export const cacheTopics=[
@@ -54,7 +55,7 @@ export function bindCachePlayback(main,play=false,frame=null){
    if(disposed)return;
    scene.querySelector('#cache-route').textContent=routes.length?`${index+1} / ${routes.length} · ${routes[index][2]}`:cacheLabels[frame?.action]||'';
    const particle=svg.querySelector(`[data-route="${index}"]`);
-   animation=particle?particle.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:2000,fill:'none',easing:'linear'}):map.animate([{opacity:1},{opacity:1}],{duration:900});
+   animation=particle?particle.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:animationTiming.lab06.routeMs,fill:'none',easing:'linear'}):map.animate([{opacity:1},{opacity:1}],{duration:900});
    try{await animation.finished;}catch{return;}
   }
   if(!disposed)settle();

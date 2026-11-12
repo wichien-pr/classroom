@@ -1,3 +1,4 @@
+import {animationTiming,workloadBlockedFrames} from './animation-timing.js';
 import {setFlowIcon} from './flow-view.js';
 export function setWorkloadIcon(button,name,label){setFlowIcon(button,name,label);button.classList.remove('flow-icon-button');button.classList.add('workload-icon-button');}
 import {evaluateDatabase,databaseEngines} from './database.js';
@@ -28,6 +29,8 @@ export function stopWorkloadPlayback(){cleanupWorkload();cleanupWorkload=()=>{};
 export function bindWorkloadPlayback(main,play=false){
  stopWorkloadPlayback();
  const scene=main.querySelector('.workload-scene');if(!scene)return;
+ scene.style.setProperty('--workload-route-duration',`${animationTiming.lab02.routeMs*4}ms`);
+ scene.style.setProperty('--workload-blocked-duration',`${animationTiming.lab02.routeMs*2+animationTiming.lab02.blockedHoldMs+animationTiming.lab02.blockedFadeMs}ms`);
  const replay=scene.querySelector('#workload-replay'),pause=scene.querySelector('#workload-pause');
  setWorkloadIcon(replay,'replay','เล่นภาพซ้ำ');setWorkloadIcon(pause,'pause','พักภาพ');
  const media=matchMedia('(prefers-reduced-motion: reduce)');
@@ -54,7 +57,12 @@ export function bindWorkloadPlayback(main,play=false){
  function start(){
   scene.dataset.playback='idle';void scene.offsetWidth;
   if(reduced()){settle();return;}
-  scene.dataset.playback='running';pause.disabled=false;setWorkloadIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');
+  scene.dataset.playback='running';
+  if(scene.dataset.ready==='false'){
+   const frames=workloadBlockedFrames();
+   for(const dot of scene.querySelectorAll('.workload-travel'))dot.getAnimations()[0]?.effect.setKeyframes(frames[dot.dataset.route]);
+  }
+  pause.disabled=false;setWorkloadIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');
  }
  function stop(){if(scene.dataset.playback!=='running')return;scene.dataset.playback='paused';setWorkloadIcon(pause,'play','เล่นภาพต่อ');pause.setAttribute('aria-pressed','true');}
  replay.onclick=start;

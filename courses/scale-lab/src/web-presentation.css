@@ -1,9 +1,6 @@
 .topic-lesson #lesson-topic[data-kind=stateless-web]{padding:20px;gap:12px}
-.topic-lesson #lesson-topic[data-kind=stateless-web] .lesson-topic-nav{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--topic-line)}
+.topic-lesson #lesson-topic[data-kind=stateless-web] .lesson-topic-nav{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px}
 .topic-lesson #lesson-topic[data-kind=stateless-web] #lesson-topic-title{text-align:center;margin:0;font-size:22px;line-height:1.6}
-.topic-lesson #lesson-topic[data-kind=stateless-web] .experiment{border:0;background:none;padding:0}
-.topic-lesson #lesson-topic[data-kind=stateless-web] .experiment>strong{display:none}
-.topic-lesson #lesson-topic[data-kind=stateless-web] ol{padding:0;list-style:none}
 .topic-lesson #lesson-topic[data-kind=stateless-web] #architecture{display:block;padding:0;min-height:0;background:none}
 .web-scene{--wl-accent:var(--topic-blue);margin:0;padding:18px;border:1px solid var(--topic-line);border-radius:14px;background:var(--topic-surface);color:var(--topic-ink)}
 html:not([data-theme=dark]):not([data-classroom-theme=dark]) .web-scene,html:not([data-theme=dark]):not([data-classroom-theme=dark]) .topic-lesson #lesson-topic[data-kind=stateless-web] #architecture{background:#f3f7fa}

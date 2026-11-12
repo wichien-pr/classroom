@@ -1,3 +1,4 @@
+import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
 // Undefined = unrun; null = model rejected routing; integer = delivered target.
 export function balanceScene(state,target){
@@ -38,7 +39,7 @@ export function bindBalancePlayback(main,play=false){
   setWorkloadIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');
   if(media.matches){settle();return;}
   scene.dataset.playback='running';pause.disabled=false;
-  animations=[...svg.querySelectorAll('circle[data-active=true]')].map(p=>p.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:1200,delay:p.dataset.to==='router'?0:1200,fill:'forwards',easing:'linear'}));
+  animations=[...svg.querySelectorAll('circle[data-active=true]')].map(p=>p.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:animationTiming.lab04.routeMs,delay:p.dataset.to==='router'?0:animationTiming.lab04.routeMs,fill:'forwards',easing:'linear'}));
   const current=animations;Promise.all(current.map(a=>a.finished)).then(()=>{if(animations===current)settle();}).catch(()=>{});
  }
  replay.onclick=start;

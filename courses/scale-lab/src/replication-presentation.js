@@ -1,3 +1,4 @@
+import {animationTiming} from './animation-timing.js';
 import {dbName} from './replication.js';
 import {setWorkloadIcon} from './workload-view.js';
 export const replicationLabels={write:'เขียน order', 'read-replica':'อ่าน Replica / fallback','read-primary':'อ่าน Primary',sync:'ส่งสำเนา 1 รอบ',promote:'ประเมิน / Promote'};
@@ -53,7 +54,7 @@ export function bindReplicationPlayback(main,play=false){
   animations.forEach(a=>a.cancel());animations=[];setWorkloadIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');
   if(media.matches){settle();return;}
   scene.dataset.playback='running';pause.disabled=false;
-  animations=[...svg.querySelectorAll('circle')].map(p=>p.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:2000,fill:'forwards',easing:'linear'}));
+  animations=[...svg.querySelectorAll('circle')].map(p=>p.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:animationTiming.lab05.routeMs,fill:'forwards',easing:'linear'}));
   if(!animations.length)animations=[map.animate([{opacity:1},{opacity:1}],{duration:900})];
   const current=animations;Promise.all(current.map(a=>a.finished)).then(()=>{if(animations===current)settle();}).catch(()=>{});
  }

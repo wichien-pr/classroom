@@ -1,3 +1,4 @@
+import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
 export const queueTopics=[
  ['ส่งเข้าคิว ยังไม่ใช่งานสำเร็จ','enqueue-jobs','ส่ง Crop 3 งาน · ดูงานรอเพิ่ม โดยยังไม่มีงานเสร็จ'],
@@ -60,7 +61,7 @@ export function bindQueuePlayback(main,play=false,frame=null){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){project('settled');scene.dataset.playback='finished';pause.disabled=true;resolveDone();return;}
   pause.disabled=false;project('transfer');
   if(!queueRoutes(frame).length){project('settled');scene.querySelector('#queue-balance').textContent=frame.message;scene.querySelector('#queue-result').textContent=frame.message;if(!await phaseWait(map,[{transform:'none'},{transform:'none'}],900))return;scene.dataset.playback='finished';pause.disabled=true;resolveDone();return;}
-  if(!await phaseWait(transit,[{offsetDistance:'0%'},{offsetDistance:'100%'}],1500))return;
+  if(!await phaseWait(transit,[{offsetDistance:'0%'},{offsetDistance:'100%'}],animationTiming.lab10.routeMs))return;
   project('processing');
   if(!await phaseWait(map,[{transform:'translateY(0)'},{transform:'translateY(0)'}],frame.action==='process-jobs'?1300:1000))return;
   project('settled');

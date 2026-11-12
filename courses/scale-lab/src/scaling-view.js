@@ -1,3 +1,4 @@
+import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
 // A projection of the evaluated capacity/routing result, not a request simulator.
 export function scalingScene(config,result=null){
@@ -39,7 +40,7 @@ export function bindScalingPlayback(main,play=false){
   setWorkloadIcon(pause,'pause','พักภาพ');pause.setAttribute('aria-pressed','false');
   if(media.matches){settle();return;}
   scene.dataset.playback='running';pause.disabled=false;
-  animations=[...svg.querySelectorAll('circle[data-active=true]')].map(p=>p.animate([{offsetDistance:'0%'},{offsetDistance:'100%'}],{duration:2000,fill:'both',easing:'linear'}));
+  animations=[...svg.querySelectorAll('circle[data-active=true]')].map(p=>p.animate([{offsetDistance:'0%'},{offsetDistance:'100%'}],{duration:animationTiming.lab03.routeMs,fill:'both',easing:'linear'}));
   // Offline still has a finite explanatory pause, not a fabricated route.
   if(!animations.length)animations=[scene.animate([{opacity:1},{opacity:1}],{duration:3200})];
   const current=animations;Promise.all(current.map(a=>a.finished)).then(()=>{if(animations===current)settle();}).catch(()=>{});

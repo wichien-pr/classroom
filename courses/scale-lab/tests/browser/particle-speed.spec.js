@@ -25,7 +25,7 @@ const labs=[
  [7,'cdn-run','cdn','.cdn-scene','.cdn-particle'],
  [8,'web-run','web','.web-scene','.web-particle'],
 ];
-const durations={1:800,2:850,3:2000,4:1200,5:2000,6:2000,7:2000,8:2000};
+const durations={1:1500,2:850,3:2000,4:1200,5:2000,6:2000,7:2000,8:2000};
 const baseline={1:1100,2:1152,3:3200,4:1600,5:2400,6:2700,7:2700,8:2700};
 for(const [lab,run,prefix,scene,particle] of labs){
  const duration=durations[lab],timeline=duration*(lab===2?4:1);
@@ -38,7 +38,7 @@ for(const [lab,run,prefix,scene,particle] of labs){
   if(lab===4)expect(await page.locator(particle).evaluateAll(es=>es.map(e=>e.getAnimations()[0].effect.getTiming().delay))).toEqual([0,1200]);
   const start=await sample();await page.waitForTimeout(400);const later=await sample();
   expect(later.duration).toBe(timeline);
-  expect(later.duration/(lab===2?4:1)).toBeLessThan(baseline[lab]);
+  if(lab===1)expect(later.duration).toBeGreaterThan(800);else expect(later.duration/(lab===2?4:1)).toBeLessThan(baseline[lab]);
   expect((later.offset-start.offset)/(later.time-start.time)).toBeCloseTo(100/duration,3);
   await page.locator(`#${prefix}-pause`).click();const frozen=await sample();await page.waitForTimeout(300);expect(await sample()).toEqual(frozen);
   await page.locator(`#${prefix}-pause`).click();

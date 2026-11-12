@@ -1,3 +1,4 @@
+import {animationTiming} from './animation-timing.js';
 import {flowView} from './single-server.js';
 const icon='<svg viewBox="0 0 80 60" aria-hidden="true"><rect x="10" y="5" width="60" height="40" rx="5"/><path d="M25 55h30M40 45v10M18 17h44M18 28h25"/></svg>';
 export function flowDiagram(client){
@@ -24,6 +25,7 @@ export function stopFlowPlayback(){cleanup();cleanup=()=>{};}
 // Only projects the already-computed original model frames. No act/POST callback.
 export function bindFlowPlayback(main,result,play=false){
  stopFlowPlayback();const scene=main.querySelector('#flow-scene');if(!scene)return;
+ scene.style.setProperty('--flow-route-duration',`${animationTiming.lab01.routeMs}ms`);
  const pause=main.querySelector('#flow-pause'),replay=main.querySelector('#flow-replay');
  let timer,index=0,disposed=false,generation=0;
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');

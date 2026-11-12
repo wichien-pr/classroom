@@ -1,3 +1,4 @@
+import {animationTiming} from './animation-timing.js';
 import {tierPages,tierFrames,createTierFlow} from './data-tier-flow.js';
 import {setWorkloadIcon} from './workload-view.js';
 import './data-tier-presentation.css';
@@ -59,7 +60,7 @@ export function mountTierPresentation(main,{record,blocked,commit}){
    svg.setAttribute('viewBox',`0 0 ${b.width} ${b.height}`);svg.querySelector('path').setAttribute('d',d);token.style.offsetPath=`path('${d}')`;
    specs.push([token,[{offsetDistance:'0%'},{offsetDistance:'100%'}]]);
   });
-  if(!reduced&&(!await wait(specs,1500)||epoch!==generation))return;
+  if(!reduced&&(!await wait(specs,animationTiming.lab12.comparisonRouteMs)||epoch!==generation))return;
   scene.querySelectorAll('.tier-comparison').forEach((section,i)=>{
    const {result:r,config:c}=frames[i];
    section.querySelectorAll('[data-demand]').forEach((unit,j)=>unit.dataset.excess=String(c.up&&j>=r.capacity));
@@ -68,7 +69,7 @@ export function mountTierPresentation(main,{record,blocked,commit}){
   });
   find('#tier-result').textContent='งานเท่าเดิม · Scale Up เพิ่มกำลัง แต่ยังเป็นเครื่องเดียว';
   scene.dataset.phase='capacity';animations.forEach(a=>a.cancel());animations=[];
-  if(!reduced&&(!await wait([...scene.querySelectorAll('.tier-capacity')].map(el=>[el,[{transform:'translateY(4px)'},{transform:'translateY(0)'}]]),900)||epoch!==generation))return;
+  if(!reduced&&(!await wait([...scene.querySelectorAll('.tier-capacity')].map(el=>[el,[{transform:'translateY(4px)'},{transform:'translateY(0)'}]]),animationTiming.lab12.comparisonCapacityMs)||epoch!==generation))return;
   scene.dataset.phase='settled';scene.dataset.playback='finished';pause.disabled=!flow.busy;
  }
  async function showSharding(frame,play){
@@ -90,7 +91,7 @@ export function mountTierPresentation(main,{record,blocked,commit}){
     const svg=gap.querySelector('svg');svg.setAttribute('viewBox',`0 0 ${b.width} ${b.height}`);svg.querySelector('path').setAttribute('d',d);token.style.offsetPath=`path('${d}')`;
     specs.push([token,[{offsetDistance:'0%'},{offsetDistance:'100%'}]]);
    });
-   if(!reduced&&(!await wait(specs,placement?1200:1000)||epoch!==generation))return false;
+   if(!reduced&&(!await wait(specs,placement?animationTiming.lab12.placementMs:animationTiming.lab12.requestBatchMs)||epoch!==generation))return false;
    lanes.forEach(l=>l.querySelector('.tier-token').hidden=true);return epoch===generation;
   };
   if(!await travel(r.rows,true))return;
@@ -106,7 +107,7 @@ export function mountTierPresentation(main,{record,blocked,commit}){
   }
   scene.dataset.phase='capacity';scene.querySelector('.shard-stage').textContent=`3 · รวม ${r.total} คำขอ · ดูภาระแต่ละเครื่อง`;
   find('#tier-result').textContent=frame.takeaway;
-  if(!reduced&&(!await wait([[scene.querySelector('.shard-stage'),[{transform:'translateY(3px)'},{transform:'translateY(0)'}]]],1600)||epoch!==generation))return;
+  if(!reduced&&(!await wait([[scene.querySelector('.shard-stage'),[{transform:'translateY(3px)'},{transform:'translateY(0)'}]]],animationTiming.lab12.shardingSummaryMs)||epoch!==generation))return;
   scene.dataset.phase='settled';const last=frame.phase===tierPages[frame.index].configs.length-1;scene.dataset.playback=last?'finished':'running';pause.disabled=last;
  }
  async function show(frame,play){

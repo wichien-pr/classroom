@@ -11,7 +11,7 @@ export function mountSingleServerLayout(main,onTopic=()=>{}) {
  comparison.innerHTML='<h2>เส้นทางเดียวกัน รูปแบบคำตอบต่างกัน</h2><figure id="flow-comparison" class="flow-comparison"><figcaption>Browser และ Mobile app ติดต่อ server เดียวกัน</figcaption><div class="flow-client-pair"><div>Browser<small>ถาม DNS → รับ IP → ส่ง HTTP<br>รับ HTML / JavaScript เพื่อแสดงหน้าเว็บ</small></div><div>Mobile app<small>ถาม DNS → รับ IP → ส่ง HTTP<br>รับ JSON แล้วนำข้อมูลไปแสดงในแอป</small></div></div><p>ทั้งสองแบบรับคำตอบจาก server โดยตรง · Browser ก็รับ JSON ได้ ไม่ได้จำกัดตามชนิดอุปกรณ์</p></figure>';
  const steps=intro.querySelector('.experiment');steps.remove();
  const topic=document.createElement('section');topic.id='flow-topic';topic.setAttribute('aria-labelledby','flow-slide-title');
- topic.innerHTML='<nav class="flow-slide-nav" aria-label="หัวข้อการทดลอง"><button type="button" id="flow-slide-back" aria-controls="flow-topic">« Back</button><h3 id="flow-slide-title" tabindex="-1"></h3><button type="button" id="flow-slide-next" aria-controls="flow-topic">Next »</button></nav><p id="flow-instruction"></p><p id="flow-scenario" aria-label="สถานการณ์ที่กำหนด"></p>';
+ topic.innerHTML='<nav class="flow-slide-nav" aria-label="หัวข้อการทดลอง"><button type="button" id="flow-slide-back" aria-controls="flow-topic">« Back</button><h3 id="flow-slide-title" tabindex="-1"></h3><button type="button" id="flow-slide-next" aria-controls="flow-topic">Next »</button></nav><p id="flow-scenario" aria-label="สถานการณ์ที่กำหนด"></p>';
  lab.querySelector('.panel-title').after(topic);topic.append(find('#architecture'));
  const actions=document.createElement('div');actions.className='flow-actions';
  const controls=document.createElement('div');controls.className='flow-player-controls';controls.setAttribute('role','group');controls.setAttribute('aria-label','ทดลองและควบคุมภาพ');
@@ -22,12 +22,10 @@ export function mountSingleServerLayout(main,onTopic=()=>{}) {
  actions.append(controls,feedback);topic.append(actions);
  for(const selector of ['.control-area','.observation','#state-view','.event-area'])find(selector)?.remove();
  const titles=['ค้นหา IP ก่อนส่งคำขอ','ส่งคำขอเข้าเครื่องเดียว','รับคำตอบและแสดงหน้าเว็บ','เปลี่ยนเป็นแอป แล้วเทียบคำตอบ'];
- const instructions=['กดทดลอง ดู DNS คืน IP ให้ Browser ก่อนส่ง HTTP','กดทดลอง ดู Browser ค้นหา IP แล้วส่ง HTTP ตรงไปยัง server','กดทดลอง ดูการประมวลผลและส่ง HTML กลับให้ Browser','กดทดลอง ดู Mobile app รับ JSON แล้วแสดงผล เทียบกับ HTML'];
  const heading=find('#flow-slide-title'),back=find('#flow-slide-back'),next=find('#flow-slide-next');let slide=0;
  setFlowIcon(back,'back','ย้อนกลับ');setFlowIcon(next,'next','ถัดไป');setFlowIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
  function show(focus=false){
   topic.dataset.topic=String(slide);heading.textContent=`${slide+1} / 4 · ${titles[slide]}`;
-  find('#flow-instruction').textContent=instructions[slide];
   find('#flow-scenario').textContent=`${slide===3?'Mobile app · JSON':'Browser · HTML'} · api.example.test/users/12 · เริ่มค้นหา DNS ใหม่ทุกครั้ง`;
   back.disabled=slide===0;next.disabled=slide===3;onTopic(slide);
   if(focus){heading.focus({preventScroll:true});topic.scrollIntoView({block:'start',behavior:'instant'});}

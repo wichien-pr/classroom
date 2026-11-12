@@ -86,13 +86,9 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   navigation.firstElementChild.after(heading);
   topic.prepend(navigation);
   find('#architecture').before(controls);
-  const instructions=[
-   'กดทดลอง ดูว่า Web 3 หน่วย และ Data 1 หน่วย แยกทรัพยากรกัน',
-   'กดทดลอง เปรียบเทียบกับหัวข้อก่อน: Web และ Data ใช้ 3 หน่วยร่วมกันในเครื่องเดียว',
-   'กดทดลอง แม้เพิ่ม Web เป็น 4 หน่วย ก็ยังอ่านข้อมูลไม่ได้เมื่อ Database ล่ม',
-   'กดทดลอง 3 ครั้ง: คำสั่งซื้อ / SQL → Session / SQL → Session / Key-value แล้วเปรียบเทียบเหตุผล',
-  ];
-  items.forEach((item,i)=>item.textContent=instructions[i]);
+  // LAB02 keeps its live scenario and controls, not a duplicate instruction strip.
+  // The heading has already moved into navigation; remove the whole container.
+  steps.remove();
   more.remove();
   controls.querySelectorAll('label,fieldset').forEach(node=>node.remove());
   const scenario=document.createElement('p');scenario.id='workload-scenario';scenario.setAttribute('aria-label','สถานการณ์ที่กำหนด');controls.append(scenario);
@@ -168,6 +164,9 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   const instructions=['กดทดลองหลายครั้ง ดูคำขอสลับระหว่าง App A และ B · App C ยังไม่ลงทะเบียน','กดทดลอง เมื่อ App A ล่ม คำขอใหม่ไป App B ที่ยังพร้อม','กดทดลอง เมื่อ A และ B ล่ม และ C ยังไม่ลงทะเบียน ดูผล 503 โดยไม่มี server รับคำขอ','กดทดลองหลายครั้ง เมื่อ App C ลงทะเบียนและผ่าน health check แล้ว คำขอสลับไป B และ C แทน A ที่ล่ม'];
   items.forEach((item,i)=>item.textContent=instructions[i]);
  }
+ // LAB03–08 retain their live heading, scenario diagram and controls only.
+ // Remove after the heading has moved; show() never remounts this container.
+ if(['stock','balance','replica','cache','cdn','stateless-web'].includes(kind))steps.remove();
  const leaves=[...controls.querySelectorAll('.controls input,.controls select,.controls button')].map(el=>({el,node:el.closest('label')||el}));
  const containers=[...controls.querySelectorAll('fieldset,.lesson-submit,.web-submit,.web-scenario')];
  let index=0,expanded=false;

@@ -1,3 +1,4 @@
+import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
 export const webTopics=[
  ['Session อยู่คนละเครื่อง','web-request','กดทดลอง · Stateful เก็บ session A ที่ Web 1 แต่ส่งคำขอไป Web 2'],
@@ -58,7 +59,7 @@ export function bindWebPlayback(main,play=false,frame=null){
   for(let i=0;i<routes.length;i++){
    if(disposed)return;scene.querySelector('#web-route').textContent=`${i+1} / ${routes.length} · ${routes[i][2]}`;
    const particle=svg.querySelector(`[data-route="${i}"]`);
-   animation=particle.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:2000,fill:'none',easing:'linear'});
+   animation=particle.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:animationTiming.lab08.routeMs,fill:'none',easing:'linear'});
    try{await animation.finished;}catch{return;}
   }
   if(!disposed)settle();

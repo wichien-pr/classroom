@@ -36,20 +36,18 @@ html[data-theme=dark] .topic-lesson #lesson-topic,html[data-classroom-theme=dark
 /* LAB02: a single workspace, paired resource inputs, brief result + disclosure. */
 .topic-lesson #lesson-topic[data-kind="workload"]{gap:12px;padding:20px}
 /* LAB02 alone: equal side tracks keep the live topic truly centered. */
-.topic-lesson #lesson-topic[data-kind="workload"] .lesson-topic-nav{display:grid;grid-template-columns:100px minmax(0,1fr) 100px;align-items:center;gap:16px;padding-bottom:16px;border-bottom:1px solid var(--topic-line)}
+.topic-lesson #lesson-topic[data-kind="workload"] .lesson-topic-nav{display:grid;grid-template-columns:100px minmax(0,1fr) 100px;align-items:center;gap:16px}
 .topic-lesson #lesson-topic[data-kind="workload"] .lesson-topic-nav button{min-width:0;padding:10px 8px;white-space:nowrap}
 .topic-lesson #lesson-topic[data-kind="workload"] #lesson-topic-title{margin:0;text-align:center;font-size:22px;line-height:1.6}
 .topic-lesson #lesson-topic[data-kind="workload"] #lesson-topic-title:focus-visible{outline:3px solid var(--topic-blue);outline-offset:4px;border-radius:4px}
-.topic-lesson #lesson-topic[data-kind="workload"] .experiment>strong{display:none}
-.topic-lesson #lesson-topic[data-kind="workload"] .experiment li{margin:0;padding:0}
+
 @media(max-width:600px){
  .topic-lesson #lesson-topic[data-kind="workload"]{padding:14px}
- .topic-lesson #lesson-topic[data-kind="workload"] .lesson-topic-nav{grid-template-columns:68px minmax(0,1fr) 68px;gap:8px;padding-bottom:12px}
+ .topic-lesson #lesson-topic[data-kind="workload"] .lesson-topic-nav{grid-template-columns:68px minmax(0,1fr) 68px;gap:8px}
  .topic-lesson #lesson-topic[data-kind="workload"] .lesson-topic-nav button{padding:8px 2px}
  .topic-lesson #lesson-topic[data-kind="workload"] #lesson-topic-title{font-size:18px}
 }
-.topic-lesson #lesson-topic[data-kind="workload"] .experiment{border:0;border-radius:0;padding:0;background:transparent}
-.topic-lesson #lesson-topic[data-kind="workload"] .experiment ol{list-style:none;padding:0}
+
 .topic-lesson #lesson-topic[data-kind="workload"] .control-area{padding:12px 16px;background:var(--topic-surface);border:1px solid var(--topic-line);border-radius:10px}
 .topic-lesson #lesson-topic[data-kind="workload"] .control-area>h3{display:none}
 .topic-lesson #lesson-topic[data-kind="workload"] .controls>fieldset{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border:0;padding:0;margin:0}

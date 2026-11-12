@@ -1,3 +1,4 @@
+import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
 import {evaluateDataCenters} from './data-centers.js';
 export const dcTopics=[
@@ -89,7 +90,7 @@ export function bindDcPlayback(main,play=false,frame=null){
   for(let i=0;i<routes.length;i++){
    if(disposed)return;
    const particle=svg.querySelector(`[data-route="${i}"]`);
-   animation=particle.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:2000,fill:'none',easing:'linear'});
+   animation=particle.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:animationTiming.lab09.routeMs,fill:'none',easing:'linear'});
    try{await animation.finished;}catch{return;}
   }
   if(dataPanel&&!disposed){

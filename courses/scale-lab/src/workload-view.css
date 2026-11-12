@@ -38,18 +38,18 @@
 .topic-lesson .workload-playback button:disabled{opacity:.55;cursor:default}
 .topic-lesson .workload-playback button:focus-visible{outline:3px solid var(--wl-accent);outline-offset:3px}
 .topic-lesson .workload-playback span{font-size:14px;color:var(--wl-muted)}
-.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=http]{animation:workload-http-flight 3.4s linear both}
-.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=query]{animation:workload-query-flight 3.4s linear both}
+.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=http]{animation:workload-http-flight var(--workload-route-duration) linear both}
+.topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=query]{animation:workload-query-flight var(--workload-route-duration) linear both}
 .topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-machine{animation:workload-activation 1.2s 1s ease both}
 .topic-lesson .workload-scene:is([data-playback="running"],[data-playback="paused"]) .workload-units{animation:workload-allocation 1.2s ease both;transform-origin:left}
 .topic-lesson .workload-scene[data-playback="paused"] *{animation-play-state:paused!important}
 .topic-lesson .workload-scene[data-ready="false"] .workload-query{color:var(--wl-error)}
-.topic-lesson .workload-scene[data-ready="false"]:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=query]{animation-name:workload-blocked-flight;animation-duration:4.1s}
-.topic-lesson .workload-scene[data-ready="false"]:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=http]{animation-name:workload-http-stop;animation-duration:4.1s}
+.topic-lesson .workload-scene[data-ready="false"]:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=query]{animation-name:workload-blocked-flight;animation-duration:var(--workload-blocked-duration)}
+.topic-lesson .workload-scene[data-ready="false"]:is([data-playback="running"],[data-playback="paused"]) .workload-travel[data-route=http]{animation-name:workload-http-stop;animation-duration:var(--workload-blocked-duration)}
 .topic-lesson .workload-link>span{display:block;margin-bottom:18px}
-@keyframes workload-http-stop{0%{offset-distance:0%}20.7317073171%,100%{offset-distance:100%}0%,19.5609756098%{opacity:1}20.7317073171%,100%{opacity:0}}
-/* Two .85s routes, then the original 1.92s endpoint hold + .48s fade. */
-@keyframes workload-blocked-flight{0%,20.7317073171%{offset-distance:0%}41.4634146341%,100%{offset-distance:100%}0%,19.5609756098%{opacity:0}20.7317073171%,88.2926829268%{opacity:1}100%{opacity:0}}
+/* Blocked keyframes are populated from shared timing at start/replay. */
+@keyframes workload-http-stop{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes workload-blocked-flight{from{offset-distance:0%}to{offset-distance:100%}}
 @keyframes workload-http-flight{0%,100%{offset-distance:0%}25%,75%{offset-distance:100%}0%,24%,75%,99%{opacity:1}25%,74%,100%{opacity:0}}
 @keyframes workload-query-flight{0%,25%,75%,100%{offset-distance:0%}50%{offset-distance:100%}0%,24%,75%,100%{opacity:0}25%,50%,74%{opacity:1}}
 @keyframes workload-activation{50%{box-shadow:0 0 0 3px var(--wl-accent)}}

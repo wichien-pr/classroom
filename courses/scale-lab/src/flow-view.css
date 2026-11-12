@@ -2,7 +2,7 @@
 .flow-lesson #flow-topic :is(#flow-scene,#step){scroll-margin-top:100px}
 .flow-lesson #flow-topic .flow-slide-nav{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px;margin:0 0 16px}
 .flow-lesson #flow-topic #flow-slide-title{text-align:center;margin:0;font-size:22px;line-height:1.6}
-.flow-lesson #flow-instruction,.flow-lesson #flow-scenario{font-size:16px;line-height:1.7;margin:8px 0}
+.flow-lesson #flow-scenario{font-size:16px;line-height:1.7;margin:8px 0}
 .flow-lesson #flow-scenario{padding:10px 14px;border-radius:8px;background:var(--theme-soft,#edf3ec);color:var(--theme-text,#253431)}
 .flow-lesson #flow-topic #architecture{display:block;padding:0;margin:16px 0;background:transparent;border:0}
 .flow-lesson #flow-scene{margin:0;padding:20px;border-radius:14px;background:#101e30;color:#ecf3ff;line-height:1.6}
@@ -14,7 +14,7 @@
 .flow-travel{fill:#60d5ed;stroke:none;visibility:hidden;offset-distance:0%;offset-anchor:0px 0px;offset-position:0px 0px;offset-rotate:0deg}
 .flow-lesson #flow-scene .flow-wire.active{stroke:#668ca9;stroke-width:2}
 .flow-lesson #flow-scene[data-playback=finished] .flow-wire.active{stroke:#60d5ed;stroke-width:2}
-.flow-lesson #flow-scene .flow-travel.active{visibility:visible;animation:flow-travel .8s linear both;animation-play-state:paused}
+.flow-lesson #flow-scene .flow-travel.active{visibility:visible;animation:flow-travel var(--flow-route-duration) linear both;animation-play-state:paused}
 .flow-lesson #flow-scene[data-playback=running] .flow-travel.active{animation-play-state:running}
 .flow-lesson #flow-scene:not([data-playback=running]):not([data-playback=paused]) .flow-travel{visibility:hidden}
 @keyframes flow-travel{to{offset-distance:100%}}

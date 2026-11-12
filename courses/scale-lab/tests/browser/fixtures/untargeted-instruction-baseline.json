@@ -1,0 +1,82 @@
+[
+  {
+    "kind": "data-centers",
+    "title": "1 / 6 · แบ่งงานสองศูนย์",
+    "strip": "<div class=\"experiment\"><strong>ลองตามนี้</strong><ol class=\"lesson-steps\"><li value=\"1\">ผู้ใช้ 100 ราย · เดิมไป East 60 / West 40 ทั้งสองศูนย์พร้อม</li><li hidden=\"\" value=\"2\">West ล่ม แต่ยังส่งผู้ใช้ไปปลายทางเดิม</li><li hidden=\"\" value=\"3\">เปิดย้ายไป East แล้ว แต่ผู้ใช้ยังจำที่อยู่เดิมจาก <button type=\"button\" class=\"term-trigger\" data-term=\"dns\" aria-label=\"อธิบายคำศัพท์ DNS\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">DNS</button></li><li hidden=\"\" value=\"4\">ผู้ใช้ได้ที่อยู่ East แทน West ที่ล่มแล้ว</li><li hidden=\"\" value=\"5\">ทุกคนไป East แต่ข้อมูลของผู้ใช้ที่ย้ายมายังไม่พร้อม</li><li hidden=\"\" value=\"6\">ข้อมูลพร้อมแล้ว แต่ East รับได้ 60 จาก 100 คำขอ</li></ol></div>"
+  },
+  {
+    "kind": "data-centers",
+    "title": "2 / 6 · ถ้า West ล่ม",
+    "strip": "<div class=\"experiment\"><strong>ลองตามนี้</strong><ol class=\"lesson-steps\"><li value=\"1\" hidden=\"\">ผู้ใช้ 100 ราย · เดิมไป East 60 / West 40 ทั้งสองศูนย์พร้อม</li><li value=\"2\">West ล่ม แต่ยังส่งผู้ใช้ไปปลายทางเดิม</li><li hidden=\"\" value=\"3\">เปิดย้ายไป East แล้ว แต่ผู้ใช้ยังจำที่อยู่เดิมจาก <button type=\"button\" class=\"term-trigger\" data-term=\"dns\" aria-label=\"อธิบายคำศัพท์ DNS\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">DNS</button></li><li hidden=\"\" value=\"4\">ผู้ใช้ได้ที่อยู่ East แทน West ที่ล่มแล้ว</li><li hidden=\"\" value=\"5\">ทุกคนไป East แต่ข้อมูลของผู้ใช้ที่ย้ายมายังไม่พร้อม</li><li hidden=\"\" value=\"6\">ข้อมูลพร้อมแล้ว แต่ East รับได้ 60 จาก 100 คำขอ</li></ol></div>"
+  },
+  {
+    "kind": "data-centers",
+    "title": "3 / 6 · เปลี่ยนเส้นทางยังไม่พอ",
+    "strip": "<div class=\"experiment\"><strong>ลองตามนี้</strong><ol class=\"lesson-steps\"><li value=\"1\" hidden=\"\">ผู้ใช้ 100 ราย · เดิมไป East 60 / West 40 ทั้งสองศูนย์พร้อม</li><li value=\"2\" hidden=\"\">West ล่ม แต่ยังส่งผู้ใช้ไปปลายทางเดิม</li><li value=\"3\">เปิดย้ายไป East แล้ว แต่ผู้ใช้ยังจำที่อยู่เดิมจาก <button type=\"button\" class=\"term-trigger\" data-term=\"dns\" aria-label=\"อธิบายคำศัพท์ DNS\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">DNS</button></li><li hidden=\"\" value=\"4\">ผู้ใช้ได้ที่อยู่ East แทน West ที่ล่มแล้ว</li><li hidden=\"\" value=\"5\">ทุกคนไป East แต่ข้อมูลของผู้ใช้ที่ย้ายมายังไม่พร้อม</li><li hidden=\"\" value=\"6\">ข้อมูลพร้อมแล้ว แต่ East รับได้ 60 จาก 100 คำขอ</li></ol></div>"
+  },
+  {
+    "kind": "data-centers",
+    "title": "4 / 6 · ได้ที่อยู่ใหม่แล้ว",
+    "strip": "<div class=\"experiment\"><strong>ลองตามนี้</strong><ol class=\"lesson-steps\"><li value=\"1\" hidden=\"\">ผู้ใช้ 100 ราย · เดิมไป East 60 / West 40 ทั้งสองศูนย์พร้อม</li><li value=\"2\" hidden=\"\">West ล่ม แต่ยังส่งผู้ใช้ไปปลายทางเดิม</li><li value=\"3\" hidden=\"\">เปิดย้ายไป East แล้ว แต่ผู้ใช้ยังจำที่อยู่เดิมจาก <button type=\"button\" class=\"term-trigger\" data-term=\"dns\" aria-label=\"อธิบายคำศัพท์ DNS\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">DNS</button></li><li value=\"4\">ผู้ใช้ได้ที่อยู่ East แทน West ที่ล่มแล้ว</li><li hidden=\"\" value=\"5\">ทุกคนไป East แต่ข้อมูลของผู้ใช้ที่ย้ายมายังไม่พร้อม</li><li hidden=\"\" value=\"6\">ข้อมูลพร้อมแล้ว แต่ East รับได้ 60 จาก 100 คำขอ</li></ol></div>"
+  },
+  {
+    "kind": "data-centers",
+    "title": "5 / 6 · ย้ายแล้ว ข้อมูลล่ะ?",
+    "strip": "<div class=\"experiment\"><strong>ลองตามนี้</strong><ol class=\"lesson-steps\"><li value=\"1\" hidden=\"\">ผู้ใช้ 100 ราย · เดิมไป East 60 / West 40 ทั้งสองศูนย์พร้อม</li><li value=\"2\" hidden=\"\">West ล่ม แต่ยังส่งผู้ใช้ไปปลายทางเดิม</li><li value=\"3\" hidden=\"\">เปิดย้ายไป East แล้ว แต่ผู้ใช้ยังจำที่อยู่เดิมจาก <button type=\"button\" class=\"term-trigger\" data-term=\"dns\" aria-label=\"อธิบายคำศัพท์ DNS\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">DNS</button></li><li value=\"4\" hidden=\"\">ผู้ใช้ได้ที่อยู่ East แทน West ที่ล่มแล้ว</li><li value=\"5\">ทุกคนไป East แต่ข้อมูลของผู้ใช้ที่ย้ายมายังไม่พร้อม</li><li hidden=\"\" value=\"6\">ข้อมูลพร้อมแล้ว แต่ East รับได้ 60 จาก 100 คำขอ</li></ol></div>"
+  },
+  {
+    "kind": "data-centers",
+    "title": "6 / 6 · ศูนย์เดียวรับไหวไหม",
+    "strip": "<div class=\"experiment\"><strong>ลองตามนี้</strong><ol class=\"lesson-steps\"><li value=\"1\" hidden=\"\">ผู้ใช้ 100 ราย · เดิมไป East 60 / West 40 ทั้งสองศูนย์พร้อม</li><li value=\"2\" hidden=\"\">West ล่ม แต่ยังส่งผู้ใช้ไปปลายทางเดิม</li><li value=\"3\" hidden=\"\">เปิดย้ายไป East แล้ว แต่ผู้ใช้ยังจำที่อยู่เดิมจาก <button type=\"button\" class=\"term-trigger\" data-term=\"dns\" aria-label=\"อธิบายคำศัพท์ DNS\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">DNS</button></li><li value=\"4\" hidden=\"\">ผู้ใช้ได้ที่อยู่ East แทน West ที่ล่มแล้ว</li><li value=\"5\" hidden=\"\">ทุกคนไป East แต่ข้อมูลของผู้ใช้ที่ย้ายมายังไม่พร้อม</li><li value=\"6\">ข้อมูลพร้อมแล้ว แต่ East รับได้ 60 จาก 100 คำขอ</li></ol></div>"
+  },
+  {
+    "kind": "message-queue",
+    "title": "1 / 5 · ส่งเข้าคิว ยังไม่ใช่งานสำเร็จ",
+    "strip": "<div class=\"experiment\"><strong>ลองตามนี้</strong><ol class=\"lesson-steps\"><li value=\"1\">ส่ง Crop 3 งาน · ดูงานรอเพิ่ม โดยยังไม่มีงานเสร็จ</li><li hidden=\"\" value=\"2\">มี Crop รอ 3 งาน · ส่งอีกชุดขณะ Workers หยุด แล้วลองประมวลผล</li><li hidden=\"\" value=\"3\">มีงานรอ 6 งาน · <button type=\"button\" class=\"term-trigger\" data-term=\"producer\" aria-label=\"อธิบายคำศัพท์ Producer\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Producer</button> หยุด แต่ <button type=\"button\" class=\"term-trigger\" data-term=\"worker\" aria-label=\"อธิบายคำศัพท์ Worker\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Worker</button> 1 เครื่องยังพร้อม</li><li hidden=\"\" value=\"4\">ส่ง Sharpen 3 ชุด แต่ประมวลผลเพียง 1 รอบ · ดูคิวสะสม</li><li hidden=\"\" value=\"5\">มี Blur รอ 9 งาน · ใช้ Workers 4 เครื่อง โดยไม่เพิ่ม <button type=\"button\" class=\"term-trigger\" data-term=\"producer\" aria-label=\"อธิบายคำศัพท์ Producer\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Producer</button></li></ol></div>"
+  },
+  {
+    "kind": "message-queue",
+    "title": "2 / 5 · Workers หยุด ยังรับงานได้",
+    "strip": "<div class=\"experiment\"><strong>ลองตามนี้</strong><ol class=\"lesson-steps\"><li value=\"1\" hidden=\"\">ส่ง Crop 3 งาน · ดูงานรอเพิ่ม โดยยังไม่มีงานเสร็จ</li><li value=\"2\">มี Crop รอ 3 งาน · ส่งอีกชุดขณะ Workers หยุด แล้วลองประมวลผล</li><li hidden=\"\" value=\"3\">มีงานรอ 6 งาน · <button type=\"button\" class=\"term-trigger\" data-term=\"producer\" aria-label=\"อธิบายคำศัพท์ Producer\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Producer</button> หยุด แต่ <button type=\"button\" class=\"term-trigger\" data-term=\"worker\" aria-label=\"อธิบายคำศัพท์ Worker\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Worker</button> 1 เครื่องยังพร้อม</li><li hidden=\"\" value=\"4\">ส่ง Sharpen 3 ชุด แต่ประมวลผลเพียง 1 รอบ · ดูคิวสะสม</li><li hidden=\"\" value=\"5\">มี Blur รอ 9 งาน · ใช้ Workers 4 เครื่อง โดยไม่เพิ่ม <button type=\"button\" class=\"term-trigger\" data-term=\"producer\" aria-label=\"อธิบายคำศัพท์ Producer\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Producer</button></li></ol></div>"
+  },
+  {
+    "kind": "message-queue",
+    "title": "3 / 5 · Producer หยุด งานเก่าทำต่อได้",
+    "strip": "<div class=\"experiment\"><strong>ลองตามนี้</strong><ol class=\"lesson-steps\"><li value=\"1\" hidden=\"\">ส่ง Crop 3 งาน · ดูงานรอเพิ่ม โดยยังไม่มีงานเสร็จ</li><li value=\"2\" hidden=\"\">มี Crop รอ 3 งาน · ส่งอีกชุดขณะ Workers หยุด แล้วลองประมวลผล</li><li value=\"3\">มีงานรอ 6 งาน · <button type=\"button\" class=\"term-trigger\" data-term=\"producer\" aria-label=\"อธิบายคำศัพท์ Producer\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Producer</button> หยุด แต่ <button type=\"button\" class=\"term-trigger\" data-term=\"worker\" aria-label=\"อธิบายคำศัพท์ Worker\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Worker</button> 1 เครื่องยังพร้อม</li><li hidden=\"\" value=\"4\">ส่ง Sharpen 3 ชุด แต่ประมวลผลเพียง 1 รอบ · ดูคิวสะสม</li><li hidden=\"\" value=\"5\">มี Blur รอ 9 งาน · ใช้ Workers 4 เครื่อง โดยไม่เพิ่ม <button type=\"button\" class=\"term-trigger\" data-term=\"producer\" aria-label=\"อธิบายคำศัพท์ Producer\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Producer</button></li></ol></div>"
+  },
+  {
+    "kind": "message-queue",
+    "title": "4 / 5 · งานเข้าเร็วกว่างานออก",
+    "strip": "<div class=\"experiment\"><strong>ลองตามนี้</strong><ol class=\"lesson-steps\"><li value=\"1\" hidden=\"\">ส่ง Crop 3 งาน · ดูงานรอเพิ่ม โดยยังไม่มีงานเสร็จ</li><li value=\"2\" hidden=\"\">มี Crop รอ 3 งาน · ส่งอีกชุดขณะ Workers หยุด แล้วลองประมวลผล</li><li value=\"3\" hidden=\"\">มีงานรอ 6 งาน · <button type=\"button\" class=\"term-trigger\" data-term=\"producer\" aria-label=\"อธิบายคำศัพท์ Producer\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Producer</button> หยุด แต่ <button type=\"button\" class=\"term-trigger\" data-term=\"worker\" aria-label=\"อธิบายคำศัพท์ Worker\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Worker</button> 1 เครื่องยังพร้อม</li><li value=\"4\">ส่ง Sharpen 3 ชุด แต่ประมวลผลเพียง 1 รอบ · ดูคิวสะสม</li><li hidden=\"\" value=\"5\">มี Blur รอ 9 งาน · ใช้ Workers 4 เครื่อง โดยไม่เพิ่ม <button type=\"button\" class=\"term-trigger\" data-term=\"producer\" aria-label=\"อธิบายคำศัพท์ Producer\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Producer</button></li></ol></div>"
+  },
+  {
+    "kind": "message-queue",
+    "title": "5 / 5 · เพิ่ม Workers ลดงานค้าง",
+    "strip": "<div class=\"experiment\"><strong>ลองตามนี้</strong><ol class=\"lesson-steps\"><li value=\"1\" hidden=\"\">ส่ง Crop 3 งาน · ดูงานรอเพิ่ม โดยยังไม่มีงานเสร็จ</li><li value=\"2\" hidden=\"\">มี Crop รอ 3 งาน · ส่งอีกชุดขณะ Workers หยุด แล้วลองประมวลผล</li><li value=\"3\" hidden=\"\">มีงานรอ 6 งาน · <button type=\"button\" class=\"term-trigger\" data-term=\"producer\" aria-label=\"อธิบายคำศัพท์ Producer\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Producer</button> หยุด แต่ <button type=\"button\" class=\"term-trigger\" data-term=\"worker\" aria-label=\"อธิบายคำศัพท์ Worker\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Worker</button> 1 เครื่องยังพร้อม</li><li value=\"4\" hidden=\"\">ส่ง Sharpen 3 ชุด แต่ประมวลผลเพียง 1 รอบ · ดูคิวสะสม</li><li value=\"5\">มี Blur รอ 9 งาน · ใช้ Workers 4 เครื่อง โดยไม่เพิ่ม <button type=\"button\" class=\"term-trigger\" data-term=\"producer\" aria-label=\"อธิบายคำศัพท์ Producer\" aria-haspopup=\"dialog\" aria-controls=\"term-hint\" aria-expanded=\"false\">Producer</button></li></ol></div>"
+  },
+  {
+    "kind": "logging-operations",
+    "title": "1 / 3 · Tests ไม่ผ่าน · หยุด",
+    "strip": null
+  },
+  {
+    "kind": "logging-operations",
+    "title": "2 / 3 · แก้ไข Code Version → Build → Test → Deploy",
+    "strip": null
+  },
+  {
+    "kind": "logging-operations",
+    "title": "3 / 3 · Logs → Metrics → ตรวจหลักฐาน",
+    "strip": null
+  },
+  {
+    "kind": "database-scaling",
+    "title": "1 / 2 · เครื่องเดียวเป็นคอขวด · Scale Up ช่วยแค่ไหน",
+    "strip": null
+  },
+  {
+    "kind": "database-scaling",
+    "title": "2 / 2 · Sharding · แบ่งข้อมูล กระจายภาระงาน",
+    "strip": null
+  }
+]

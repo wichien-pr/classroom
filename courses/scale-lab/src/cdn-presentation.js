@@ -1,3 +1,4 @@
+import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
 export const cdnLabels={request:'ขอรูป',publish:'เปลี่ยนรูปที่ Origin',tick:'เวลา +1 หน่วย',invalidate:'ลบสำเนา key ปัจจุบัน',version:'ใช้ URL รุ่นล่าสุด','ignore-query':'ไม่รวม query ใน key',outage:'CDN ล่ม','enable-fallback':'เปิดทางสำรอง','origin-outage':'Origin ล่ม'};
 export const cdnTopics=[
@@ -72,7 +73,7 @@ export function bindCdnPlayback(main,play=false,frame=null){
    if(disposed)return;
    scene.querySelector('#cdn-route').textContent=routes.length?`${index+1} / ${routes.length} · ${routes[index][2]}`:cdnLabels[frame?.action]||'';
    const particle=svg.querySelector(`[data-route="${index}"]`);
-   animation=particle?particle.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:2000,fill:'none',easing:'linear'}):map.animate([{opacity:1},{opacity:1}],{duration:900});
+   animation=particle?particle.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:animationTiming.lab07.routeMs,fill:'none',easing:'linear'}):map.animate([{opacity:1},{opacity:1}],{duration:900});
    try{await animation.finished;}catch{return;}
   }
   if(!disposed)settle();
