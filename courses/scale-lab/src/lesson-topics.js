@@ -102,6 +102,16 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   const action=find(kind==='stock'?'#order':'#route');setWorkloadIcon(action,'play','ทดลอง');topic.append(action);
   controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
  }
+ if(kind==='stock'){
+  // Reserve the tallest real title at the current width/font. Topic wrapping
+  // must not move the scene or the navigation buttons between clicks.
+  const titles=document.createElement('div');titles.className='scaling-topic-titles';
+  heading.replaceWith(titles);titles.append(heading);
+  topics.forEach(([title],i)=>{
+   const size=document.createElement('span');size.className='scaling-topic-size';
+   size.setAttribute('aria-hidden','true');size.textContent=`${i+1} / ${topics.length} · ${title}`;titles.append(size);
+  });
+ }
  if(kind==='replica'){
   setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
   navigation.firstElementChild.after(heading);topic.prepend(navigation);
@@ -180,7 +190,12 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   more.textContent=kind==='workload'?(expanded?'ซ่อนการตั้งค่าเพิ่มเติม':'ตั้งค่าเพิ่มเติม'):(expanded?'ซ่อนตัวตั้งค่าอื่น':'ปรับเงื่อนไขอื่น / เตรียมขั้นที่ข้าม');more.setAttribute('aria-expanded',String(expanded));
   find('#lesson-topic-back').disabled=index===0;find('#lesson-topic-next').disabled=index===topics.length-1;
   if(['workload','stock','balance','replica','cache','cdn','stateless-web','data-centers','message-queue','logging-operations'].includes(kind))onWorkloadTopic(index);
-  if(focus){heading.focus({preventScroll:true});topic.scrollIntoView({block:'start',behavior:'instant'});}
+  if(focus){
+   heading.focus({preventScroll:true});
+   // LAB03 navigation already lives above its scene: preserve the learner's
+   // viewport instead of realigning the whole experiment on every click.
+   if(kind!=='stock')topic.scrollIntoView({block:'start',behavior:'instant'});
+  }
  }
  find('#lesson-topic-back').onclick=()=>{if(index>0){index--;expanded=false;show(true);}};
  find('#lesson-topic-next').onclick=()=>{if(index<topics.length-1){index++;expanded=false;show(true);}};

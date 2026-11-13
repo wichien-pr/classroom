@@ -28,7 +28,27 @@ html:not([data-theme=dark]):not([data-classroom-theme=dark]) .balance-scene,html
 .topic-lesson .balance-playback #route{background:#176652;border:2px solid #176652;color:white}
 [data-theme=dark] .topic-lesson .balance-playback #route{background:#7de3c6;border-color:#7de3c6;color:#102e27}
 .topic-lesson .balance-scene .workload-actions{background:transparent;border:0;border-top:1px solid var(--topic-line);border-radius:0;padding:16px 0 0}
+.balance-load{margin-top:16px;color:var(--topic-ink)}
+.balance-load>strong{font-size:16px;line-height:1.7}
+.balance-requests{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:8px}
+.balance-requests>span{border:1px solid var(--topic-line);border-radius:8px;text-align:center;padding:8px 2px;font-size:16px;font-weight:700;background:var(--topic-surface)}
+.balance-requests small{display:block;font-size:14px;font-weight:500;color:var(--topic-muted)}
+.balance-requests [data-request-state=routing]{--request-color:#08559d;--request-bg:#dcedff}
+.balance-requests [data-request-state=delivered]{--request-color:#176652;--request-bg:#def3e9}
+.balance-requests [data-request-state=failed]{--request-color:#b42332;--request-bg:#ffe4e7}
+[data-theme=dark] .balance-requests [data-request-state=routing]{--request-color:#6ecaff;--request-bg:#163b55}
+[data-theme=dark] .balance-requests [data-request-state=delivered]{--request-color:#7de3c6;--request-bg:#163e34}
+[data-theme=dark] .balance-requests [data-request-state=failed]{--request-color:#ff8e98;--request-bg:#4b252f}
+.balance-requests [data-request-state]:not([data-request-state=waiting]){border-color:var(--request-color);color:var(--request-color);background:var(--request-bg)}
+.balance-requests [data-request-state]:not([data-request-state=waiting]) small{color:inherit}
+.balance-count-bar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;width:100%;max-width:170px;margin-top:8px}
+.balance-count-bar i{height:10px;border-radius:2px;background:var(--topic-line)}
+.balance-count-bar i[data-filled=true]{background:var(--topic-blue)}
+.balance-scene [data-count]{font-weight:700;color:var(--topic-ink)}
+.balance-scene .balance-offline [data-count]{color:inherit}
 @media(max-width:650px){
+ .balance-requests{gap:4px}
+
  .topic-lesson #lesson-topic[data-kind=balance]{padding:14px}
  .topic-lesson #lesson-topic[data-kind=balance] .lesson-topic-nav{gap:8px}
  .topic-lesson #lesson-topic[data-kind=balance] #lesson-topic-title{font-size:18px}

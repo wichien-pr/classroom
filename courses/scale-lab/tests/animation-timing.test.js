@@ -50,7 +50,8 @@ test('every configured stage has a renderer consumer and local non-route holds r
  const read=f=>readFileSync(new URL(`../src/${f}`,import.meta.url),'utf8');
  assert.match(read('balance-view.js'),/delay:p.dataset.to==='router'\?0:animationTiming.lab04.routeMs/);
  assert.match(read('flow-view.js'),/setTimeout\(advance,1100\)/);
- assert.match(read('scaling-view.js'),/duration:3200/);
+ assert.match(read('scaling-view.js'),/duration:animationTiming.lab03.offlineHoldMs/);
+ assert.equal(animationTiming.lab03.offlineHoldMs,3200);
  for(const f of ['replication','cache','cdn'])assert.match(read(`${f}-presentation.js`),/duration:900/);
  assert.match(read('dc-presentation.js'),/duration:1400/);
  assert.match(read('queue-presentation.js'),/frame.action==='process-jobs'\?1300:1000/);

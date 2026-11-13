@@ -2,6 +2,9 @@ import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
 // A projection of the evaluated capacity/routing result, not a request simulator.
 export function scalingScene(config,result=null){
+ const capacity=result?.capacity??0,scale=Math.max(config.traffic,capacity);
+ const excess=result?Math.max(0,config.traffic-capacity):0;
+ const tier=config.servers===1?'Web 1':'Web tier';
  const targets=Array.from({length:config.servers},(_,i)=>i).filter(i=>config.balanced||i===0);
  const wires=[...(config.balanced?[['client','router',true]]:[]),...targets.map(i=>[config.balanced?'router':'client',`server-${i}`,!(i===0&&config.down)])];
  return `<figure class="scaling-scene" data-playback="idle" data-status="${result?.status??'unrun'}" aria-label="กำลังและเส้นทางของ Web tier">
@@ -10,6 +13,7 @@ export function scalingScene(config,result=null){
  <div class="scaling-node scaling-client" data-node="client"><strong>ผู้ใช้</strong><span>โหลด ${config.traffic} หน่วยสมมติ</span></div>
  ${config.balanced?'<div class="scaling-node scaling-router" data-node="router"><strong>Load balancer</strong><span>พร้อม · รู้ health แล้ว</span></div>':''}
  <div class="scaling-pool">${Array.from({length:config.servers},(_,i)=>`<div class="scaling-node ${i===0&&config.down?'scaling-offline':''}" data-node="server-${i}"><strong>Web ${i+1}</strong><span>กำลัง ${config.power} หน่วย</span><span>${i===0&&config.down?'ล่ม':config.balanced||i===0?'พร้อม · มีเส้นทาง':'พร้อม · ไม่มีเส้นทาง'}</span></div>`).join('')}</div></div>
+ <section class="scaling-capacity" aria-label="เปรียบเทียบโหลดกับกำลัง ${tier}"><strong>${tier} · ${result?.status==='overloaded'?(config.servers===1?'โหลดเกินกำลัง ไม่ใช่เครื่องล่ม':'โหลดเกินกำลังที่เข้าถึงได้'):result?.status==='offline'?'ไม่มีเครื่องพร้อมบนเส้นทาง':'เปรียบเทียบโหลดกับกำลัง'}</strong><div class="scaling-load-label">โหลด ${config.traffic} หน่วยสมมติ</div><div class="scaling-load-track" aria-hidden="true"><i class="scaling-load-fill" style="width:${config.traffic/scale*100}%"></i></div><div>กำลังที่เข้าถึงได้ ${result?capacity:'—'} หน่วย</div><div class="scaling-capacity-track" aria-hidden="true"><i style="width:${capacity/scale*100}%"></i></div><div class="scaling-excess" style="--capacity-share:${Math.min(capacity,config.traffic)/scale*100}%;--excess-share:${excess/scale*100}%"><span class="scaling-excess-bar" aria-hidden="true"></span><strong>${result?`เกินกำลัง ${excess} หน่วย`:'รอผลการทดลอง'}</strong></div><small>นับกำลังเฉพาะเครื่องที่พร้อมและมีเส้นทาง · เปรียบเทียบหน่วยโหลด ไม่ใช่จำนวนคำขอที่สำเร็จหรือสูญหาย</small></section>
  <div class="workload-actions"><div class="workload-playback scaling-playback"><button type="button" id="scaling-replay" ${result?'':'disabled'}></button><button type="button" id="scaling-pause" disabled aria-pressed="false"></button></div><div class="workload-feedback"><p id="scaling-result" role="status">${result?`${{ready:'รับโหลดได้ตามสมมติฐาน',overloaded:'โหลดเกินกำลังที่เข้าถึงได้',offline:'เข้าใช้งานไม่ได้ · ไม่มีเครื่องพร้อมบนเส้นทาง'}[result.status]} · โหลด ${config.traffic} / กำลัง ${result.capacity} หน่วย · พร้อม ${result.healthy} เครื่อง แต่รับโหลดได้ ${result.routed} เครื่อง`:'ยังไม่ได้ทดลอง · กดทดลองเพื่อประเมินกำลังและเส้นทาง'}</p></div></div>
  <figcaption>หน่วยสมมติ ไม่ใช่ benchmark · ไม่จำลองเวลา failover, DB หรือ network${config.balanced?' · LB พร้อมและรู้ health ทันที':' · ต่อ Web 1 โดยตรง'}</figcaption></figure>`;
 }
@@ -42,7 +46,12 @@ export function bindScalingPlayback(main,play=false){
   scene.dataset.playback='running';pause.disabled=false;
   animations=[...svg.querySelectorAll('circle[data-active=true]')].map(p=>p.animate([{offsetDistance:'0%'},{offsetDistance:'100%'}],{duration:animationTiming.lab03.routeMs,fill:'both',easing:'linear'}));
   // Offline still has a finite explanatory pause, not a fabricated route.
-  if(!animations.length)animations=[scene.animate([{opacity:1},{opacity:1}],{duration:3200})];
+  if(!animations.length)animations=[scene.animate([{opacity:1},{opacity:1}],{duration:animationTiming.lab03.offlineHoldMs})];
+  const load=scene.querySelector('.scaling-load-fill'),excess=scene.querySelector('.scaling-excess-bar');
+  if(load&&excess){
+   animations.push(load.animate([{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{delay:animationTiming.lab03.routeMs,duration:animationTiming.lab03.capacityMs,fill:'both',easing:'ease-out'}));
+   animations.push(excess.animate([{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{delay:animationTiming.lab03.routeMs+animationTiming.lab03.capacityMs,duration:animationTiming.lab03.excessMs,fill:'both',easing:'ease-out'}));
+  }
   const current=animations;Promise.all(current.map(a=>a.finished)).then(()=>{if(animations===current)settle();}).catch(()=>{});
  }
  replay.onclick=start;

@@ -1,7 +1,10 @@
 /* LAB03 only. Existing teaching notes and other lesson diagrams stay intact. */
 .topic-lesson #lesson-topic[data-kind=stock]{padding:20px;gap:12px}
 .topic-lesson #lesson-topic[data-kind=stock] .lesson-topic-nav{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px}
-.topic-lesson #lesson-topic[data-kind=stock] #lesson-topic-title{text-align:center;margin:0;font-size:22px;line-height:1.6}
+.topic-lesson #lesson-topic[data-kind=stock] :is(#lesson-topic-title,.scaling-topic-size){text-align:center;margin:0;font-size:22px;line-height:1.6;font-weight:700;overflow-wrap:anywhere}
+.scaling-topic-titles{display:grid;min-width:0;align-items:center}
+.scaling-topic-titles>*{grid-area:1/1}
+.scaling-topic-size{visibility:hidden;pointer-events:none;user-select:none}
 .topic-lesson #lesson-topic[data-kind=stock] #architecture{display:block;padding:0;min-height:0;background:none}
 .scaling-scene{--wl-accent:var(--topic-blue);margin:0;padding:18px;border:1px solid var(--topic-line);border-radius:14px;background:var(--topic-surface);color:var(--topic-ink)}
 .topic-lesson .scaling-scene .workload-actions{margin-top:16px;padding:16px 0 0;border:0;border-top:1px solid var(--topic-line);border-radius:0;box-shadow:none;background:transparent}
@@ -26,10 +29,23 @@
 .scaling-scene figcaption{font-size:14px;line-height:1.7;color:var(--topic-muted);margin-top:12px}
 .topic-lesson .scaling-playback #order{background:#176652;border:2px solid #176652;color:white}
 [data-theme=dark] .topic-lesson .scaling-playback #order{background:#7de3c6;border-color:#7de3c6;color:#102e27}
+.scaling-capacity{margin:0 auto;max-width:520px;display:grid;gap:6px;font-size:16px;line-height:1.6;color:var(--topic-ink)}
+.scaling-capacity>strong{font-size:18px}
+.scaling-load-track,.scaling-capacity-track{height:18px;box-shadow:inset 0 0 0 1px var(--topic-line);border-radius:4px;overflow:hidden;background:var(--topic-surface)}
+.scaling-load-fill,.scaling-capacity-track i{display:block;height:100%;background:#087bc1;transform-origin:left}
+.scaling-capacity-track i{background:#547780}
+.scaling-excess{color:#984600;display:grid;gap:4px}
+.scaling-excess-bar{display:block;height:18px;width:var(--excess-share);margin-left:var(--capacity-share);background:repeating-linear-gradient(135deg,#984600 0 5px,#ffdc9e 5px 10px);box-shadow:inset 0 0 0 1px currentColor;border-radius:4px;transform-origin:left}
+.scaling-excess strong{text-align:right}
+.scaling-capacity small{font-size:14px;color:var(--topic-muted)}
+.scaling-scene[data-status=unrun] :is(.scaling-load-fill,.scaling-excess-bar){visibility:hidden}
+[data-theme=dark] .scaling-load-fill{background:#49c5ff}
+[data-theme=dark] .scaling-capacity-track i{background:#abc8d0}
+[data-theme=dark] .scaling-excess{color:#ffd08a}
 @media(max-width:650px){
  .topic-lesson #lesson-topic[data-kind=stock]{padding:14px}
  .topic-lesson #lesson-topic[data-kind=stock] .lesson-topic-nav{gap:8px}
- .topic-lesson #lesson-topic[data-kind=stock] #lesson-topic-title{font-size:18px}
+ .topic-lesson #lesson-topic[data-kind=stock] :is(#lesson-topic-title,.scaling-topic-size){font-size:18px}
  .scaling-scene{padding:12px}
  .scaling-map{gap:32px;padding-left:32px}
  .scaling-pool{flex-direction:column;gap:16px;align-items:stretch}
