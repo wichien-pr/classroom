@@ -5,6 +5,48 @@
 .replication-scene{--wl-accent:var(--topic-blue);margin:0;padding:18px;border:1px solid var(--topic-line);border-radius:14px;background:var(--topic-surface);color:var(--topic-ink)}
 html:not([data-theme=dark]):not([data-classroom-theme=dark]) .replication-scene,html:not([data-theme=dark]):not([data-classroom-theme=dark]) .topic-lesson #lesson-topic[data-kind=replica] #architecture{background:#f3f7fa}
 .replication-premise{font-size:16px;margin:0;line-height:1.7}
+/* Topic 6 keeps focused recovery status; topics 1–5 use map/toolbar only. */
+
+
+
+
+
+
+
+
+
+
+
+.replication-scene[data-consequence-phase=active] .replication-node[data-db] span:last-child{visibility:hidden}
+.replication-scene[data-consequence-phase=active] .replication-ready{border-color:var(--topic-line)}
+.replication-scene[data-consequences=true] .replication-wires{z-index:2}
+.replication-scene[data-consequences=true][data-playback=finished] .replication-particle{opacity:0}
+.replication-scene[data-consequences=true] [data-copy]{font-size:18px;line-height:1.6;color:inherit}
+/* Recovery is one focused story, not three concatenated dashboards. */
+.replication-scene[data-recovery=true][data-consequence-phase=active][data-consequence-kind=sync] .replication-node.replication-ready[data-db="2"]{border-color:var(--topic-line)}
+.replication-scene[data-recovery=true] .replication-node[data-db] span:last-child{visibility:visible}
+.replication-scene[data-recovery=true] [data-copy]{font-size:14px;font-weight:400}
+.replication-scene[data-recovery=true] #replication-stage:empty{display:none}
+.replication-recovery-heading{display:grid;gap:6px;color:var(--topic-ink)}
+.replication-recovery-heading span{font-size:18px;font-weight:700;line-height:1.7}
+.replication-recovery-heading p{font-size:16px;line-height:1.7;margin:0}
+.replication-scene[data-recovery=true] .replication-premise[hidden]{display:none}
+.replication-scene[data-guard-stage=true] .replication-web,
+.replication-scene[data-guard-stage=true] [data-db="2"]{display:none}
+.replication-scene[data-guard-stage=true] .replication-map{gap:24px;padding:18px 0}
+
+
+
+/* Topic 1: versions are modeled write steps, never invented order records. */
+.replication-scene[data-lag=true] [data-lag-version]{display:block;font-size:22px;line-height:1.6;font-weight:750;color:var(--topic-ink)}
+.replication-scene[data-lag-phase=writing] .replication-node[data-db] span:last-child{visibility:hidden}
+.replication-scene[data-lag=true] .replication-wires{z-index:2}
+.replication-data-token rect{fill:#087bc1;stroke:var(--topic-surface);stroke-width:2}
+.replication-data-token text{fill:#fff;font-size:14px;font-weight:750}
+[data-theme=dark] .replication-data-token rect,[data-classroom-theme=dark] .replication-data-token rect{fill:#49c5ff}
+[data-theme=dark] .replication-data-token text,[data-classroom-theme=dark] .replication-data-token text{fill:#182737}
+.replication-scene[data-lag=true][data-playback=finished] .replication-particle{opacity:0}
+
 .replication-map{position:relative;display:grid;justify-items:center;gap:48px;padding:20px 0}
 .replication-node{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:1px solid var(--topic-line);border-radius:10px;padding:10px 12px;background:var(--topic-surface);min-width:0;z-index:1}
 .replication-node strong{font-size:18px;color:var(--topic-ink);line-height:1.6}

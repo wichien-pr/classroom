@@ -1,0 +1,22 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {createReplicationFlow} from '../src/replication-flow.js';
+import {replicationScene} from '../src/replication-presentation.js';
+test('lag scene captures pre-write data and actual Replica response without syncing',async()=>{
+ const frames=[],awards=[];
+ const runner=createReplicationFlow({show:async f=>frames.push(f),record:async a=>awards.push(a)});
+ await runner.run(0);
+ assert.deepEqual(frames[0].before?.versions,[0,0,0]);
+ assert.equal(frames[0].topic,0);
+ assert.deepEqual(frames[1].routes,[['web','db-1'],['db-1','web']]);
+ assert.deepEqual(frames[1].state.versions,[1,0,0]);
+ assert.deepEqual(awards,['write','read-replica']);
+ const html=replicationScene(frames[1].state,frames[1],0);
+ assert.doesNotMatch(html,/data-lag-comparison|data-lag-latest|data-lag-returned|ยังไม่เห็นข้อมูลที่เพิ่งเขียน/);
+ assert.match(html,/data-lag-action="read-replica"/);
+ assert.match(html,/data-lag-return-version="0"/);
+ assert.match(html,/replication-data-token[^]*?>v0<\/text>/);
+ assert.match(replicationScene(frames[0].state,frames[0],0),/>v1<\/text>/);
+ assert.doesNotMatch(html,/replication-offline/);
+ frames.length=0;await runner.replay();assert.deepEqual(frames[0].before.versions,[0,0,0]);assert.equal(awards.length,2);
+});

@@ -17,14 +17,14 @@ test('cancel during stage prevents later actions and records; replay is snapshot
  await runner.run(1);const count=awards.length;shown.length=0;await runner.replay();
  assert.deepEqual(shown.map(f=>f.action),flow.replicationSequences[1]);assert.equal(awards.length,count);
 });
-test('all eight flows preserve real guard outcomes and all four semantic awards',async()=>{
+test('all six flows preserve real guard outcomes and all four semantic awards',async()=>{
  const awards=new Set();
- for(let topic=0;topic<8;topic++){
+ for(let topic=0;topic<6;topic++){
   const snapshots=[];const runner=flow.createReplicationFlow({show:async f=>snapshots.push(f),record:async a=>awards.add(a)});
   await runner.run(topic);assert.deepEqual(snapshots.map(f=>f.action),flow.replicationSequences[topic]);
   if(topic===4){assert.match(snapshots[0].message,/503/);assert.deepEqual(snapshots[0].routes,[]);assert.deepEqual(snapshots[1].routes,[]);}
-  if(topic===5||topic===6){assert.equal(snapshots[0].state.writer,0);assert.match(snapshots[0].message,/ยัง promote ไม่ได้/);}
-  if(topic===7){assert.equal(snapshots[0].state.writer,1);assert.equal(snapshots[0].state.lost,1);assert.match(snapshots[3].message,/คนละสายข้อมูล/);assert.deepEqual(snapshots[4].routes,[['db-1','db-2']]);assert.deepEqual(snapshots.at(-1).state.up,[false,true,true]);}
+  if(topic===5){assert.equal(snapshots[0].state.writer,0);assert.match(snapshots[0].message,/ยัง promote ไม่ได้/);}
+  if(topic===5){assert.equal(snapshots[4].state.writer,1);assert.equal(snapshots[4].state.lost,1);assert.match(snapshots[7].message,/คนละสายข้อมูล/);assert.deepEqual(snapshots[8].routes,[['db-1','db-2']]);assert.deepEqual(snapshots.at(-1).state.up,[false,true,true]);}
  }
  assert.deepEqual([...awards].sort(),['read-primary','read-replica','sync','write']);
 });
