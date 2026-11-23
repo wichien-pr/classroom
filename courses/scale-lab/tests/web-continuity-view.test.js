@@ -1,0 +1,20 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {createWebFlow} from '../src/web-flow.js';
+import {webScene} from '../src/web-presentation.js';
+import {webInitial} from '../src/stateless-web.js';
+import {lessons} from '../src/lessons.js';
+import {webNotes} from '../src/stateless-web-view.js';
+test('comparison retains real request outcomes and teaches continuity, not a failure tour',async()=>{
+ const frames=[];await createWebFlow({show:async f=>frames.push(f),record:async()=>{}}).run();
+ assert.deepEqual(frames[3].outcomes.map(r=>r.code),['OK','NO_SESSION','OK','OK']);
+ const html=webScene(frames[3].state,frames[3],0);
+ assert.equal((html.match(/data-request-result=/g)||[]).length,4);
+ assert.match(html,/สวัสดี คุณเมย์/);assert.match(html,/กรุณาเข้าสู่ระบบ/);
+ assert.match(html,/Web A/);assert.match(html,/Web B/);
+ assert.doesNotMatch(html,/Web 3|ช่วง 4\/4|Store reads/);
+ assert.match(webScene(webInitial(),null,0),/ยังไม่ได้ทดลอง/);
+ const lesson=lessons.find(l=>l.kind==='stateless-web');
+ assert.match(lesson.objective,/คนเดิม/);assert.match(lesson.explain,/เมย์/);
+ assert.match(webNotes(),/Sticky/);assert.match(webNotes(),/store ล่ม/);
+});

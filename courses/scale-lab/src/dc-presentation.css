@@ -7,6 +7,11 @@
 .topic-lesson #lesson-topic[data-kind=data-centers] #architecture{display:block;padding:0;min-height:0;background:none}
 .dc-scene{--wl-accent:var(--topic-blue);margin:0;padding:18px;border:1px solid var(--topic-line);border-radius:14px;background:var(--topic-surface);color:var(--topic-ink)}
 html:not([data-theme=dark]):not([data-classroom-theme=dark]) .dc-scene,html:not([data-theme=dark]):not([data-classroom-theme=dark]) .topic-lesson #lesson-topic[data-kind=data-centers] #architecture{background:#f3f7fa}
+.dc-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+.dc-comparison section{padding:14px;border:1px solid var(--topic-line);border-radius:10px;background:var(--topic-surface);min-width:0}
+.dc-scene .dc-comparison h3,.dc-scene .dc-comparison strong{color:var(--topic-ink);font-size:18px}
+.dc-comparison p{font-size:16px;line-height:1.7}
+@media(max-width:650px){.dc-comparison{grid-template-columns:minmax(0,1fr)}}
 .dc-premise{font-size:16px;margin:0;line-height:1.7}
 .dc-map{position:relative;display:grid;justify-items:center;gap:48px;padding:20px 0}
 .dc-node{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:1px solid var(--topic-line);border-radius:10px;padding:10px 12px;background:var(--topic-surface);min-width:0;z-index:1}

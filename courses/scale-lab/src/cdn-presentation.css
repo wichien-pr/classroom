@@ -20,9 +20,11 @@ html:not([data-theme=dark]):not([data-classroom-theme=dark]) .cdn-scene,html:not
 .cdn-scene .cdn-node.cdn-offline *{color:inherit;opacity:1}
 .cdn-scene .cdn-wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
 .cdn-wire{fill:none;stroke:var(--topic-line);stroke-width:2;stroke-dasharray:0 7;stroke-linecap:round;stroke-linejoin:round}
-.cdn-particle{fill:#087bc1;stroke:none;opacity:0;offset-distance:100%;offset-anchor:0px 0px;offset-position:0px 0px;offset-rotate:0deg}
-[data-theme=dark] .cdn-particle{fill:#49c5ff}
-.cdn-scene[data-playback=finished] .cdn-particle{opacity:1}
+.cdn-particle{opacity:0;offset-distance:100%;offset-anchor:0px 0px;offset-position:0px 0px;offset-rotate:0deg}
+.cdn-particle rect{fill:#075985;stroke:#0369a1;stroke-width:1}
+.cdn-particle text{fill:#fff;font:700 14px system-ui,sans-serif}
+[data-theme=dark] .cdn-particle rect{fill:#7dd3fc;stroke:#bae6fd}
+[data-theme=dark] .cdn-particle text{fill:#082f49}
 .topic-lesson #cdn-result{font-size:17px;line-height:1.7;margin:0;color:var(--topic-ink);font-weight:650}
 .cdn-scene figcaption{font-size:14px;line-height:1.7;color:var(--topic-muted);margin-top:12px}
 .topic-lesson .cdn-scene .workload-actions{background:transparent;border:0;border-top:1px solid var(--topic-line);border-radius:0;padding:16px 0 0}
@@ -50,10 +52,10 @@ html:not([data-theme=dark]):not([data-classroom-theme=dark]) .cdn-scene,html:not
 
 /* Size the layout against the scene, not the viewport/sidebar. */
 .cdn-scene{container-type:inline-size}
-.cdn-map{padding:20px 28px;gap:32px;grid-template-columns:minmax(0,1fr)}
+.cdn-map{padding:20px 48px;gap:56px;grid-template-columns:minmax(0,1fr)}
 .cdn-map>.cdn-node{width:100%;max-width:360px;box-sizing:border-box}
 .cdn-node span{overflow-wrap:anywhere}
 @container(min-width:620px){
- .cdn-map{grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:32px;padding:20px 0 56px}
+ .cdn-map{grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:120px;padding:20px 0 56px}
  .cdn-map>.cdn-node{max-width:none}
 }

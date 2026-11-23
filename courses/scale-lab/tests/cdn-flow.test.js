@@ -7,31 +7,27 @@ test('cancel during stage prevents later actions and records; replay is snapshot
  const runner=createCdnFlow({record:async a=>awards.push(a),show:async f=>{shown.push(f);if(!release)await new Promise(r=>release=r);}});
  const pending=runner.run(0);await new Promise(r=>setImmediate(r));runner.cancel();release();await pending;
  assert.deepEqual(awards,[]);assert.equal(shown.length,1);assert.equal(runner.frames.length,0);
- await runner.run(1);const count=awards.length;shown.length=0;await runner.replay();
- assert.deepEqual(shown.map(f=>f.action),cdnSequences[1]);assert.equal(awards.length,count);
+ await runner.run(0);const count=awards.length;shown.length=0;await runner.replay();
+ assert.deepEqual(shown.map(f=>f.action),cdnSequences[0]);assert.equal(awards.length,count);
 });
 test('save failure stops and retry resumes the same stage without another model mutation',async()=>{
  const shown=[],records=[];let fail=true;
  const runner=createCdnFlow({show:async f=>shown.push(f),record:async(a,retry)=>{records.push([a,retry]);if(fail){fail=false;throw Error('save');}}});
  await assert.rejects(runner.run(0),/save/);assert.equal(shown.length,1);assert.equal(runner.busy,false);
- await runner.run(0);assert.deepEqual(shown.map(f=>f.action),['request','request']);assert.equal(shown[0].state.originReads,1);assert.deepEqual(records,[['decision',false],['decision',true],['decision',false]]);
+ await runner.run(0);assert.deepEqual(shown.map(f=>f.action),cdnSequences[0]);assert.equal(shown[0].state.originReads,1);assert.deepEqual(records,[['decision',false],['decision',true],['decision',false],['decision',false],['decision',false]]);
 });
 
 
-test('six complete sequences retain decision identity and model truth',async()=>{
- const {createCdnFlow,cdnSequences}=await import('../src/cdn-flow.js');
- const expected=['hit','hit','miss','miss','hit','failure'];
- for(let topic=0;topic<6;topic++){
-  const shown=[],records=[];const runner=createCdnFlow({show:async f=>shown.push(f),record:async a=>records.push(a)});
-  await runner.run(topic);assert.deepEqual(shown.map(f=>f.action),cdnSequences[topic]);assert.equal(shown.at(-1).state.path,expected[topic]);
-  assert.ok(records.length>0);assert.ok(records.every(a=>a==='decision'));
-  if(topic===0){assert.equal(shown.at(-1).state.originReads,1);assert.equal(shown.at(-1).state.now,0);}
-  if(topic===1)assert.match(shown.at(-1).message,/STALE/);
-  if(topic===2)assert.equal(shown.at(-1).state.now,3);
-  if(topic===4){assert.equal(Object.keys(shown.at(-1).state.objects).length,2);assert.match(shown.at(-1).message,/STALE/);}
-  if(topic===5){assert.ok(shown.some(f=>f.state.path==='fallback'));assert.equal(shown.at(-1).state.originReads,1);}
-  const count=records.length;shown.length=0;await runner.replay();assert.equal(records.length,count);assert.equal(shown.length,cdnSequences[topic].length);
- }
+test('underlying TTL, version key and outage capabilities remain independent of guided topics',()=>{
+ const run=(actions)=>{const state=cdn.cdnInitial();for(const a of actions)cdn.cdnAction(state,a);return state;};
+ const ttl=run(['request','publish','tick','tick','tick','request']);
+ assert.equal(ttl.path,'miss');assert.equal(ttl.delivered,2);assert.equal(ttl.now,3);
+ const version=run(['request','publish','version','request']);
+ assert.equal(version.delivered,2);assert.equal(Object.keys(version.objects).length,2);
+ version.includeQuery=false;cdn.cdnAction(version,'request');assert.equal(version.delivered,1);
+ const outage=cdn.cdnInitial();outage.up=false;cdn.cdnAction(outage,'request');assert.equal(outage.path,'failure');
+ outage.fallback=true;cdn.cdnAction(outage,'request');assert.equal(outage.path,'fallback');assert.deepEqual(outage.objects,{});
+ outage.originUp=false;cdn.cdnAction(outage,'request');assert.equal(outage.path,'failure');assert.equal(outage.originReads,1);
 });
 test('route projection never invents origin traffic on HIT or unavailable delivery',async()=>{
  const {cdnRoutes}=await import('../src/cdn-presentation.js');

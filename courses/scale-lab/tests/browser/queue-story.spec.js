@@ -1,0 +1,19 @@
+import {test,expect} from '@playwright/test';
+async function shot(page,path){await page.setViewportSize({width:page.viewportSize().width,height:1600});await page.locator('.queue-scene').evaluate(e=>scrollBy(0,e.getBoundingClientRect().top-150));await page.locator('.queue-scene').screenshot({path});}
+for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`photo story ${theme} ${width}`,async({page},testInfo)=>{
+ const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+ await page.setViewportSize({width,height:1000});await page.goto('/');await page.locator('[data-lesson="10"]').click();await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
+ await expect(page.locator('#lesson-topic-next')).toHaveCount(0);expect(await page.locator('#lesson-topic-title').evaluate(e=>e.getBoundingClientRect().width/e.parentElement.getBoundingClientRect().width)).toBeGreaterThan(.8);await expect(page.locator('.queue-story')).toContainText('เมย์');
+ await page.locator('#queue-run').click();const token=page.locator('.queue-transit');await expect(token.locator('.queue-job')).toHaveCount(3);
+ const a=await token.evaluate(async e=>{await e.getAnimations()[0].ready;return {x:parseFloat(getComputedStyle(e).offsetDistance),d:e.getAnimations()[0].effect.getTiming().duration};});await page.waitForTimeout(180);expect(await token.evaluate(e=>parseFloat(getComputedStyle(e).offsetDistance))).toBeGreaterThan(a.x);expect(a.d).toBe(1500);
+ await page.locator('#queue-pause').click();const paused=await token.evaluate(async e=>{await e.getAnimations()[0].ready;return getComputedStyle(e).offsetDistance;});await page.waitForTimeout(180);expect(await token.evaluate(e=>getComputedStyle(e).offsetDistance)).toBe(paused);
+ await shot(page,testInfo.outputPath(`transfer-${theme}-${width}.png`));await page.locator('#queue-pause').click();
+ await expect(page.locator('#mq-backlog')).toHaveText('3');await expect(page.locator('#mq-done')).toHaveText('0');await expect(page.locator('[data-node=worker]')).toHaveClass(/queue-offline/);
+ await expect(page.locator('#queue-working .queue-job')).toHaveCount(1,{timeout:10000});await page.locator('#queue-pause').click();await expect(page.locator('#queue-working .queue-job')).toHaveAttribute('data-job','1');await expect(page.locator('#mq-done')).toHaveText('0');await expect(page.locator('[data-node=producer]')).toHaveClass(/queue-offline/);
+ await shot(page,testInfo.outputPath(`processing-${theme}-${width}.png`));await page.locator('#queue-pause').click();
+ await expect(page.locator('#mq-done')).toHaveText('1');await expect(page.locator('#mq-done')).toHaveText('2');await expect(page.locator('#queue-run')).toBeEnabled({timeout:20000});await expect(page.locator('#mq-backlog')).toHaveText('0');await expect(page.locator('#mq-done')).toHaveText('3');expect(await page.locator('#queue-completed [data-job]').evaluateAll(es=>es.map(e=>e.dataset.job))).toEqual(['1','2','3']);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await shot(page,testInfo.outputPath(`final-${theme}-${width}.png`));
+ await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#queue-replay').click();await expect(page.locator('#queue-run')).toBeEnabled();await expect(page.locator('#mq-done')).toHaveText('3');
+ await page.emulateMedia({reducedMotion:'no-preference'});await page.locator('#queue-replay').click();await page.locator('#reset').click();await expect(page.locator('#mq-done')).toHaveText('0');await page.waitForTimeout(1800);await expect(page.locator('#mq-backlog')).toHaveText('0');await expect(page.locator('#queue-result')).toHaveText('ยังไม่ได้ทดลอง');
+ await page.locator('#lesson-details summary').click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect(errors).toEqual([]);
+});

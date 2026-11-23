@@ -1,12 +1,7 @@
 import {cdnPreset,cdnAction} from './cdn.js';
 
 export const cdnSequences=[
- ['request','request'],
- ['request','publish','request'],
- ['request','publish','tick','tick','tick','request'],
- ['request','publish','request','invalidate','request'],
- ['request','publish','version','request','ignore-query','request'],
- ['outage','request','enable-fallback','request','origin-outage','request'],
+ ['request','request','publish','request','invalidate','request'],
 ];
 function transition(s,action){
  const setup={outage:['up',false],'enable-fallback':['fallback',true],'origin-outage':['originUp',false],'ignore-query':['includeQuery',false]};
@@ -33,7 +28,7 @@ export function createCdnFlow({record,show}){
      const action=actions[current.index];let retry=!!current.pending;
      if(!current.pending){
       const before=structuredClone(current.state),result=transition(current.state,action);
-      const frame={action,index:current.index,total:actions.length,state:structuredClone(current.state),message:result.message,before};
+      const frame={action,index:current.index,total:actions.length,beat:[1,2,3,3,4,4][current.index],beatTotal:4,state:structuredClone(current.state),message:result.message,before};
       current.pending={meaningful:result.meaningful};frames.push(frame);await show(structuredClone(frame));
      }
      if(token!==generation)return;

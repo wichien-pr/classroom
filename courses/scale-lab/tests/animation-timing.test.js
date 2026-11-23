@@ -6,7 +6,7 @@ test('central presentation timing config covers all twelve lessons, slowing only
  assert.ok(existsSync(moduleURL),'shared animation timing configuration must exist');
  const {animationTiming:t}=await import(moduleURL);
  assert.deepEqual(Object.keys(t),Array.from({length:12},(_,i)=>`lab${String(i+1).padStart(2,'0')}`));
- assert.deepEqual(Object.values(t).slice(0,11).map(v=>v.routeMs),[1500,850,2000,1200,2000,2000,2000,2000,2000,1500,1500]);
+ assert.deepEqual(Object.values(t).slice(0,11).map(v=>v.routeMs),[1500,850,2000,1200,2000,2000,800,2000,2000,1500,1500]);
  assert.deepEqual(t.lab12,{comparisonRouteMs:1500,comparisonCapacityMs:900,placementMs:1200,requestBatchMs:1000,shardingSummaryMs:1600});
 });
 test('all twelve renderer route consumers use shared timing',()=>{

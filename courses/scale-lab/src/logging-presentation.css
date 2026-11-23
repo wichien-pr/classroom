@@ -1,3 +1,5 @@
+.logging-scene :is(#logging-pause,#logging-replay){background:var(--topic-surface);color:var(--topic-ink);border:1px solid var(--topic-line)}
+.logging-setup{display:grid;gap:8px;margin:12px 0;font-size:16px}.logging-setup select{width:100%;min-width:0;min-height:44px;font:inherit;color:var(--topic-ink);background:var(--topic-surface);border:1px solid var(--topic-line);border-radius:8px;padding:8px}
 .logging-choices{display:flex;flex-wrap:wrap;gap:8px;padding:12px 0;border:0;margin:0 0 12px;min-width:0}
 .logging-choices legend,.logging-decision h4{font-size:17px;line-height:1.7;font-weight:650;color:var(--topic-ink)}
 .logging-scene [data-logging-choice],.logging-scene [data-logging-decision]{min-height:48px;white-space:normal;text-align:left;font:inherit;font-size:16px;line-height:1.65;padding:10px 14px;border:1px solid var(--topic-line);border-radius:8px;background:var(--topic-surface);color:var(--topic-ink);max-width:100%;transition:none}

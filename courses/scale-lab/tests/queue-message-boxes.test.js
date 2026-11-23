@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createQueueFlow,queuePreset} from '../src/queue-flow.js';
 import {queueScene,queueBacklogSnapshot,queueRoutes} from '../src/queue-presentation.js';
 test('every topic projects real message boxes, never circular traffic',async()=>{
- for(let topic=0;topic<5;topic++){
+ for(let topic=0;topic<1;topic++){
   const frames=[];await createQueueFlow({record:async()=>{},show:async f=>frames.push(f)}).run(topic);
   assert.match(queueScene(queuePreset(topic),null,topic),/queue-transit/);
   for(const f of frames){

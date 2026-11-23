@@ -1,0 +1,20 @@
+import {test,expect} from '@playwright/test';
+for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`CDN story ${theme} ${width}`,async({page},testInfo)=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.setViewportSize({width,height:1000});
+ await page.addInitScript(()=>{window.cdnSaves=[];const original=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='scale-lab-eligibility-v1')window.cdnSaves.push(JSON.parse(v));return original.call(this,k,v);};});
+ await page.goto('/');await page.locator('[data-lesson="7"]').click();await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
+ await expect(page.locator('#lesson-topic-title')).toContainText('ทำไม CDN ยังส่งไฟล์เก่า?');
+ await page.locator('#cdn-run').click();await page.locator('#cdn-pause').click();
+ await expect(page.locator('.cdn-scene')).toHaveAttribute('data-playback','paused');
+ const token=page.locator('.cdn-particle').first();await expect(token).toHaveText('GET');
+ const motion=await token.evaluate(async e=>{const a=e.getAnimations()[0];await a.ready;return {duration:a.effect.getTiming().duration,pos:getComputedStyle(e).offsetDistance};});expect(motion.duration).toBe(800);
+ await page.waitForTimeout(180);expect(await token.evaluate(e=>getComputedStyle(e).offsetDistance)).toBe(motion.pos);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.screenshot({path:testInfo.outputPath('paused.png'),fullPage:true});
+ await page.locator('#cdn-pause').click();await expect(page.locator('#cdn-run')).toBeEnabled({timeout:30000});
+ await expect(page.locator('#cdn-stage')).toContainText('4 / 4');await expect(page.locator('[data-node=client]')).toContainText('v2');await expect(page.locator('.cdn-premise')).toContainText('Origin reads 2');
+ expect(await page.evaluate(()=>window.cdnSaves)).toEqual(Array.from({length:4},()=>[['cdn','cdn','decision']]));
+ await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#cdn-replay').click();await expect(page.locator('#cdn-run')).toBeEnabled();expect(await page.evaluate(()=>window.cdnSaves.length)).toBe(4);
+ await page.locator('#reset').click();await expect(page.locator('#cdn-replay')).toBeDisabled();await expect(page.locator('#cdn-result')).toContainText('ยังไม่ได้ทดลอง');expect(errors).toEqual([]);
+});

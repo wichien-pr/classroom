@@ -1,11 +1,7 @@
 import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
 export const queueTopics=[
- ['ส่งเข้าคิว ยังไม่ใช่งานสำเร็จ','enqueue-jobs','ส่ง Crop 3 งาน · ดูงานรอเพิ่ม โดยยังไม่มีงานเสร็จ'],
- ['Workers หยุด ยังรับงานได้','enqueue-jobs process-jobs','มี Crop รอ 3 งาน · ส่งอีกชุดขณะ Workers หยุด แล้วลองประมวลผล'],
- ['Producer หยุด งานเก่าทำต่อได้','process-jobs','มีงานรอ 6 งาน · Producer หยุด แต่ Worker 1 เครื่องยังพร้อม'],
- ['งานเข้าเร็วกว่างานออก','enqueue-jobs process-jobs','ส่ง Sharpen 3 ชุด แต่ประมวลผลเพียง 1 รอบ · ดูคิวสะสม'],
- ['เพิ่ม Workers ลดงานค้าง','process-jobs','มี Blur รอ 9 งาน · ใช้ Workers 4 เครื่อง โดยไม่เพิ่ม Producer'],
+ ['ส่งรูปไว้ แล้วให้ Worker ทำต่อ','enqueue-jobs process-jobs','เมย์ส่งงานตัดภาพ 3 งานขณะ Worker หยุด จากนั้นหยุด Producer และเปิด Worker ให้ทำงานเดิมจนเสร็จ'],
 ];
 export function queueRoutes(f){if(!f)return [];if(f.action==='enqueue-jobs'&&f.state.jobs.length>f.before.jobs.length)return [['producer','queue']];if(f.action==='process-jobs'&&f.state.completed.length>f.before.completed.length)return [['queue','worker']];return [];}
 const names={crop:'Crop',sharpen:'Sharpen',blur:'Blur'};
@@ -23,7 +19,7 @@ export function queueScene(s,f,topic){
  const before=f?.before||s,routes=queueRoutes(f),backlog=topic===3;
 
 
- return `<figure class="queue-scene${backlog?' queue-backlog':''}" data-phase="idle" data-playback="idle" aria-label="งานภาพจากผู้ส่ง เข้าคิว แล้วประมวลผลโดย Workers"><div class="queue-backlog-summary" aria-live="polite"><span>เข้าแล้ว <b id="queue-ingress">${before.jobs.length+before.completed.length}</b> งาน</span><span id="queue-balance">${f?'กำลังทดลอง':backlog?'กด ▶ ดูงานเข้าทีละชุด':'กด ▶ ดูเส้นทางงาน'}</span></div><div class="queue-map"><div class="queue-transit" hidden></div><svg class="queue-wires" aria-hidden="true">${routes.map(([a,b],i)=>`<path class="queue-wire" data-from="${a}" data-to="${b}"/>`).join('')}</svg>
+ return `<figure class="queue-scene${backlog?' queue-backlog':''}" data-phase="idle" data-playback="idle" aria-label="งานภาพจากผู้ส่ง เข้าคิว แล้วประมวลผลโดย Workers"><p class="queue-story">${!f?'เมย์ส่งงานตัดภาพ 3 งาน · กดทดลองครั้งเดียว แล้วตามกล่อง #1–#3 จนเสร็จ':f.action==='enqueue-jobs'?'รับงานไว้ก่อน · Worker ยังหยุดอยู่ คิวรับงานได้แต่ยังไม่มีภาพเสร็จ':'ทำภาพทีหลัง · Producer หยุดส่งแล้ว Worker รับงานชุดเดิมต่อจากคิว'}</p><div class="queue-backlog-summary" aria-live="polite"><span>เข้าแล้ว <b id="queue-ingress">${before.jobs.length+before.completed.length}</b> งาน</span><span id="queue-balance">${f?'กำลังทดลอง':backlog?'กด ▶ ดูงานเข้าทีละชุด':'กด ▶ ดูเส้นทางงาน'}</span></div><div class="queue-map"><div class="queue-transit" hidden></div><svg class="queue-wires" aria-hidden="true">${routes.map(([a,b],i)=>`<path class="queue-wire" data-from="${a}" data-to="${b}"/>`).join('')}</svg>
  <section class="queue-node ${s.producerUp?'':'queue-offline'}" data-node="producer"><strong>Producer</strong><span>${s.producerUp?'พร้อมส่งงาน':'หยุดส่งงาน'}</span></section>
  <section class="queue-node" data-node="queue"><strong>คิว · งานรอ <b id="mq-backlog">${before.jobs.length}</b> / 30</strong><div id="queue-waiting" class="queue-jobs">${jobs(before.jobs,true)}</div></section>
  <section class="queue-node ${s.consumerUp?'':'queue-offline'}" data-node="worker"><strong>Workers · ${s.workers} เครื่อง</strong><span>${s.consumerUp?'พร้อมประมวลผล':'หยุด · งานยังค้างในคิว'}</span><div id="queue-working" class="queue-jobs"></div><span>เสร็จแล้ว <b id="mq-done">${before.completed.length}</b> งาน</span><div id="queue-completed" class="queue-jobs">${jobs(before.completed,true)}</div></section></div>

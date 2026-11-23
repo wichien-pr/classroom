@@ -7,7 +7,7 @@ export const animationTiming = Object.freeze({
  lab04: Object.freeze({routeMs:1200}),
  lab05: Object.freeze({routeMs:2000,lagHoldMs:700,recoveryGuardMs:2600}),
  lab06: Object.freeze({routeMs:2000}),
- lab07: Object.freeze({routeMs:2000}),
+ lab07: Object.freeze({routeMs:800}),
  lab08: Object.freeze({routeMs:2000}),
  lab09: Object.freeze({routeMs:2000}),
  lab10: Object.freeze({routeMs:1500}),

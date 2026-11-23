@@ -6,10 +6,10 @@ test('guided request awaits playback and save, retry never mutates twice, replay
  const frames=[],records=[];let fail=true;
  const runner=createWebFlow({show:async f=>frames.push(f),record:async(a,retry)=>{records.push([a,retry]);if(fail){fail=false;throw Error('save');}}});
  await assert.rejects(runner.run(0),/save/);assert.equal(frames[0].state.requests,1);
- await runner.run(0);assert.equal(frames.length,1);assert.deepEqual(records,[['web-request',false],['web-request',true]]);
- await runner.replay();assert.equal(frames.length,2);assert.equal(records.length,2);
+ await runner.run(0);assert.equal(frames.length,4);assert.deepEqual(records,[['web-request',false],['web-request',true],...Array.from({length:3},()=>['web-request',false])]);
+ await runner.replay();assert.equal(frames.length,8);assert.equal(records.length,5);
  let release;const blocked=createWebFlow({show:()=>new Promise(r=>release=r),record:async()=>assert.fail('cancelled save')});
- const pending=blocked.run(3);assert.equal(blocked.busy,true);await blocked.run(3);blocked.cancel();release();await pending;assert.equal(blocked.completed,false);
+ const pending=blocked.run(3);assert.equal(blocked.busy,true);await blocked.run(3);await new Promise(r=>setImmediate(r));blocked.cancel();release();await pending;assert.equal(blocked.completed,false);
 });
 test('no eligible Web preserves NO_WEB without attempting the store',()=>{
  const p=web.webPreset(6);assert.deepEqual(p.state.up,[false,false,false]);assert.equal(p.state.storeUp,true);

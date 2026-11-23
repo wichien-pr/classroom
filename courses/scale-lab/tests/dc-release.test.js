@@ -4,10 +4,10 @@ import {dcScene,dcOutcome,dcRoutes,dcTopics} from '../src/dc-presentation.js';
 import {dcPreset} from '../src/dc-flow.js';
 import {evaluateDataCenters} from '../src/data-centers.js';
 import {dataCentersLayout} from '../src/data-centers-view.js';
-test('experiment ends at capacity with six topics and no release example',()=>{
- assert.equal(dcTopics.length,6);
- assert.equal(dataCentersLayout.steps.length,6);
- assert.equal(dcTopics.at(-1)[0],'ศูนย์เดียวรับไหวไหม');
+test('single comparison replaces the six-topic tour without deleting model capabilities',()=>{
+ assert.equal(dcTopics.length,1);
+ assert.equal(dataCentersLayout.steps.length,1);
+ assert.equal(dcTopics[0][0],'ร้านเดียวกัน เปิดบริการสองพื้นที่');
  assert.throws(()=>dcPreset(6),/Unknown data-center topic/);
  for(let topic=0;topic<6;topic++){
   const state=dcPreset(topic),frame={state,result:evaluateDataCenters(state),topic};

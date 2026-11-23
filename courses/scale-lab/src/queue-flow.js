@@ -1,11 +1,9 @@
 import {queueInitial,queueAction} from './message-queue.js';
 export function queuePreset(topic){
- const s=queueInitial();const count=[0,3,6,0,9][topic];
- s.jobs=Array.from({length:count},(_,i)=>({id:i+1,type:topic===4?'blur':'crop'}));s.nextId=count+1;
- if(topic===1)s.consumerUp=false;if(topic===2)s.producerUp=false;if(topic===4)s.workers=4;return s;
+ const s=queueInitial();s.consumerUp=false;return s;
 }
 
-export const queueSequences=[['enqueue-jobs'],['enqueue-jobs','process-jobs'],['process-jobs'],['enqueue-jobs','enqueue-jobs','process-jobs','enqueue-jobs'],['process-jobs']];
+export const queueSequences=[['enqueue-jobs','process-jobs','process-jobs','process-jobs']];
 export function createQueueFlow({record,show}){
  let busy=false,frames=[],generation=0,attempt=null,completed=false;
  return {
@@ -25,7 +23,9 @@ export function createQueueFlow({record,show}){
      if(token!==generation)return;
      const action=actions[current.index];let retry=!!current.pending;
      if(!current.pending){
-      const before=structuredClone(current.state),result=queueAction(current.state,action,topic===3?'sharpen':'crop');
+      // Unscored setup: the submitted jobs outlive the submitting service.
+      if(current.index===1){current.state.producerUp=false;current.state.consumerUp=true;}
+      const before=structuredClone(current.state),result=queueAction(current.state,action,'crop');
       const frame={action,index:current.index,total:actions.length,state:structuredClone(current.state),message:result.message,before};
       current.pending={meaningful:result.meaningful};frames.push(frame);await show(structuredClone(frame));
      }

@@ -2,15 +2,11 @@ import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
 import {evaluateDataCenters} from './data-centers.js';
 export const dcTopics=[
- ['แบ่งงานสองศูนย์','dc-request','ผู้ใช้ 100 ราย · เดิมไป East 60 / West 40 ทั้งสองศูนย์พร้อม'],
- ['ถ้า West ล่ม','dc-request','West ล่ม แต่ยังส่งผู้ใช้ไปปลายทางเดิม'],
- ['เปลี่ยนเส้นทางยังไม่พอ','dc-request','เปิดย้ายไป East แล้ว แต่ผู้ใช้ยังจำที่อยู่เดิมจาก DNS'],
- ['ได้ที่อยู่ใหม่แล้ว','dc-request','ผู้ใช้ได้ที่อยู่ East แทน West ที่ล่มแล้ว'],
- ['ย้ายแล้ว ข้อมูลล่ะ?','dc-request','ทุกคนไป East แต่ข้อมูลของผู้ใช้ที่ย้ายมายังไม่พร้อม'],
- ['ศูนย์เดียวรับไหวไหม','dc-request','ข้อมูลพร้อมแล้ว แต่ East รับได้ 60 จาก 100 คำขอ'],
+ ['ร้านเดียวกัน เปิดบริการสองพื้นที่','dc-request','เปรียบเทียบคำขออ่านรายการสินค้า 100 ราย: รวมที่ East กับแบ่ง East 60 / West 40'],
 ];
 export function dcOutcome(frame){
  if(!frame)return 'ยังไม่ได้ทดลอง · กด ▶ เพื่อดูเส้นทาง';
+ if(frame.comparison)return 'รวมที่ East: เกินกำลัง 40 คำขอ → แบ่งสองศูนย์: ไม่เกินกำลังทั้งคู่ · เป็นการจัดเส้นทาง ไม่ใช่ยอดคำขอสำเร็จ';
  const r=frame.result;
  if(r.unavailable)return `ยังไปศูนย์ที่ล่ม ${r.unavailable} ราย${frame.state.redirect?' — ผู้ใช้ยังใช้ DNS เดิม':' — ยังไม่ได้เปลี่ยนเส้นทาง'}`;
  if(r.missingData)return `ย้ายไป East แล้ว แต่ขาดข้อมูล ${r.missingData} ราย — ต้องเตรียมสำเนาข้ามศูนย์`;
@@ -49,13 +45,16 @@ function dcCapacityPanel(frame){
 export function dcScene(c,frame){
  const r=frame?.result||evaluateDataCenters(c),routes=dcRoutes(frame);
  return `<figure class="dc-scene" data-playback="idle" aria-label="เส้นทางของคำขออ่าน 100 รายไปยังสองศูนย์ข้อมูล">
- <p class="dc-map-label">ผู้ใช้ → ศูนย์ข้อมูล <span>คำขออ่าน 100 ราย</span></p>
+ <p class="dc-map-label">ร้านเดียวกัน เปิดบริการสองพื้นที่ <span>คำขออ่านรายการสินค้า 100 ราย</span></p>
+ <p>ร้านมีผู้ใช้สองพื้นที่ ถ้ารวมทุกคำขอไว้ที่ East ซึ่งรองรับได้ 60 คำขอต่อกลุ่ม จะเกิดอะไรขึ้นเมื่อเตรียม West แล้วแบ่งงานไป?</p>
+ <div class="dc-comparison">${['รวมที่ East','แบ่งสองศูนย์'].map((title,i)=>{const item=frame?.comparison?.[i];return `<section data-dc-case="${i}"><h3>${title}</h3><p>East: <strong>${item?`${item.result.routes[0]} / 60`:'รอทดลอง'}</strong></p><p>West: <strong>${item?`${item.result.routes[1]} / ${i?60:0}`:'รอทดลอง'}</strong></p><p>${item?`เกินกำลัง ${item.result.overloaded} คำขอ`:'โหลด / กำลังรองรับต่อกลุ่ม'}</p></section>`;}).join('')}</div>
+ <p>แผนเส้นทางเมื่อแบ่งสองศูนย์ · เตรียมบริการและข้อมูลรายการสินค้าที่จำเป็นไว้แล้วทั้งคู่</p>
  <div class="dc-map"><svg class="dc-wires" aria-hidden="true">${routes.map(([from,to],i)=>`<path class="dc-wire" data-from="${from}" data-to="${to}"/><circle class="dc-particle" data-route="${i}" r="4" cx="0" cy="0"/>`).join('')}</svg>
  ${['east','west'].map((id,i)=>{const up=c[i?'westUp':'eastUp'];return `<div class="dc-node" data-node="client-${i}"><strong>${frame?r.routes[i]:'?'} ราย</strong><span>ผู้ใช้</span></div><div class="dc-node ${up?'dc-ready':'dc-offline'}" data-node="${id}"><strong>US-${i?'West':'East'}</strong><span>${up?([4,5].includes(frame?.topic)?'เครื่องพร้อม':'พร้อม'):'ล่ม'}</span>${c[i?'westCapacity':'eastCapacity']<100?`<span>รับได้ ${c[i?'westCapacity':'eastCapacity']} คำขอ</span>`:''}</div>`;}).join('')}</div>
  ${frame?.topic===4?dcDataPanel(c,r):''}
  ${frame?.topic===5?dcCapacityPanel(frame):''}
  <div class="workload-actions"><div class="dc-experiments"></div><div class="workload-playback"><button type="button" id="dc-replay" disabled></button><button type="button" id="dc-pause" disabled aria-pressed="false"></button></div><div class="workload-feedback"><p id="dc-result" role="status">${dcOutcome(frame)}</p></div></div>
- <figcaption>ภาพแสดงการเลือกเส้นทาง ไม่ใช่การยืนยันว่าคำขอสำเร็จ</figcaption>
+ <figcaption>ภาพแสดงการเลือกเส้นทาง ไม่ใช่การยืนยันว่าคำขอสำเร็จ · สองแบบใช้คำขอชุดเดียวกัน ไม่ใช่ย้ายข้อมูลระหว่างการทดลอง · ตัวเลขสมมติ ไม่ใช่ RPS หรือผลวัดความเร็ว</figcaption>
 </figure>`;
 }
 let cleanup=()=>{};

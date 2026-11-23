@@ -57,7 +57,6 @@ export function refreshLessonTopicResults(main){
 export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
  const topics=lessonTopics[kind];if(!topics)return;
  const find=s=>main.querySelector(s),lab=find('.lab'),steps=lab.querySelector('.experiment');
- if(kind==='stateless-web'){const item=document.createElement('li');item.textContent=webTopics[6][2];steps.querySelector('ol').append(item);}
  const items=[...steps.querySelectorAll('ol > li')];
  if(items.length!==topics.length)throw new Error(`Topic/instruction mismatch: ${kind}`);
  main.classList.add('topic-lesson');
@@ -121,8 +120,8 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   items.forEach((item,i)=>item.textContent=replicationTopics[i][2]);
  }
  if(kind==='logging-operations'){
-  setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
-  navigation.firstElementChild.after(heading);topic.prepend(navigation);
+  setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
+  topic.prepend(heading);navigation.remove();
   const retained=document.createElement('div');retained.className='logging-retained';
   const action=document.createElement('button');action.id='logging-run';action.type='button';action.dataset.loggingLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
   topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
@@ -136,7 +135,8 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
   const retained=document.createElement('div');retained.className='queue-retained';
   const action=document.createElement('button');action.id='queue-run';action.type='button';action.dataset.queueLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
   topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
-  items.forEach((item,i)=>item.textContent=queueTopics[i][2]);
+  steps.remove();navigation.replaceChildren(heading);heading.textContent=queueTopics[0][0];
+  onWorkloadTopic(0);return;
  }
  if(kind==='cache'){
   setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');

@@ -1,41 +1,36 @@
 import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
-export const webTopics=[
- ['Session อยู่คนละเครื่อง','web-request','กดทดลอง · Stateful เก็บ session A ที่ Web 1 แต่ส่งคำขอไป Web 2'],
- ['Sticky กลับเครื่องเดิม','web-request','กดทดลอง · Stateful เปิด Sticky ให้คำขอกลับ Web 1 ที่มี session A'],
- ['Shared store ใช้สถานะร่วมกัน','web-request','กดทดลอง · Stateless ใช้ shared store ปิด Sticky แล้วส่งไป Web 2 เปรียบเทียบกับหัวข้อแรก'],
- ['Web ล่ม แต่สถานะยังอยู่','web-request','กดทดลอง · ใช้ shared store โดย Web 1 ล่ม แต่ Web 2 ยังอ่าน session A ได้'],
- ['เพิ่ม Web เข้าสู่ pool','web-request','กดทดลอง · Web 1 ยังล่ม เพิ่ม Web 3 ที่พร้อมเข้าสู่ pool แล้วส่งไป Web 3 เพื่อใช้ session เดียวกัน'],
- ['Shared store ล่ม','web-request','กดทดลอง · ส่งไป Web 3 ที่พร้อม แต่ shared store ล่ม เปรียบเทียบกับตอน Web 1 ล่ม'],
- ['ไม่มี Web พร้อมรับงาน','web-request','กดทดลอง · ปิด Web ทุกเครื่อง แต่ shared store ยังพร้อม ดูว่าไปไม่ถึง store เมื่อไม่มี Web รับคำขอ'],
-];
+export const webTopics=[['เปลี่ยน Web แล้ว ยังเป็นคนเดิมไหม?', 'web-request', 'กดทดลองครั้งเดียว · เมย์เปิดโปรไฟล์ผ่าน Web A แล้ว Web B เทียบ session ในเครื่องกับ shared store']];
+const webName=server=>`Web ${server===0?'A':'B'}`;
 export function webRoutes(frame){
  if(!frame)return [];
- const s=frame.state,r=s.last,routes=[['client','lb','Client ส่ง cookie ให้ Load balancer']];
- if(r.server<0)return routes;
- routes.push(['lb','web',`LB ส่งไป Web ${r.server+1}`]);
- if(s.mode==='shared'&&s.storeUp)routes.push(['web','store','Web อ่าน session A จาก shared store'],['store','web','ส่ง session A กลับให้ Web']);
- routes.push(['web','lb',`Web คืนผล ${r.code}`],['lb','client',`ผู้ใช้ได้รับผล ${r.code}`]);
+ const s=frame.state,name=webName(s.last.server);
+ const routes=[['client','web',`เมย์ส่ง cookie เดิม · Load balancer เลือก ${name}`]];
+ if(s.mode==='shared')routes.push(['web','store',`${name} ใช้รหัสใน cookie ค้น session`],['store','web',`Shared store คืน session ของเมย์ให้ ${name}`]);
+ routes.push(['web','client',s.last.code==='OK'?'รู้ว่าเป็นเมย์ → แสดงโปรไฟล์':'ไม่พบ session ที่ Web B → ขอให้เข้าสู่ระบบ']);
  return routes;
 }
-export function webScene(s,frame,topic){
- const selected=s.last?.server??(topic===6?-1:topic===1?0:topic>=4?2:1),routes=webRoutes(frame);
- const descriptions={OK:'ตรวจ session A สำเร็จและตอบโปรไฟล์',NO_SESSION:'ไม่พบ session A ที่เครื่องนี้ routing ไม่ได้ย้ายสถานะให้',STORE_UNAVAILABLE:'อ่าน shared session store ไม่ได้ แม้ web พร้อม',NO_WEB:'ยังไปไม่ถึง store เพราะไม่มี web รับงาน'};
- const result=s.last?`${s.last.code} · ${selected<0?'ไม่มี Web พร้อม':'Web '+(selected+1)} · ${descriptions[s.last.code]}`:'ยังไม่ได้ทดลอง · กดทดลองเพื่อส่งหนึ่งคำขอ';
- return `<figure class="web-scene" data-playback="idle" aria-label="เส้นทางคำขอโปรไฟล์และ session">
- <p class="web-premise">${s.mode==='local'?'Stateful · session A อยู่ Web 1':'Stateless · session A อยู่ shared store'} · Sticky ${topic===1?'เปิด':'ปิด'}<br>คำขอ ${s.requests} · Store reads ที่พยายาม ${s.storeReads}</p>
- <div class="web-status-pool">${s.up.map((up,i)=>`<div class="web-status ${!up&&(i===0||topic===6)?'web-offline':up?'web-ready':''}"><strong>Web ${i+1}</strong><span>${up?'พร้อมใน pool':i===0||topic===6?'ล่ม · ไม่รับงาน':'ยังไม่อยู่ใน pool'}</span><span>${s.mode==='local'?(i===0?'มี session A':'ไม่มี session A'):'ไม่เก็บ session ข้ามคำขอ'}</span></div>`).join('')}</div>
+export function webScene(s,frame){
+ const topic=frame?.topic??-1,shared=s.mode==='shared',outcomes=frame?.outcomes??[];
+ const result=frame?(s.last.code==='OK'?`${webName(s.last.server)} รู้ว่าเป็นเมย์ · เปิดโปรไฟล์ได้`:'Web B ไม่พบ session · ผู้ใช้ถูกขอให้เข้าสู่ระบบอีกครั้ง'):'ยังไม่ได้ทดลอง · ดูผู้ใช้คนเดิมเปิดหน้าเดิมผ่าน Web คนละเครื่อง';
+ const routes=webRoutes(frame);
+ return `<figure class="web-scene" data-playback="idle" data-condition="${topic}" aria-label="เปรียบเทียบการเปิดโปรไฟล์ของเมย์">
+ <p class="web-beat">${topic<0?'การทดลองเดียว · สองแบบการเก็บ session':`แบบ ${shared?2:1}/2 · ${shared?'เก็บ session ไว้ส่วนกลาง':'เก็บ session ใน Web A'}`}</p>
+ <p class="web-premise">เมย์เข้าสู่ระบบแล้ว · เปิดโปรไฟล์สองครั้งด้วย cookie เดิม<br>Load balancer ส่งครั้งแรกไป Web A และครั้งถัดไป Web B</p>
+ <div class="web-comparison-grid">${['local','shared'].map((mode,i)=>`<section class="web-comparison-case ${topic>=0&&s.mode===mode?'is-current':''}" aria-label="${mode==='local'?'Session ในเครื่อง':'Session ส่วนกลาง'}">
+ <h4>${i+1}. ${mode==='local'?'จำผู้ใช้ไว้ใน Web A':'ให้ Web อ่านสถานะส่วนกลาง'}</h4>
+ <p>${mode==='local'?'Stateful · Web B ไม่มี session นี้':'Stateless Web · ทั้งคู่ใช้ shared store'}</p>
+ <ol>${[0,1].map(server=>{const r=outcomes.find(o=>o.mode===mode&&o.server===server);return `<li data-request-result="${r?.code??'waiting'}"><span>ครั้งที่ ${server+1} → ${webName(server)}</span><strong class="${r?.code==='NO_SESSION'?'web-needs-login':''}">${!r?'รอดูผล':r.code==='OK'?'สวัสดี คุณเมย์':'กรุณาเข้าสู่ระบบ'}</strong></li>`;}).join('')}</ol></section>`).join('')}</div>
  <div class="web-map"><svg class="web-wires" aria-hidden="true">${routes.map(([from,to],i)=>`<path class="web-wire" data-from="${from}" data-to="${to}"/><circle class="web-particle" data-route="${i}" r="4" cx="0" cy="0"/>`).join('')}</svg>
- <div class="web-node" data-node="client"><strong>Client A</strong><span>cookie ระบุ session</span><span>มี session ที่ถูกต้องแล้ว</span></div>
- <div class="web-node" data-node="lb"><strong>Load balancer</strong><span>${topic===1?'Sticky → Web 1':selected<0?'ไม่มีปลายทางพร้อม':`เลือก Web ${selected+1}`}</span><span>รู้ health แล้ว</span></div>
- <div class="web-node ${selected<0?'web-offline':'web-ready'}" data-node="web"><strong>${selected<0?'ไม่มี Web พร้อม':'Web '+(selected+1)}</strong><span>${selected<0?'ไม่ส่งต่อไป store':s.mode==='shared'?'ตรวจ session ที่ shared store':selected===0?'มี session A':'ไม่มี session A'}</span><span>${selected<0?'ไม่มีเครื่องรับคำขอ':'เครื่องรับคำขอ'}</span></div>
- <div class="web-node ${s.storeUp?'':'web-offline'}" data-node="store"><strong>Shared store</strong><span>${s.storeUp?'พร้อม':'ล่ม · อ่านไม่ได้'}</span><span>${s.mode==='shared'?'เก็บ session A':'ไม่ได้ใช้ในโหมด Stateful'}</span></div></div>
+ <div class="web-node" data-node="client"><strong>เมย์ · หน้าโปรไฟล์</strong><span>Cookie = รหัสอ้างอิง session</span></div>
+ <div class="web-node" data-node="web"><strong>${topic<0?'Web A → Web B':webName(s.last.server)}</strong><span>${topic<0?'LB เปลี่ยนปลายทาง':shared?'ค้น session ที่ส่วนกลาง':s.last.server===0?'พบ session ในเครื่อง':'ไม่พบ session ในเครื่อง'}</span></div>
+ ${shared?'<div class="web-node" data-node="store"><strong>Shared session store</strong><span>รหัส session → ผู้ใช้เมย์</span></div>':''}</div>
  <div class="workload-actions"><div class="web-experiments"></div><div class="workload-playback"><button type="button" id="web-replay" disabled></button><button type="button" id="web-pause" disabled aria-pressed="false"></button></div><div class="workload-feedback"><p id="web-route" role="status"></p><p id="web-result" role="status">${result}</p></div></div>
- <figcaption>ภาพเป็นเส้นทางของผลจำลอง ไม่ใช่เวลา network · Replay / Pause ไม่ส่งคำขอใหม่ · เปลี่ยนหัวข้อเริ่มเงื่อนไขใหม่ ไม่ใช่การย้าย session จริง · ไม่จำลอง session expiry หรือ replication</figcaption></figure>`;
+ <figcaption>สองระบบตัวอย่างเตรียม session ไว้หลัง login แล้ว ไม่ได้คัดลอก session ระหว่าง Web · ภาพจำลอง ไม่ใช่เวลา network · เล่นภาพซ้ำไม่ส่งคำขอใหม่</figcaption></figure>`;
 }
 let cleanup=()=>{};
 export function stopWebPlayback(){cleanup();cleanup=()=>{};}
-export function bindWebPlayback(main,play=false,frame=null){
+export function bindWebPlayback(main,play=false,frame=null,onPause=()=>{}){
  stopWebPlayback();const scene=main.querySelector('.web-scene');if(!scene)return;
  const map=scene.querySelector('.web-map'),svg=scene.querySelector('svg'),pause=scene.querySelector('#web-pause');
  setWorkloadIcon(scene.querySelector('#web-replay'),'replay','เล่นภาพซ้ำ');setWorkloadIcon(pause,'pause','พักภาพ');
@@ -57,13 +52,13 @@ export function bindWebPlayback(main,play=false,frame=null){
   scene.dataset.playback='running';pause.disabled=media.matches;
   if(media.matches){scene.querySelector('#web-route').textContent=routes.map(r=>r[2]).join(' → ');settle();return;}
   for(let i=0;i<routes.length;i++){
-   if(disposed)return;scene.querySelector('#web-route').textContent=`${i+1} / ${routes.length} · ${routes[i][2]}`;
+   if(disposed)return;scene.querySelector('#web-route').textContent=routes[i][2];
    const particle=svg.querySelector(`[data-route="${i}"]`);
    animation=particle.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:1}],{duration:animationTiming.lab08.routeMs,fill:'none',easing:'linear'});
    try{await animation.finished;}catch{return;}
   }
   if(!disposed)settle();
  }
- pause.onclick=()=>{const pausing=scene.dataset.playback==='running';if(animation)pausing?animation.pause():animation.play();scene.dataset.playback=pausing?'paused':'running';setWorkloadIcon(pause,pausing?'play':'pause',pausing?'เล่นภาพต่อ':'พักภาพ');pause.setAttribute('aria-pressed',String(pausing));};
+ pause.onclick=()=>{const pausing=scene.dataset.playback==='running';onPause(pausing);if(animation)pausing?animation.pause():animation.play();scene.dataset.playback=pausing?'paused':'running';setWorkloadIcon(pause,pausing?'play':'pause',pausing?'เล่นภาพต่อ':'พักภาพ');pause.setAttribute('aria-pressed',String(pausing));};
  cleanup=()=>{disposed=true;animation?.cancel();observer.disconnect();resolveDone();};if(play)start();return done;
 }
