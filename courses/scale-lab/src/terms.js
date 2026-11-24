@@ -94,10 +94,33 @@ const entries = [
  ['Modulo','การหาค่าเศษจากการหาร ใช้สาธิตการเลือก shard','นำ customer ID หารจำนวน shard แล้วใช้เศษเป็นหมายเลขปลายทาง','เปลี่ยนจำนวน shard ทำให้ mapping เปลี่ยน ต้องมีแผนย้ายข้อมูล']
 ];
 
-const dictionary = new Map();
-for (const [aliases, meaning, example, warning] of entries) {
+// Explicit reviewed forms only: product names, SQL keywords (JOIN), and
+// shorthand such as p95 are not invented acronyms. NoSQL's common modern
+// interpretation is “Not Only SQL”; this is not a ban on SQL support.
+const fullForms = {
+  CI:'Continuous Integration', HTTP:'Hypertext Transfer Protocol',
+  NoSQL:'Not Only SQL', SQL:'Structured Query Language',
+  RDBMS:'Relational Database Management System', DNS:'Domain Name System',
+  GeoDNS:'Geographic Domain Name System', TLS:'Transport Layer Security',
+  HTTPS:'Hypertext Transfer Protocol Secure', DB:'Database',
+  RPS:'Requests Per Second', LB:'Load Balancer', SPOF:'Single Point of Failure',
+  RPO:'Recovery Point Objective', RTO:'Recovery Time Objective', TTL:'Time to Live',
+  CDN:'Content Delivery Network', ACK:'Acknowledgement', AZ:'Availability Zone'
+};
+const expandedTitle = name => fullForms[name] ? `${name} (${fullForms[name]})` : name;
+
+// Keep the canonical title as the deduplication identity; only the dialog
+// heading depends on the clicked alias (HTTPS must not be titled TLS).
+export const glossaryInventory = entries.map(([aliases,meaning,example,warning]) => {
   const names=aliases.split('|');
-  for (const alias of names) dictionary.set(alias.toLowerCase(), {title:names[0],meaning,example,warning});
+  return {title:names[0],meaning,example,warning,aliases:names.map(name=>({
+    name, fullForm:fullForms[name] || null,
+    heading:expandedTitle(fullForms[name] ? name : names[0])
+  }))};
+});
+const dictionary = new Map();
+for (const entry of glossaryInventory) {
+  for (const alias of entry.aliases) dictionary.set(alias.name.toLowerCase(), {...entry,heading:alias.heading});
 }
 const escapeRegex = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 const pattern = new RegExp(`(?<![A-Za-z0-9_])(${[...dictionary.keys()].sort((a,b)=>b.length-a.length).map(escapeRegex).join('|')})(?![A-Za-z0-9_])`,'gi');
@@ -127,7 +150,7 @@ export function installTermHints(root) {
     if(trigger?.isConnected)trigger.setAttribute('aria-expanded','false');
     trigger=button;
     const entry=dictionary.get(button.dataset.term);
-    hint.querySelector('h2').textContent=entry.title;
+    hint.querySelector('h2').textContent=entry.heading;
     hint.querySelector('#term-meaning').textContent=entry.meaning;
     hint.querySelector('#term-example').textContent=entry.example;
     hint.querySelector('#term-warning').textContent=entry.warning;

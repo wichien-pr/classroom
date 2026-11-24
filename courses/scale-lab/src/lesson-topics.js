@@ -121,13 +121,13 @@ export function mountLessonTopics(main,kind,onWorkloadTopic=()=>{}){
  }
  if(kind==='logging-operations'){
   setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');
-  topic.prepend(heading);navigation.remove();
+  setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');
+  navigation.firstElementChild.after(heading);topic.prepend(navigation);
   const retained=document.createElement('div');retained.className='logging-retained';
   const action=document.createElement('button');action.id='logging-run';action.type='button';action.dataset.loggingLabel='ทดลอง';setWorkloadIcon(action,'play','ทดลอง');retained.append(action);
   topic.append(retained);controls.remove();observation?.remove();find('#state-view').remove();find('.event-area')?.remove();more.remove();
   steps.remove();
-  heading.textContent=loggingTopics[0][0];
-  onWorkloadTopic(0);return;
+
  }
  if(kind==='message-queue'){
   setWorkloadIcon(find('#lesson-topic-back'),'back','ย้อนกลับ');setWorkloadIcon(find('#lesson-topic-next'),'next','ถัดไป');setWorkloadIcon(find('#reset'),'reset','เริ่มการทดลองใหม่');

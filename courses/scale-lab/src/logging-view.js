@@ -1,13 +1,14 @@
 const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const loggingLayout={
  title:'ก่อนปล่อย · Build / Test / Deploy',
- intro:'เลือก Version v.1 หรือ v.2 แล้วกดทดลองครั้งเดียว ดู Build → Test และ Deploy เฉพาะเมื่อ Test ผ่าน การทดลองนี้จำลองการตรวจเงื่อนไขก่อนปล่อย ไม่ได้รันหรือปล่อยโค้ดจริง',
+ intro:'เลือก Version v.1 หรือ v.2 แล้วกดทดลองครั้งเดียว ดู Build → Test และ Deploy เฉพาะเมื่อ Test ผ่าน การทดลองนี้จำลองการตรวจเงื่อนไขก่อนปล่อย ไม่ได้รันหรือปล่อยโค้ดจริง จากนั้นกดถัดไปเพื่อดู Logs และ Metrics เคลื่อนไหวจากคำขอจำลอง',
  cards:[['ก่อนปล่อย · Build / Test / Deploy','Automation ตรวจ Version ตามเงื่อนไขตัวอย่าง Test ไม่ผ่านต้องหยุด Deploy ส่วน CI ไม่ได้หมายถึงปล่อย production ทุกครั้ง'],['บริการเดิม · Logs / Metrics','Centralized logs และ metrics ระดับเครื่อง Service Tier และ Business ช่วยตั้งประเด็นตรวจต่อ ไม่ยืนยันสาเหตุจากค่าเดียว']],
  steps:[
- 'เลือก Version แล้วกดทดลองครั้งเดียว · เปลี่ยน Version และเล่นภาพซ้ำไม่บันทึกกิจกรรม'
+ 'เลือก Version แล้วกดทดลองครั้งเดียว · เปลี่ยน Version และเล่นภาพซ้ำไม่บันทึกกิจกรรม',
+ 'ดู Logs และ Metrics จากคำขอจำลองชุดเดียวกัน'
  ],
  groups:[['ค้นเหตุการณ์',['log-scope','log-level']],['อ่านตัวชี้วัด',['metric-group']],['จำลองการตรวจ Version โค้ด',['code-version']]],
- note:'Pipeline บันทึกเฉพาะเมื่อเดินขั้นใหม่ · ตั้งค่าและเล่นภาพซ้ำไม่บันทึกกิจกรรม · Logs และ Metrics อยู่ในเนื้อหาอ่าน ไม่ใช่ขั้นทดลอง'
+ note:'Pipeline บันทึกเฉพาะเมื่อเดินขั้นใหม่ · ตั้งค่าและเล่นภาพซ้ำไม่บันทึกกิจกรรม · หัวข้อ Logs และ Metrics จำลองภาพประกอบ ไม่บันทึกกิจกรรม'
 };
 export function loggingControls(){return `<label>ขอบเขต logs<select id="log-scope"><option value="web-1">Web 1 · เครื่องเดียว</option><option value="web-2">Web 2 · เครื่องเดียว</option><option value="worker-1">Worker 1 · เครื่องเดียว</option><option value="all">ศูนย์รวมทุกบริการ</option></select></label><label>ระดับเหตุการณ์<select id="log-level"><option value="error">Error · ข้อผิดพลาด</option><option value="all">ทุกระดับ</option></select></label><label>กลุ่ม metrics<select id="metric-group"><option value="host">ระดับเครื่อง</option><option value="tier">ระดับ Service Tier</option><option value="business">ระดับ Business</option></select></label><label> Version โค้ด (เปลี่ยนแล้วเริ่ม pipeline ใหม่)<select id="code-version"><option value="broken"> Version ที่ tests ไม่ผ่าน</option><option value="fixed"> Version แก้ไขที่ tests ผ่าน</option></select></label><button id="inspect-logs" data-action="inspect-logs">ค้นหา logs</button><button id="inspect-metrics" data-action="inspect-metrics">อ่าน metrics</button><button id="run-pipeline" data-action="run-pipeline">เดิน pipeline 1 ขั้น</button>`;}
 export const pipelineLabel=s=>({ready:'รอ Build',built:'Build ผ่าน · รอ Tests',tested:'Tests ผ่าน · รอ Deploy',blocked:'Tests ไม่ผ่าน · หยุดก่อน deploy',deployed:'Deploy จำลองแล้ว'}[s]);

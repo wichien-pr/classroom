@@ -1,0 +1,21 @@
+{
+  "CI": "Continuous Integration",
+  "HTTP": "Hypertext Transfer Protocol",
+  "NoSQL": "Not Only SQL",
+  "SQL": "Structured Query Language",
+  "RDBMS": "Relational Database Management System",
+  "DNS": "Domain Name System",
+  "GeoDNS": "Geographic Domain Name System",
+  "TLS": "Transport Layer Security",
+  "HTTPS": "Hypertext Transfer Protocol Secure",
+  "DB": "Database",
+  "RPS": "Requests Per Second",
+  "LB": "Load Balancer",
+  "SPOF": "Single Point of Failure",
+  "RPO": "Recovery Point Objective",
+  "RTO": "Recovery Time Objective",
+  "TTL": "Time to Live",
+  "CDN": "Content Delivery Network",
+  "ACK": "Acknowledgement",
+  "AZ": "Availability Zone"
+}

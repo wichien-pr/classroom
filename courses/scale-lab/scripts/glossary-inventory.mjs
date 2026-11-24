@@ -1,0 +1,11 @@
+import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
+import assert from 'node:assert/strict';
+import {glossaryInventory} from '../src/terms.js';
+const expected=JSON.parse(readFileSync(new URL('../tests/fixtures/glossary-expansions.json',import.meta.url)));
+const aliases=glossaryInventory.flatMap(e=>e.aliases);
+const forms=aliases.filter(a=>a.fullForm);
+assert.deepEqual(Object.fromEntries(forms.map(a=>[a.name,a.fullForm])),expected);
+const report={scope:'All entries and aliases in the shared Scale Lab registry; not every acronym mentioned in prose is a glossary entry.',notes:['NoSQL: common modern interpretation Not Only SQL, not a guarantee of no SQL.','GeoDNS: geographic DNS; DNS expands to Domain Name System.','DB and ACK are conventional abbreviations included for clarity.','Redis/Memcached are product names; JOIN is a keyword; p95 is percentile notation. No invented expansions.','REST is not an existing glossary entry.','Metrics is a pre-existing duplicate alias; the later entry remains the runtime winner.'],counts:{entries:glossaryInventory.length,aliases:aliases.length,uniqueAliases:new Set(aliases.map(a=>a.name.toLowerCase())).size,expandedAliases:forms.length},entries:glossaryInventory};
+const dir=new URL('../evidence/glossary/',import.meta.url);mkdirSync(dir,{recursive:true});
+writeFileSync(new URL('inventory.json',dir),JSON.stringify(report,null,2)+'\n');
+console.log(JSON.stringify(report.counts));

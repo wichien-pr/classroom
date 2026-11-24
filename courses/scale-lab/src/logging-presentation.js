@@ -1,6 +1,6 @@
 import {animationTiming} from './animation-timing.js';
 import {setWorkloadIcon} from './workload-view.js';
-export const loggingTopics=[['ก่อนปล่อย · Build / Test / Deploy','run-pipeline','เลือก Version แล้วกดทดลองครั้งเดียว · เล่นซ้ำไม่บันทึกกิจกรรม']];
+export const loggingTopics=[['ก่อนปล่อย · Build / Test / Deploy','run-pipeline','เลือก Version แล้วกดทดลองครั้งเดียว · เล่นซ้ำไม่บันทึกกิจกรรม'],['ดู Logs และ Metrics เคลื่อนไหว','','ข้อมูลจำลอง · ไม่บันทึกกิจกรรม']];
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function pipeline(stage){return ['build','test','deploy'].map((key,i)=>{const failed=stage==='blocked'&&i===1,passed=['built','tested','deployed'].indexOf(stage)>=i||stage==='blocked'&&i===0;return `<section class="logging-stage" data-stage="${key}" data-status="${failed?'failed':passed?'passed':'waiting'}"><strong>${['Build','Test','Deploy'][i]}</strong><span>${failed?'✕ ไม่ผ่าน':passed?'✓ ผ่านแล้ว':key==='deploy'?'🔒 รอ tests ผ่าน':'รอตรวจ'}</span></section>`;}).join('');}
 export function loggingScene(s,f){

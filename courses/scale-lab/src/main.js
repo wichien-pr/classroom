@@ -48,8 +48,9 @@ function renderWebControls(){
 }
 import './logging-presentation.css';
 import {loggingScene,bindLoggingPlayback,stopLoggingPlayback} from './logging-presentation.js';
-import {createLoggingStory as createLoggingFlow,loggingPages} from './logging-story.js';
-let loggingCandidate=false;
+import {createLoggingStory as createLoggingFlow} from './logging-story.js';
+import {loggingStreamScene,bindLoggingStream,stopLoggingStream} from './logging-stream.js';
+let loggingCandidate=false,loggingTopic=0;
 const loggingPreset=()=>loggingInitial();
 let loggingResult=null,loggingPlay=false,loggingAnimation,loggingEpoch=0;
 const loggingFlow=createLoggingFlow({
@@ -62,8 +63,8 @@ const loggingFlow=createLoggingFlow({
   }else{localEligibility.record('logging-operations',action);renderProgress();}
  }
 });
-function cancelLoggingFlow(){loggingEpoch++;loggingFlow.cancel();stopLoggingPlayback();}
-function prepareLoggingTopic(){loggingCandidate=false;selectLoggingEvidence(0);}
+function cancelLoggingFlow(){loggingEpoch++;loggingFlow.cancel();stopLoggingPlayback();stopLoggingStream();}
+function prepareLoggingTopic(index){loggingTopic=index;loggingCandidate=false;selectLoggingEvidence();}
 function selectLoggingEvidence(){cancelLoggingFlow();loggingResult=null;loggingPlay=false;renderState();}
 async function replayLoggingStage(){
  if(loggingFlow.busy||!loggingFlow.completed)return;
@@ -78,11 +79,10 @@ async function runLogging(){
  finally{if(epoch===loggingEpoch){renderLoggingControls();if(focus?.isConnected&&!focus.disabled&&document.activeElement===document.body)focus.focus({preventScroll:true});}}
 }
 function renderLoggingControls(){
- const button=$('#logging-run');if(!button)return;
+ const button=$('#logging-run');if(!button||loggingTopic!==0)return;
  const busy=loggingFlow.busy,blocked=quizBlocked()||pendingLesson!==null;button.disabled=busy||blocked;button.setAttribute('aria-busy',String(busy||participation?.status==='saving'));
  setWorkloadIcon(button,participation?.status==='saving'?'saving':'play',participation?.status==='saving'?'กำลังบันทึก':busy?'กำลังทดลอง':'ทดลอง');
  const replay=$('#logging-replay');if(replay){replay.disabled=busy||!loggingFlow.completed;replay.onclick=replayLoggingStage;}
- $('#lesson-topic-title').textContent=loggingPages[0].title;
  const candidate=$('#logging-candidate');candidate.value=loggingCandidate?'fixed':'broken';candidate.disabled=busy||blocked;
  candidate.onchange=()=>{loggingCandidate=candidate.value==='fixed';selectLoggingEvidence();};
  button.onclick=()=>runLogging();
@@ -484,8 +484,10 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
  $('#complete-lesson').onclick=()=>completeLesson(lessons[selected-1]);
 }
 function navigate(id){selected=id;state=initial();events=[];feedback='';message='พร้อมทดลอง — เปลี่ยนตัวแปร แล้วเดินระบบทีละขั้น';mount();$('#main').setAttribute('tabindex','-1');$('#main').focus({preventScroll:true});}
-function renderState(){if(lessons[selected-1].kind==='database-scaling'){tierPresentation?.update();return;}const loggingActions=$('.logging-retained'),loggingFocus=loggingActions?.contains(document.activeElement)?document.activeElement:null;const queueActions=$('.queue-retained'),queueFocus=queueActions?.contains(document.activeElement)?document.activeElement:null;const dcActions=$('.dc-retained'),dcFocus=dcActions?.contains(document.activeElement)?document.activeElement:null;const webActions=$('.web-retained'),webFocus=webActions?.contains(document.activeElement)?document.activeElement:null;const cdnActions=$('.cdn-retained'),cdnFocus=cdnActions?.contains(document.activeElement)?document.activeElement:null;const cacheActions=$('.cache-retained'),cacheFocus=cacheActions?.contains(document.activeElement)?document.activeElement:null;const replicationActions=$('.replication-retained'),replicationFocus=replicationActions?.contains(document.activeElement)?document.activeElement:null;const balanceAction=$('#route'),balanceFocused=balanceAction===document.activeElement;const flowActions=$('.flow-actions'),flowFocus=flowActions?.contains(document.activeElement)?document.activeElement:null;const scalingAction=$('#order'),scalingFocused=scalingAction===document.activeElement;const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?loggingScene(loggingResult?.state||loggingInitial(loggingCandidate),loggingResult):l.kind==='message-queue'?queueScene(queueResult?.state||state.queueLab,queueResult,queueTopic):l.kind==='data-centers'?dcScene(state.dataCenters,dcResult):l.kind==='stateless-web'?webScene(webResult?.state||state.webLab,webResult,webTopic):l.kind==='cdn'?cdnScene(cdnResult?.state||state.cdnLab,cdnResult):l.kind==='cache'?cacheScene(cacheResult?.state||state.cacheLab,cacheResult):l.kind==='replica'?replicationScene(replicationResult?.state||state.replication,replicationResult,replicationTopic):l.kind==='balance'?balanceScene(state.balance,balanceResult,balanceFrame):l.kind==='stock'?scalingScene(state.scaling,scalingResult):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?flowDiagram(state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
+function renderState(){if(lessons[selected-1].kind==='database-scaling'){tierPresentation?.update();return;}const loggingActions=$('.logging-retained'),loggingFocus=loggingActions?.contains(document.activeElement)?document.activeElement:null;const queueActions=$('.queue-retained'),queueFocus=queueActions?.contains(document.activeElement)?document.activeElement:null;const dcActions=$('.dc-retained'),dcFocus=dcActions?.contains(document.activeElement)?document.activeElement:null;const webActions=$('.web-retained'),webFocus=webActions?.contains(document.activeElement)?document.activeElement:null;const cdnActions=$('.cdn-retained'),cdnFocus=cdnActions?.contains(document.activeElement)?document.activeElement:null;const cacheActions=$('.cache-retained'),cacheFocus=cacheActions?.contains(document.activeElement)?document.activeElement:null;const replicationActions=$('.replication-retained'),replicationFocus=replicationActions?.contains(document.activeElement)?document.activeElement:null;const balanceAction=$('#route'),balanceFocused=balanceAction===document.activeElement;const flowActions=$('.flow-actions'),flowFocus=flowActions?.contains(document.activeElement)?document.activeElement:null;const scalingAction=$('#order'),scalingFocused=scalingAction===document.activeElement;const workloadAction=$('#estimate'),workloadFocused=workloadAction===document.activeElement;const l=lessons[selected-1];$('#architecture').innerHTML=l.kind==='database-scaling'?dataTierDiagram(state.dataTier):l.kind==='logging-operations'?(loggingTopic===1?loggingStreamScene():loggingScene(loggingResult?.state||loggingInitial(loggingCandidate),loggingResult)):l.kind==='message-queue'?queueScene(queueResult?.state||state.queueLab,queueResult,queueTopic):l.kind==='data-centers'?dcScene(state.dataCenters,dcResult):l.kind==='stateless-web'?webScene(webResult?.state||state.webLab,webResult,webTopic):l.kind==='cdn'?cdnScene(cdnResult?.state||state.cdnLab,cdnResult):l.kind==='cache'?cacheScene(cacheResult?.state||state.cacheLab,cacheResult):l.kind==='replica'?replicationScene(replicationResult?.state||state.replication,replicationResult,replicationTopic):l.kind==='balance'?balanceScene(state.balance,balanceResult,balanceFrame):l.kind==='stock'?scalingScene(state.scaling,scalingResult):l.kind==='workload'?workloadDiagram(state.database,workloadHasResult):l.kind==='flow'?flowDiagram(state.client):l.nodes.map((n,i)=>`<div class="node ${state.active===i?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><strong>${n}</strong>${state.active===i?'<small>ขั้นล่าสุด</small>':''}</div>${i<l.nodes.length-1?'<span class="arrow" aria-hidden="true">→</span>':''}`).join('');
 if(l.kind==='logging-operations'){
+ loggingActions.hidden=loggingTopic!==0;
+ if(loggingTopic===1){$('#lesson-topic').append(loggingActions);bindLoggingStream($('#main'));return;}
  $('.logging-experiments').append(loggingActions);if(loggingFocus)loggingFocus.focus({preventScroll:true});
  loggingAnimation=bindLoggingPlayback($('#main'),loggingPlay,loggingResult);loggingPlay=false;renderLoggingControls();return;
 }

@@ -1,0 +1,62 @@
+import {test,expect} from '@playwright/test';
+test('start changes correlated logs and charts; pause freezes and resume continues',async({page})=>{
+ await page.goto('/');await page.locator('[data-lesson="11"]').click();await page.locator('#lesson-topic-next').click();
+ const scene=page.locator('.logging-stream');
+ await expect(page.locator('#logging-stream-toggle')).toHaveText('เริ่มจำลอง');
+ await page.locator('#logging-stream-toggle').click();
+ await expect(scene).toHaveAttribute('data-second','1');
+ const first=await scene.locator('polyline').first().getAttribute('points');
+ await expect.poll(()=>scene.getAttribute('data-second')).toBe('3');
+ expect(await scene.locator('polyline').first().getAttribute('points')).not.toBe(first);
+ await expect(scene.locator('[data-stream-metric=rate] output')).toHaveText('6 req/s');
+ await expect(scene.locator('[data-stream-metric=errors] output')).toHaveText('33 %');
+ await expect(scene.locator('.logging-stream-feed li')).toHaveCount(6);
+ await page.locator('#logging-stream-toggle').click();
+ const paused=await scene.innerHTML();await page.waitForTimeout(1300);expect(await scene.innerHTML()).toBe(paused);
+ await page.locator('#logging-stream-toggle').click();await expect.poll(()=>scene.getAttribute('data-second')).not.toBe('3');
+});
+for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`${theme} ${width}: readable charts, keyboard control, bounded updates and cleanup`,async({page},info)=>{
+ const errors=[],writes=[];page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>{if(r.method()==='POST')writes.push(r.url());});
+ await page.setViewportSize({width,height:900});await page.emulateMedia({reducedMotion:'reduce'});await page.clock.install();
+ await page.goto('/');await page.locator('[data-lesson="11"]').click();await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
+ await page.locator('#lesson-topic-next').click();
+ const scene=page.locator('.logging-stream');
+ await expect(scene.locator('svg').first()).toHaveCSS('display','block');
+ const before=await page.evaluate(()=>JSON.stringify(localStorage));
+ await page.locator('#logging-stream-toggle').focus();await page.keyboard.press('Enter');
+ await page.clock.runFor(25000);
+ await expect(scene).toHaveAttribute('data-second','26');
+ expect(await scene.locator('polyline').first().getAttribute('points').then(s=>s.split(' ').length)).toBe(20);
+ expect(await scene.locator('li').count()).toBeLessThanOrEqual(8);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ expect(await scene.locator('svg').first().evaluate(e=>getComputedStyle(e.querySelector('polyline')).stroke)).not.toBe('none');
+ expect(await scene.locator('polyline').first().evaluate(e=>{
+  const luminance=color=>{const rgb=color.match(/[\d.]+/g).slice(0,3).map(Number).map(v=>{v/=255;return v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4;});return rgb[0]*0.2126+rgb[1]*0.7152+rgb[2]*0.0722;};
+  const a=luminance(getComputedStyle(e).stroke),b=luminance(getComputedStyle(e.closest('figure')).backgroundColor);return (Math.max(a,b)+0.05)/(Math.min(a,b)+0.05);
+ })).toBeGreaterThanOrEqual(3);
+ expect(await page.locator('#logging-stream-toggle').evaluate(e=>e.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+ await page.locator('#logging-stream-toggle').click();await page.setViewportSize({width,height:2400});await scene.scrollIntoViewIfNeeded();await scene.screenshot({path:info.outputPath(`${theme}-${width}.png`)});
+ // A detached scene must stop changing after topic and lesson navigation.
+ await page.evaluate(()=>window.oldStream=document.querySelector('.logging-stream'));
+ await page.locator('#logging-stream-toggle').click();await page.locator('#lesson-topic-back').click();
+ const stopped=await page.evaluate(()=>window.oldStream.dataset.second);await page.clock.runFor(3000);expect(await page.evaluate(()=>window.oldStream.dataset.second)).toBe(stopped);
+ await page.locator('#lesson-topic-next').click();await expect(scene).toHaveAttribute('data-second','0');await page.locator('#logging-stream-toggle').click();
+ await page.evaluate(()=>window.oldStream=document.querySelector('.logging-stream'));await page.locator('[data-lesson="10"]').click();await page.clock.runFor(3000);expect(await page.evaluate(()=>window.oldStream.dataset.second)).toBe('1');
+ expect(writes).toEqual([]);expect(await page.evaluate(()=>JSON.stringify(localStorage))).toBe(before);expect(errors).toEqual([]);
+});
+test('extra unscored topic preserves the original pipeline',async({page})=>{
+ await page.goto('/');await page.locator('[data-lesson="11"]').click();
+ await expect(page.locator('#logging-run')).toBeVisible();
+ await expect(page.locator('#lesson-topic-next')).toBeEnabled();
+ await page.locator('#lesson-topic-next').click();
+ await expect(page.locator('#lesson-topic-title')).toContainText('2 / 2');
+ await expect(page.locator('.logging-stream')).toContainText('ข้อมูลจำลอง');
+ await expect(page.locator('.logging-stream')).toContainText('Logs');
+ await expect(page.locator('.logging-stream')).toContainText('Metrics');
+ await expect(page.locator('#logging-run')).toBeHidden();
+ await expect(page.locator('#lesson-topic-next')).toBeDisabled();
+ await page.locator('#lesson-topic-back').click();
+ await expect(page.locator('#logging-run')).toBeVisible();
+ await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#logging-candidate').selectOption('fixed');await page.locator('#logging-run').click();
+ await expect(page.locator('[data-stage=deploy]')).toHaveAttribute('data-status','passed');
+});

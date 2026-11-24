@@ -13,7 +13,7 @@ test('permitted Deploy token travels its actual connector',async({page},testInfo
 for(const theme of ['light','dark'])for(const width of [1280,390,320])test(`${theme} ${width}: candidates, moving tokens, pause, replay, reset`,async({page},testInfo)=>{
  const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  await page.setViewportSize({width,height:900});await page.goto('/');await page.locator('[data-lesson="11"]').click();await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
- await expect(page.locator('#lesson-topic-next,#lesson-topic-back')).toHaveCount(0);await expect(page.locator('#lesson-topic-title')).toHaveText('ก่อนปล่อย · Build / Test / Deploy');
+ await expect(page.locator('#lesson-topic-next')).toBeEnabled();await expect(page.locator('#lesson-topic-back')).toBeDisabled();await expect(page.locator('#lesson-topic-title')).toHaveText('1 / 2 · ก่อนปล่อย · Build / Test / Deploy');
  for(const [candidate,label] of [['broken','v.1'],['fixed','v.2']]){
  await page.locator('#logging-candidate').selectOption(candidate);await expect(page.locator('.logging-code strong')).toHaveText(label);await page.locator('#logging-run').click();
  await page.waitForFunction(()=>document.querySelector('.logging-transit')?.getAnimations().length);

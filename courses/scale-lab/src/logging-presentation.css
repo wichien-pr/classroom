@@ -1,3 +1,22 @@
+.logging-stream{--stream-accent:var(--topic-blue)}
+:is([data-theme=dark],[data-classroom-theme=dark]) .logging-stream{--stream-accent:#7dbaff}
+.logging-stream-controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:16px 0}
+.logging-stream #logging-stream-toggle{min-height:48px;min-width:110px;padding:8px 16px;font:inherit;border:2px solid var(--topic-blue);border-radius:8px;background:var(--topic-surface);color:var(--topic-ink)}
+.logging-stream-charts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.logging-stream-charts figure{margin:0;padding:12px;min-width:0;border:1px solid var(--topic-line);border-radius:10px;background:var(--topic-surface)}
+.logging-stream-charts figcaption{margin:0;font-size:16px;color:var(--topic-ink)}
+.logging-stream-charts output{display:block;font-size:24px;font-weight:700;color:var(--topic-ink)}
+.logging-stream-charts svg{display:block;width:100%;height:auto;overflow:visible}
+.logging-stream-charts path{fill:none;stroke:var(--topic-muted);stroke-width:1}
+.logging-stream-charts polyline{fill:none;stroke:var(--stream-accent);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.logging-stream .logging-stream-scale,.logging-stream .logging-stream-window{font-size:14px;color:var(--topic-muted)}
+.logging-stream .logging-stream-window{margin:8px 0 16px}
+.logging-stream-feed{display:grid;gap:6px;padding:0;list-style:none;margin:8px 0 16px}
+.logging-stream-feed li{display:grid;grid-template-columns:minmax(130px,1fr) 2fr;gap:8px;border-left:3px solid var(--topic-blue);padding:8px 10px;background:var(--topic-surface);overflow-wrap:anywhere}
+.logging-stream-feed strong,.logging-stream-feed code{font-size:14px;line-height:1.6;color:var(--topic-ink)}
+.logging-stream-feed [data-status="500"]{border-color:#b42332}
+[data-theme=dark] .logging-stream-feed [data-status="500"],[data-classroom-theme=dark] .logging-stream-feed [data-status="500"]{border-color:#ff8e98}
+@media(max-width:800px){.logging-stream-charts{grid-template-columns:minmax(0,1fr)}.logging-stream-feed li{grid-template-columns:minmax(0,1fr)}}
 .logging-scene :is(#logging-pause,#logging-replay){background:var(--topic-surface);color:var(--topic-ink);border:1px solid var(--topic-line)}
 .logging-setup{display:grid;gap:8px;margin:12px 0;font-size:16px}.logging-setup select{width:100%;min-width:0;min-height:44px;font:inherit;color:var(--topic-ink);background:var(--topic-surface);border:1px solid var(--topic-line);border-radius:8px;padding:8px}
 .logging-choices{display:flex;flex-wrap:wrap;gap:8px;padding:12px 0;border:0;margin:0 0 12px;min-width:0}
