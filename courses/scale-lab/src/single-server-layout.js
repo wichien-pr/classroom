@@ -32,7 +32,7 @@ export function mountSingleServerLayout(main,onTopic=()=>{}) {
  }
  back.onclick=()=>{if(slide>0){slide--;show(true);}};next.onclick=()=>{if(slide<3){slide++;show(true);}};show();
  const details=document.createElement('details');details.id='flow-details';
- details.innerHTML='<summary>อ่านเพิ่มเติม · การทำงานและข้อจำกัดของแบบจำลอง</summary><p>ฝั่ง server ใช้ Java/Python/Go/Rust หรืออื่นๆ จัดการ logic และข้อมูล แต่ไม่ได้บังคับว่าทุก request ต้องอ่านทั้ง Database และ Cache เริ่มเครื่องเดียวดูแลง่าย แต่ส่วนต่างๆ แย่งทรัพยากรและล้มร่วมกันได้</p><p>ตัวอย่างเปิดข้อมูลผู้ใช้ 12 ผ่าน api.example.test และ IP สำหรับเอกสาร 192.0.2.10 ไม่ส่ง network จริง จำลองการถาม DNS ใหม่; cache DNS และการใช้ connection เดิมช่วยให้ไม่ต้องค้นหาใหม่ทุกครั้ง งานจริงควรใช้ HTTPS แบบจำลองนี้ไม่ใช่ผล benchmark</p>';
+ details.innerHTML='<summary>อ่านเพิ่มเติม · การทำงานและข้อจำกัดของแบบจำลอง</summary><p>ฝั่ง server ใช้ Java/Python/Go/Rust หรืออื่นๆ จัดการ logic และข้อมูล แต่ไม่ได้บังคับว่าทุก request ต้องอ่านทั้ง Database และ Cache หลักการเสริม: เริ่มเครื่องเดียวดูแลง่าย แต่ส่วนต่างๆ แย่งทรัพยากรและล้มร่วมกันได้ ฉากนี้ไม่ได้ทดลองการแย่งทรัพยากรหรือเครื่องล่ม</p><p>ตัวอย่างเปิดข้อมูลผู้ใช้ 12 ผ่าน api.example.test และ IP สำหรับเอกสาร 192.0.2.10 ไม่ส่ง network จริง จำลองการถาม DNS ใหม่; cache DNS และการใช้ connection เดิมช่วยให้ไม่ต้องค้นหาใหม่ทุกครั้ง งานจริงควรใช้ HTTPS แบบจำลองนี้ไม่ใช่ผล benchmark</p>';
  grid.replaceChildren(intro,comparison,lab,details,quiz);
 
 }

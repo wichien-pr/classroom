@@ -390,15 +390,14 @@ $('#app').innerHTML=`${classroomLink(import.meta.env.VITE_CLASSROOM_URL)}<a clas
   document.querySelector('.source-ref').textContent='Single-server setup';
  }
  if(l.kind==='stateless-web'){
-  document.querySelector('.teaching section').insertAdjacentHTML('afterend',webNotes());
   $('#main').classList.add('web-lesson');
   const grid=$('.learning-grid'),teaching=$('.teaching'),intro=teaching.firstElementChild;
-  const comparison=$('#web-comparison').parentElement,extra=comparison.nextElementSibling,quiz=$('.quiz'),lab=$('.lab');
-  intro.classList.add('web-intro');comparison.classList.add('web-compare-section');
+  const quiz=$('.quiz'),lab=$('.lab');
+  intro.classList.add('web-intro');
   const steps=intro.querySelector('.experiment');steps.querySelector('p').outerHTML=webSteps();lab.querySelector('.panel-title').after(steps);
   const details=document.createElement('details');details.id='web-details';
-  details.innerHTML='<summary>อ่านเพิ่มเติม · ถ้า store ล่ม หรือใช้ Sticky?</summary>';details.append(extra);
-  grid.replaceChildren(intro,lab,comparison,details,quiz);
+  details.innerHTML='<summary>อ่านเพิ่มเติม · ถ้า store ล่ม หรือใช้ Sticky?</summary>'+webNotes();
+  grid.replaceChildren(intro,lab,details,quiz);
 
   document.querySelector('.source-ref').textContent='Stateless web tier';
   $('#web-mode').onchange=e=>{state.webLab=webInitial(e.target.value);for(let i=0;i<3;i++)$('#web-up-'+i).checked=state.webLab.up[i];$('#web-store').checked=true;message='เริ่มสถานการณ์ใหม่แล้ว ไม่ใช่การย้าย session จริง';events=[];renderState();};
