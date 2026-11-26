@@ -57,6 +57,9 @@ def create_app(config=None):
                 request.max_form_memory_size = 80 * 1024
                 request.max_form_parts = 4
             if request.method == 'POST':
+                if g.user and request.endpoint in ('cto_project', 'cto_review'):
+                    # Two 3,000-character fields, including JSON-escaped Unicode.
+                    request.max_content_length = 81920
                 if g.user and request.endpoint in ('community_create','community_edit'):
                     request.max_content_length = 32768
                 if g.user and request.endpoint in ('community_create','community_edit') and request.mimetype == 'multipart/form-data':
@@ -234,4 +237,6 @@ def create_app(config=None):
     install_presence(app, connect)
     from course_theme import install as install_course_theme
     install_course_theme(app)
+    from cto_project import install as install_cto_project
+    install_cto_project(app, connect)
     return app

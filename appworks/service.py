@@ -56,6 +56,11 @@ def create_app():
         for key, value in layer.items():
             if key in ALIASES:
                 config[ALIASES[key]] = value
+        for key in ('CTO_REVIEWER_IDS', 'CTO_REVIEWER_EMAILS'):
+            if key in layer:
+                config[key] = layer[key]
+            if 'APPWORKS_' + key in layer:
+                config[key] = layer['APPWORKS_' + key]
         for key, value in layer.items():
             if key.startswith('APPWORKS_RESET_') or key == 'APPWORKS_COOKIE_SECURE':
                 config[key.removeprefix('APPWORKS_')] = value

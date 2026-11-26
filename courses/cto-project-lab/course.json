@@ -1,0 +1,11 @@
+{
+  "id": "cto-project-lab",
+  "title": "CTO Project Lab",
+  "subtitle": "AI-ASSISTED DEVELOPMENT / LEVEL 3",
+  "description": "สร้าง Web Application หรือ Batch Job ระดับ 3/5 ตาม requirement CTO พร้อมหลักฐานและ review ทั้ง 7 ขั้นตอน",
+  "enabled": true,
+  "order": 4,
+  "delivery": "static",
+  "build_dir": "dist",
+  "entry": "index.html"
+}
