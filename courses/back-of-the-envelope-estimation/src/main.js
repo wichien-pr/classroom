@@ -7,6 +7,7 @@ import './traffic-reference.css';import {renderTrafficReference} from './traffic
 import './availability-reference.css';import {renderAvailabilityReference} from './availability-reference.js';
 import './latency-reference.css';import {renderLatencyReference} from './latency-reference.js';
 import {lessons} from './lessons.js';import * as models from './models.js';import {createAccountProgress} from './progress.js';import {createParticipation} from './participation.js';import {classroomLink} from './integration.js';import {installTermHints} from './terms.js';
+import './readability.css';
 const endpoint=import.meta.env.VITE_CLASSROOM_PROGRESS_URL;
 const account=Boolean(endpoint),progress=account?createAccountProgress(endpoint):null,participation=account?createParticipation(endpoint.replace(/\/progress$/,'/participation')):null;
 const KEY='back-of-the-envelope-estimation-progress-v1';let local=[],storageError=false,busy=false,manualPending=null,active=0;
@@ -35,9 +36,9 @@ document.querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>navigate(les
 function renderResult(l){const s=states.get(l.id);document.querySelector('#input-error').textContent=s.error;const el=document.querySelector('#result');if(!s.result){el.innerHTML='<p>ยังไม่ได้คำนวณ · ผลจะปรากฏหลังจากกดปุ่ม</p>';return}const r=s.result,v=s.calculatedInputs;let rows=[],steps=[];
  switch(l.model){
  case 'units':rows=[['bytes',r.bytes],['bits',r.bits],['MB (ฐานสิบ)',r.mb],['MiB (ฐานสอง)',r.mib]];steps=[`${v.amount} × 2^${v.power} = ${r.bytes.toLocaleString('en')} bytes`,`bytes × 8 = bits; bytes ÷ 10⁶ = MB; bytes ÷ 2²⁰ = MiB`];break;
- case 'latency':rows=[['ช้ากว่างานอ้างอิง (เท่า)',r.ratio],['เวลางานที่เปรียบเทียบ (ms)',r.secondMs],['เวลารวมต่อเนื่อง (ms)',r.totalMs]];steps=[`${v.second} ns ÷ ${v.first} ns = ${fmt(r.ratio)} เท่า`,`${fmt(r.secondMs)} ms × ${v.count} งาน = ${fmt(r.totalMs)} ms (ไม่รวมงานขนาน)`];break;
+ case 'latency':rows=[['อัตราส่วนเวลา (เปรียบเทียบ ÷ อ้างอิง)',r.ratio],['เวลางานที่เปรียบเทียบ (ms)',r.secondMs],['เวลารวมต่อเนื่อง (ms)',r.totalMs]];steps=[r.ratio===1?'ใช้เวลาเท่ากัน':r.ratio<1?'อัตราส่วน < 1: งานเปรียบเทียบใช้เวลาน้อยกว่า (เร็วกว่า)':'อัตราส่วน > 1: งานเปรียบเทียบใช้เวลามากกว่า (ช้ากว่า)',`${v.second} ns ÷ ${v.first} ns = ${fmt(r.ratio)} เท่า`,`${fmt(r.secondMs)} ms × ${v.count} งาน = ${fmt(r.totalMs)} ms (ไม่รวมงานขนาน)`];break;
  case 'availability':rows=[['Downtime (วินาที)',r.seconds],['Downtime (นาที)',r.minutes],['Downtime (ชั่วโมง)',r.hours]];steps=[`${v.days} วัน × 86,400 วินาที/วัน × (100 − ${v.percent}) ÷ 100`, 'ผลนี้เป็นงบเวลาที่เทียบเท่าตามสมมติฐาน ไม่ใช่กำหนดการล่ม'];break;
- case 'traffic':rows=[['DAU (คน)',r.dau],['โพสต์/วัน',r.perDay],['QPS เฉลี่ย',r.qps],['Peak QPS (สมมติ)',r.peak]];steps=[`${v.mau} × ${v.daily}% = ${fmt(r.dau)} คน/วัน`,`${fmt(r.dau)} × ${v.posts} = ${fmt(r.perDay)} โพสต์/วัน`,`${fmt(r.perDay)} ÷ 86,400 = ${fmt(r.qps)} QPS; × ${v.peak} = peak ${fmt(r.peak)}`];break;
+ case 'traffic':rows=[['DAU (ผู้ใช้ไม่ซ้ำในหนึ่งวัน)',r.dau],['โพสต์/วัน',r.perDay],['QPS เฉลี่ย',r.qps],['Peak QPS (สมมติ)',r.peak]];steps=[`${v.mau} × ${v.daily}% = ${fmt(r.dau)} คนที่ใช้งานในหนึ่งวัน`,`${fmt(r.dau)} × ${v.posts} = ${fmt(r.perDay)} โพสต์/วัน`,`${fmt(r.perDay)} ÷ 86,400 = ${fmt(r.qps)} QPS; × ${v.peak} = peak ${fmt(r.peak)}`];break;
  case 'storage':rows=[['สื่อใหม่ (TB/วัน)',r.dailyTB],['ข้อมูลหลัก (PB)',r.logicalPB],['รวมสำเนา + overhead (PB)',r.physicalPB]];steps=[`${v.posts} × ${v.media}% × ${v.mb} MB ÷ 1,000,000 = ${fmt(r.dailyTB)} TB/วัน`,`${fmt(r.dailyTB)} × 365 × ${v.years} ÷ 1,000 = ${fmt(r.logicalPB)} PB`,`${fmt(r.logicalPB)} × ${v.copies} × (1 + ${v.overhead}/100) = ${fmt(r.physicalPB)} PB`];break;
  case 'rounding':rows=[['ผลหารเดิม (แสดงแบบย่อ)',r.exact],['ผลประมาณ',r.estimate],['ความคลาดเคลื่อนมีเครื่องหมาย (%)',r.errorPercent]];steps=[`${v.numerator} ÷ ${v.denominator} เทียบกับ ${v.roughN} ÷ ${v.roughD}`,'(ค่าประมาณ − ค่าเดิม) ÷ ค่าเดิม × 100; ลบ = ต่ำกว่าค่าเดิม'];break;
  }

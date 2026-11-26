@@ -1,0 +1,55 @@
+/* Framework-owned presentation layer, measured against current Estimate Lab.
+   Preserve content, scoring, semantic diagram surfaces and checkbox geometry. */
+body{font-size:14px;line-height:1.85}
+.course-content{max-width:1050px;padding:36px clamp(20px,4vw,48px) 64px}
+.lesson-intro h1{font-size:30px;line-height:1.5;letter-spacing:0}
+.lesson-intro p:last-child{font-size:13px;line-height:1.9;max-width:68ch;margin:18px 0 28px}
+h2{font-size:17px;line-height:1.65}
+h3{font-size:16px;line-height:1.7;letter-spacing:0}
+.concept{padding:20px 0}
+.concept p{font-size:15px;line-height:1.85;max-width:70ch;margin-top:12px}
+.sidebar nav button{font-size:16px;line-height:1.75;padding:12px 10px}
+.sidebar-progress,.sidebar-progress p{font-size:14px}
+.course-label,.brand small,.course-top,.eyebrow{font-size:12px}
+.lesson-completion p{font-size:15px;line-height:1.8}
+.participation small,.result-note,.quiz-note,.experiment-heading span,.note-help,.question-why{font-size:14px;line-height:1.8}
+button{line-height:1.7}
+.actions button,.lesson-completion button{font-size:16px}
+#lesson select,#lesson textarea{font-family:inherit;font-size:16px;font-weight:500;line-height:1.8;min-height:48px}
+.experiment-panel{padding:28px}
+.experiment-heading{align-items:flex-start;flex-wrap:wrap}
+.experiment-heading h2{font-size:15px}
+.quiz h2{font-size:19px;line-height:1.65}
+.lesson-steps h3{font-size:16px}
+.lesson-steps li{padding:7px 0}
+#lesson .answers button{font-size:16px;line-height:1.85;padding:16px}
+#lesson .caveat,.quiz #feedback{font-size:14px;line-height:1.85}
+.caveat p{max-width:70ch}
+.caveat summary{min-height:48px;padding-block:8px;line-height:1.8;font-weight:600;cursor:pointer}
+.diagram-flow strong{font-size:16px}
+.diagram-flow span{font-size:14px}
+.estimate-diagram figcaption{font-size:14px;line-height:1.8}
+/* Framework diagrams keep their full-size labels and distinct blue canvas. */
+.blueprint-lesson figcaption,.deep-dive-lesson figcaption{font-size:14px;line-height:1.8}
+@media(max-width:900px){
+ .layout{grid-template-columns:1fr}
+ .sidebar,.classroom-exit~.layout .sidebar{position:static;height:auto;padding:20px}
+ .sidebar nav{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .sidebar-progress{margin-top:16px;padding:12px}
+ .brand{padding-bottom:18px}
+ .course-content{padding-top:28px}
+}
+@media(max-width:700px){
+ .lesson-intro h1{font-size:25px}
+ .lesson-intro p:last-child{font-size:12px}
+}
+@media(max-width:600px){
+ .sidebar nav{grid-template-columns:1fr}
+ .course-content{padding:24px 16px 48px}
+ .course-top{padding:16px;flex-wrap:wrap}
+ .experiment-panel{padding:18px}
+ .actions button{width:100%}
+ .experiment-heading{display:block}
+ .experiment-heading span{display:block;margin-top:8px}
+ .lesson-completion{padding:16px}
+}

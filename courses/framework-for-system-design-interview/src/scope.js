@@ -1,4 +1,8 @@
 // Teaching decision exercise, not an architecture evaluator.
+export function scopeSummary(known) {
+ const facts=ids=>ids.filter(id=>known[id]).map(id=>`<li>${questions.find(q=>q.id===id).answer}</li>`).join('')||'<li>ยังไม่ได้เปิดคำตอบในกลุ่มนี้</li>';
+ return `<section aria-label="สรุปขอบเขต"><h4>Functional requirements · งานที่ต้องทำ</h4><ul>${facts(['platform','features','order','media'])}</ul><h4>ขนาดและข้อจำกัด</h4><ul>${facts(['friends','scale'])}</ul><h4>ยังต้องถาม</h4><p>การเติบโต 3 / 6 / 12 เดือน, technology stack, เป้าหมาย latency และ availability ยังไม่ระบุ ต้องตกลงกับลูกค้า ไม่เติมตัวเลขเอง</p><h4>นอกขอบเขตของตัวอย่างนี้</h4><p>ไม่เพิ่ม chat, ระบบแนะนำ หรือการจัดอันดับด้วยน้ำหนักเอง หากต้องการต้องกลับไปตกลงขอบเขต</p><p>พร้อมสรุปเบื้องต้นหมายถึงเปิดข้อมูลหลักครบในแบบฝึก ไม่ใช่การอนุมัติจากลูกค้าจริง</p></section>`;
+}
 export function evaluateScope(known) {
  const missing = ['platform','features','order','friends','scale','media'].filter(key=>known[key]!==true);
  return {ready:missing.length===0,missing};

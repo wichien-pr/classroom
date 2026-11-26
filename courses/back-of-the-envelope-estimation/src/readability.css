@@ -1,0 +1,42 @@
+/* Estimate-only reading layer. Sizes follow the live Scale Lab role map;
+   retain spacious Thai leading, reading measures and touch targets. */
+body{font-size:14px;line-height:1.85}
+.course-content{max-width:1050px;padding:36px clamp(20px,4vw,48px) 64px}
+.lesson-intro h1{font-size:30px;line-height:1.5;letter-spacing:0}
+.lesson-intro p:last-child{font-size:13px;line-height:1.9;max-width:68ch;margin:18px 0 28px}
+h2{font-size:17px;line-height:1.65}h3{font-size:16px;line-height:1.7;letter-spacing:0}
+.concept p,.lesson-notes p,.tips-reference p,.traffic-worked p{max-width:70ch}
+.concept{padding:20px 0}.concept p{font-size:15px;margin-top:12px}
+.sidebar nav button{font-size:16px;line-height:1.75;padding:12px 10px}
+.sidebar-progress,.sidebar-progress p{font-size:14px}
+.course-label,.brand small,.course-top,.eyebrow{font-size:12px}
+.lesson-completion p{font-size:15px;line-height:1.8}
+.participation small,.result-note,.quiz-note,.experiment-heading span,.estimate-diagram figcaption{font-size:14px;line-height:1.8}
+.input-grid{gap:22px}.input-grid label{font-size:14px;line-height:1.8}
+summary{min-height:48px;padding-block:10px;line-height:1.8;cursor:pointer}
+input,select,textarea{font:inherit;font-size:16px;min-height:48px}button{line-height:1.7}
+.actions button,.lesson-completion button{font-size:16px}
+.experiment-panel{padding:28px}.experiment-heading{align-items:flex-start;flex-wrap:wrap}
+.experiment-heading h2{font-size:15px}.thinking h2{font-size:19px}
+.lesson-steps h3{font-size:16px}.lesson-steps li{padding:7px 0}
+.diagram-flow strong{font-size:16px}.diagram-flow span{font-size:14px}
+.metrics dt{font-size:14px;line-height:1.8}.metrics dd{font-size:26px;line-height:1.6;overflow-wrap:anywhere}
+#lesson :is(.units-reference,.latency-reference,.availability-reference,.traffic-reference,.tips-reference){font-size:14px;line-height:1.85;margin-block:28px}
+#lesson :is(table th,table td){font-size:14px;line-height:1.8;padding:14px 16px;overflow-wrap:anywhere}
+#lesson table caption{font-size:17px;line-height:1.7;margin-bottom:12px}
+#lesson :is(.units-reference small,.latency-reference small){font-size:14px}
+#lesson :is(.latency-insights li,.tips-list li){line-height:1.85}
+#lesson :is(.latency-units,.latency-era,#latency-table-note,#availability-table-note,#traffic-size-note){font-size:14px;line-height:1.85}
+#lesson .tips-reference h3{font-size:16px}
+#lesson .practice-card{margin:28px 0;padding:24px;border:1px solid var(--border);border-radius:10px;background:#edf3ec}
+.practice-card h2{margin-bottom:12px}.practice-card details{margin-top:18px}
+.practice-card summary{cursor:pointer;min-height:48px;padding:12px 0;font-weight:600;line-height:1.8}
+.practice-card details[open]>p,.practice-card dl{margin-top:16px}
+.practice-card dt{font-weight:700;margin-top:16px}#lesson .practice-card dd{color:inherit;font-size:14px;line-height:1.85;margin:6px 0 0}
+.practice-card summary:focus-visible{outline:3px solid #bd710c;outline-offset:4px}
+:root[data-theme=dark] #lesson .practice-card{background:var(--theme-soft);color:var(--theme-text)}
+#lesson .answers button{font-size:16px;line-height:1.85;padding:16px}
+#lesson .lesson-notes,#feedback{font-size:14px;line-height:1.85}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto;padding:20px}.sidebar nav{grid-template-columns:repeat(2,minmax(0,1fr))}.sidebar-progress{margin-top:16px;padding:12px}.brand{padding-bottom:18px}.course-content{padding-top:28px}}
+@media(max-width:700px){.lesson-intro h1{font-size:25px}.lesson-intro p:last-child{font-size:12px}}
+@media(max-width:600px){.sidebar nav{grid-template-columns:1fr}.course-content{padding:24px 16px 48px}.course-top{padding:16px;flex-wrap:wrap}.experiment-panel,#lesson .practice-card{padding:18px}.input-grid,.metrics,.diagram-flow{grid-template-columns:1fr}.estimate-diagram{padding:18px}.actions button{width:100%}.experiment-heading{display:block}.experiment-heading span{display:block;margin-top:8px}#lesson :is(table th,table td){padding:12px 14px}.lesson-completion{padding:16px}}

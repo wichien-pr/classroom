@@ -1,6 +1,28 @@
 # Back-of-the-envelope Estimation — developer handoff
 
-Independent Thai course, deployed locally as **Estimate Lab** to Docker at **http://localhost:8082**. See `../../docs/estimation-verification.md` for release details and verification scope. Course ID `back-of-the-envelope-estimation`, catalog order 2. No imports from Scale Lab or the platform. Existing visual tokens, accessible term-hint controller and generic account adapters were copied into this course and are owned here.
+Independent Thai course **Estimate Lab**. The approved source matches the deployed Estimate revision; historical release URLs below are not a statement of current service state. See `../../docs/estimation-verification.md` for release details and verification scope. Course ID `back-of-the-envelope-estimation`, catalog order 2. No imports from Scale Lab or the platform. Existing visual tokens, accessible term-hint controller and generic account adapters were copied into this course and are owned here.
+
+## Current curriculum
+
+Five lessons, five meaningful calculator actions and ten stable thinking choices: **15 participation definitions**. Five separate manual markers are completion criteria, not point-earning actions. Private `assessment.json` has five questions covering every lesson; it is never imported into the public bundle.
+
+| Lesson ID | Experiment | Expected baseline |
+|---|---|---|
+| estimate-units | Convert `amount × 2ⁿ` bytes to bits, MB and MiB | 1 MiB = 1,048,576 bytes = 1.048576 MB |
+| estimate-latency | Compare historical operation times and serial repetition | 150 ms / 100 ns = 1,500,000×; ten serial operations = 1,500 ms |
+| estimate-availability | Convert percentage and measurement window to equivalent downtime | 99.99% / 365 days ≈ 52.56 minutes |
+| estimate-traffic | MAU → DAU → posts/day → average and assumed peak QPS | 300M × 50% × 2 / 86,400 ≈ 3,472 QPS; peak ×2 ≈ 6,944 |
+| estimate-tips | Rounding example plus assumptions/unit checklist | 99,987 ÷ 9.1 compared with 100,000 ÷ 10 = 10,000 |
+
+Every lesson has an original Thai explanation, full-width three-step diagram, semantic numbered “ลองตามนี้”, editable deterministic calculator, visible intermediate steps, reset, limitations, explained two-choice quiz, explicit manual completion and glossary hints. Calculation results retain a snapshot of the inputs that produced them; editing without recalculating does not rewrite old arithmetic during navigation.
+
+## Audit fixes and reading design
+
+See `AUDIT-UX.md` for this revision, exact verification commands, isolated evidence and preview handoff. The new LAB04 prediction and LAB05 synthesis disclosures are unscored. Manifest, private bank and account APIs remain unchanged.
+
+## Historical release notes — not current deployment instructions
+
+The URLs, paths and test counts in release sections below are historical. See the current packaging verification note in `AUDIT-UX.md`; this commit does not deploy.
 
 ## Remove LAB06 (deployed on host localhost:8080)
 
@@ -24,21 +46,6 @@ New stable lesson/simulation ID: `estimate-tips`; action `calculate`; thinking a
 Tests: `npm test` **27 passed**; `npm run test:tips` **6 Chrome tests passed**; completion **7**, traffic **4**, availability **4** passed against the integrated candidate. Targeted isolated backend qualification/progress tests **38 passed**, including retired history preservation, new-topic qualification, frozen snapshots and app recreation. Pre-deploy checks additionally passed genuine OTP registration using a loopback Graph double, all 18 actions across six lessons, two-account isolation, lost-response retry, reload/relogin and same-DB process restart. No production account login or real mail delivery was tested.
 
 Artifacts: `../../evidence/estimation-tips/` contains source mapping, RED/GREEN logs, 320/390/1440px screenshots, preservation hashes and `integrated-dist/`. `TIPS_DIST` selects an existing integrated candidate; normal browser-test builds go into temporary directories. Deployment updated manifest, private bank and compiled client together and restarted only the identified host 8080 service. Health/login and guest course/asset/API protections passed. No DB migration, Docker change, real mail, staging, commit or push. Backup and deployment verification: `../../evidence/estimation-tips/deployment.json`. Reload existing course tabs; retired Storage completion does not grant Tips completion.
-
-## Curriculum
-
-Six lessons, six meaningful calculator actions and twelve stable thinking choices: **18 participation definitions**. Six separate manual markers are completion criteria, not point-earning actions. Private `assessment.json` has six questions covering every lesson; it is never imported into the public bundle.
-
-| Lesson ID | Experiment | Expected baseline |
-|---|---|---|
-| estimate-units | Convert `amount × 2ⁿ` bytes to bits, MB and MiB | 1 MiB = 1,048,576 bytes = 1.048576 MB |
-| estimate-latency | Compare historical operation times and serial repetition | 150 ms / 100 ns = 1,500,000×; ten serial operations = 1,500 ms |
-| estimate-availability | Convert percentage and measurement window to equivalent downtime | 99.99% / 365 days ≈ 52.56 minutes |
-| estimate-traffic | MAU → DAU → posts/day → average and assumed peak QPS | 300M × 50% × 2 / 86,400 ≈ 3,472 QPS; peak ×2 ≈ 6,944 |
-| estimate-tips | Rounding example plus assumptions/unit checklist | 99,987 ÷ 9.1 compared with 100,000 ÷ 10 = 10,000 |
-| estimate-rounding | Compare original division with rounded operands | 100,000 / 10 = 10,000; signed relative error visible |
-
-Every lesson has an original Thai explanation, full-width three-step diagram, semantic numbered “ลองตามนี้”, editable deterministic calculator, visible intermediate steps, reset, limitations, explained two-choice quiz, explicit manual completion and glossary hints. Calculation results retain a snapshot of the inputs that produced them; editing without recalculating does not rewrite old arithmetic during navigation.
 
 ## Run and build
 
@@ -75,7 +82,7 @@ The generic Classroom registry/build/Docker course discovery needs no backend sp
 
 Replaces LAB04 explanation with the hypothetical Twitter example: 300M MAU, 50% daily users, two tweets/day, 10% with media and five-year retention. Full-width reference tables and worked steps show 150M DAU, approximately 3,500 average QPS and 7,000 peak QPS, illustrative sizes (tweet_id 64 bytes, text 140 bytes, media 1 MB), and media-only storage of 30 TB/day and 54.75 PB ≈ 55 PB. These are exercise assumptions, not Twitter's actual metrics or schema. The peak multiplier is assumed; text bytes do not necessarily equal character count. Decimal storage units exclude text, IDs, indexes, metadata, copies and backups.
 
-The fixed example does not change with QPS calculator inputs. LAB05 retains its separate editable storage experiment. Other five lessons, stable IDs, fields, model arithmetic, quiz semantics, manifest/private bank and progress adapters remain unchanged. Existing LAB03 work is preserved.
+The fixed example does not change with QPS calculator inputs. At that historical release LAB05 had a separate editable storage experiment; current LAB05 is Tips and LAB04 has an unscored storage prediction. Other five lessons, stable IDs, fields, model arithmetic, quiz semantics, manifest/private bank and progress adapters remain unchanged. Existing LAB03 work is preserved.
 
 Verification: `npm test` **23 passed**; `npm run test:traffic` **4 Chrome tests passed** (standalone and intercepted integrated API contracts); `npm run test:completion` **7 passed**. `TRAFFIC_DIST` accepts an existing integrated candidate; otherwise builds go into fresh temporary directories. Evidence and tested candidate: `../../evidence/estimation-traffic/` (`integrated-dist/`, screenshots at 320/390/1440px, RED/GREEN output and preservation hashes). The implementation QA preserved live dist and used intercepted frontend contracts, not authenticated backend persistence. After deployment approval, the tested candidate was published to host http://localhost:8080; its hashes match the published files. Database integrity, schema, all non-session data and preexisting sessions were preserved; health checks added anonymous sessions only. Login/health and guest access protection checks passed. Scale Lab, uploads and Docker are unchanged. No real-account login or mail delivery was tested, and no staging, commit or push was performed. Backup and rollout results: `../../evidence/estimation-traffic/deployment.json`. Reload existing tabs.
 

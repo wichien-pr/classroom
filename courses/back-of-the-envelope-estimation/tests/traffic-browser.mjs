@@ -35,7 +35,7 @@ async function open(mode){
  await page.goto(urls[mode]);await page.locator('[data-lesson="estimate-traffic"]').click();await page.locator('#calculate:enabled').waitFor();return page;
 }
 const assumptions = [
- ['ผู้ใช้รายเดือน (MAU)', '300 ล้านคน'],
+ ['ผู้ใช้ไม่ซ้ำในหนึ่งเดือน (MAU)', '300 ล้านคน'],
  ['สัดส่วนผู้ใช้รายวัน', '50% ของผู้ใช้รายเดือน'],
  ['ทวีตเฉลี่ยต่อผู้ใช้รายวัน', '2 ทวีต/คน/วัน'],
  ['ทวีตที่มีสื่อ', '10% ของทวีตทั้งหมด'],

@@ -17,7 +17,7 @@ const reference = await import('../src/traffic-reference.js').catch(() => ({}));
 test('worked Twitter example preserves every assumption, size and both estimation chains', () => {
  assert.equal(typeof reference.renderTrafficReference, 'function', 'missing worked example');
  assert.deepEqual(reference.trafficAssumptions, [
-  ['ผู้ใช้รายเดือน (MAU)', '300 ล้านคน'],
+  ['ผู้ใช้ไม่ซ้ำในหนึ่งเดือน (MAU)', '300 ล้านคน'],
   ['สัดส่วนผู้ใช้รายวัน', '50% ของผู้ใช้รายเดือน'],
   ['ทวีตเฉลี่ยต่อผู้ใช้รายวัน', '2 ทวีต/คน/วัน'],
   ['ทวีตที่มีสื่อ', '10% ของทวีตทั้งหมด'],

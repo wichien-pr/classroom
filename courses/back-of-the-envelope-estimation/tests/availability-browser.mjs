@@ -35,10 +35,10 @@ async function open(mode){
  await page.goto(urls[mode]);await page.locator('[data-lesson="estimate-availability"]').click();await page.locator('#calculate:enabled').waitFor();return page;
 }
 const expectedRows = [
- ['99%', '14.40 นาที', '1.68 ชั่วโมง', '7.31 ชั่วโมง', '3.65 วัน'],
- ['99.99%', '8.64 วินาที', '1.01 นาที', '4.38 นาที', '52.60 นาที'],
- ['99.999%', '864.00 มิลลิวินาที', '6.05 วินาที', '26.30 วินาที', '5.26 นาที'],
- ['99.9999%', '86.40 มิลลิวินาที', '604.80 มิลลิวินาที', '2.63 วินาที', '31.56 วินาที'],
+ ['99%', '14.40 นาที', '1.68 ชั่วโมง', '7.20 ชั่วโมง', '3.65 วัน'],
+ ['99.99%', '8.64 วินาที', '1.01 นาที', '4.32 นาที', '52.56 นาที'],
+ ['99.999%', '864.00 มิลลิวินาที', '6.05 วินาที', '25.92 วินาที', '5.26 นาที'],
+ ['99.9999%', '86.40 มิลลิวินาที', '604.80 มิลลิวินาที', '2.59 วินาที', '31.56 วินาที'],
 ];
 for (const mode of ['standalone', 'account']) {
  test(`${mode}: availability reference has every cell before experiment and responsive row cards`, async () => {
